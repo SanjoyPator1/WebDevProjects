@@ -10,11 +10,16 @@
     "migrate": "node ./lib/migration.js"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.12.2",
     "@next/font": "13.3.1",
     "@types/node": "18.16.1",
     "@types/react": "18.2.0",
     "@types/react-dom": "18.2.1",
     "bcrypt": "^5.1.0",
+    "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "cookie": "^0.5.0",
     "eslint": "8.39.0",
@@ -24,11 +29,14 @@
     "pg": "^8.10.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-icons": "^4.8.0",
+    "react-modal": "^3.16.1",
     "typescript": "5.0.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/cookie": "^0.5.1",
-    "@types/pg": "^8.6.6"
+    "@types/pg": "^8.6.6",
+    "@types/react-modal": "^3.16.0"
   }
 }

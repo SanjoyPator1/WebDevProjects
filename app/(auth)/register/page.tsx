@@ -1,8 +1,10 @@
-import React from 'react'
-
+import AuthForm from '@/components/AuthForm/AuthForm'
+import "@/styles/global.css"
 const RegisterPage = () => {
   return (
-    <div>RegisterPage</div>
+    <div className='pure-center' style={{height:"100%"}}>
+      <AuthForm mode='register' />
+    </div>
   )
 }
 

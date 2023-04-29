@@ -1,8 +1,15 @@
-const pg = require('pg');
+const pg = require("pg");
 
 // Create a connection pool
-const conString = "postgres://zlfncuxg:MSmF05at_m3vynrCf8hiQCI7UyZAD_de@kashin.db.elephantsql.com/zlfncuxg";
-const client = new pg.Client(conString);
+const conString = process.env.DATABASE_URL;
+
+//pool connection
+const pool = new pg.Pool({
+  connectionString: conString,
+  max: 20, // Maximum number of connections
+  idleTimeoutMillis: 30000, // Time in milliseconds after which an idle connection is closed
+  connectionTimeoutMillis: 2000, // Time in milliseconds to wait for a new connection
+});
 
 interface Props {
   text: string;
@@ -12,13 +19,16 @@ interface Props {
 // Define a generic function to execute queries
 const db = async ({ text, params }: Props) => {
   try {
-    await client.connect();
-    const result = await client.query(text, params);
+    const client = await pool.connect(); // Acquire a client from the pool
+
+    const result = await client.query(text, params); // Execute the query
+    await client.release();
     return result;
-  } catch (error) {
-    throw error; // Throw the error for further handling
+  } catch (err) {
+    console.error("Error executing query", err);
+    throw err; // Throw the error for further handling
   } finally {
-    await client.end();
+    console.log("db done");
   }
 };
 

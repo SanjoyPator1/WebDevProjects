@@ -34,7 +34,8 @@ export const validateJWT = async (jwt) => {
 
 //Getting the JWT from cookies:
 export const getUserFromCookie = async (cookies) => {
-    const jwt = cookies.get("projectCookie");
+    const cookieName  =  process.env.COOKIE_NAME;
+    const jwt = cookies.get(cookieName);
 
     const { id } = await validateJWT(jwt.value);
 
@@ -43,10 +44,8 @@ export const getUserFromCookie = async (cookies) => {
     let user
     try {
       const result = await db({ text: query, params: values });
-      console.log("getUserFromCookie user from db ",result)
       user =  result.rows[0];
     } catch (error) {
-      console.error('Error finding user:', error);
       throw error;
     }
 

@@ -1,15 +1,21 @@
-// import GlassPane from "@/components/GlassPane";
+import GlassPane from "@/components/GlassPane";
+import "@/styles/global.css"
+
+const glassStyle: React.CSSProperties = {
+  height:"100%",
+  paddingInline:"0.5rem"
+};
 
 export default function AuthRootLayout({ children }: {
     children: React.ReactNode,
   }) {
     return (
-      <html lang="en">
+      <html lang="en" className="rainbow-mesh">
         <head />
-        <body className="">
-          {/* <GlassPane className="w-full h-full flex items-center justify-center"> */}
+        <body className="" style={{padding:"1.5rem"}}>
+          <GlassPane className="" styles={glassStyle} >
             {children}
-          {/* </GlassPane> */}
+          </GlassPane>
         </body>
       </html>
     );
