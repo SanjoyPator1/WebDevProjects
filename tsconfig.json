@@ -28,6 +28,6 @@
       "@/styles/*": ["./styles/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/migration.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "lib/migration.js", "components/TaskCard"],
   "exclude": ["node_modules"]
 }

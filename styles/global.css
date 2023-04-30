@@ -1,6 +1,6 @@
 :root {
   --primary-border-radius: 0.7em;
-  --secondary-border-radius: 0.3em;
+  --secondary-border-radius: 0.4em;
   --primary-primary-distance:2rem;
   --primary-secondary-distance:1rem;
   --title-size: 40em;
@@ -18,6 +18,7 @@
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    /* filter: invert(1); */
   }
 
 /* hide scrollbar */
@@ -49,6 +50,9 @@
   .candy-mesh {
     background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(97,186,255,1) 0%, rgba(166,239,253,1) 90.1% );
   }
+  /* .candy-mesh {
+    background-color: #fff;
+  } */
 
   .pure-center{
     display: flex;
@@ -182,6 +186,15 @@
   color: #fff;
   background-color: var(--color-0);
   border-radius: 9999px;
+}
+
+/* broder radius  */
+.primary-border-radius {
+  border-radius: var(--primary-border-radius);
+}
+
+.secondary-border-radius {
+  border-radius: var(--secondary-border-radius);
 }
 
 @media(min-width: 600px){

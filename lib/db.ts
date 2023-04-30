@@ -3,13 +3,16 @@ const pg = require("pg");
 // Create a connection pool
 const conString = process.env.DATABASE_URL;
 
-//pool connection
-const pool = new pg.Pool({
+// Pool configuration options
+const poolConfig = {
   connectionString: conString,
-  max: 20, // Maximum number of connections
+  max: 4, // Maximum number of connections
   idleTimeoutMillis: 30000, // Time in milliseconds after which an idle connection is closed
   connectionTimeoutMillis: 2000, // Time in milliseconds to wait for a new connection
-});
+};
+
+// Create the connection pool
+const pool = new pg.Pool(poolConfig);
 
 interface Props {
   text: string;
@@ -18,16 +21,20 @@ interface Props {
 
 // Define a generic function to execute queries
 const db = async ({ text, params }: Props) => {
+  let client;
   try {
-    const client = await pool.connect(); // Acquire a client from the pool
+    client = await pool.connect(); // Acquire a client from the pool
 
     const result = await client.query(text, params); // Execute the query
-    await client.release();
+
     return result;
   } catch (err) {
     console.error("Error executing query", err);
     throw err; // Throw the error for further handling
   } finally {
+    if (client) {
+      client.release(); // Release the client back to the pool
+    }
     console.log("db done");
   }
 };

@@ -24,12 +24,11 @@ const ProjectCard = ({ project }: Props) => {
     (t) => t.status === "COMPLETED"
   ).length;
 
-  console.log("CompletedCount", completedCount);
   
   const progress = project.tasks.length ? Math.ceil((completedCount / project.tasks.length) * 100):0;
 
   return (
-    <Card className="project-card" styles={{display:"flex", flexFlow:"column wrap",gap:PRIMARY_DISTANCE, padding: SECONDARY_DISTANCE, height:"100%", justifyContent:"space-between"}}>
+    <Card className={clsx("project-card","secondary-border-radius")}  styles={{display:"flex", flexFlow:"column wrap",gap:PRIMARY_DISTANCE, padding: SECONDARY_DISTANCE, height:"100%", justifyContent:"space-between"}}>
       <div className="column-flex-container" style={{gap:NORMAL_DISTANCE}}>
         <span className="body-font">{formatDate(project.created_at)}</span>
         <span className="header-font">{project.project_name}</span>

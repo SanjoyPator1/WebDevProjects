@@ -11,6 +11,8 @@ import React, { Suspense } from "react";
 import "@/styles/global.css"
 import GlassPane from "@/components/GlassPane";
 import NewProject from "@/components/NewProject/NewProject";
+import TaskCard from "@/components/TaskCard/TaskCard";
+import clsx from "clsx";
 
 //get project data
 const getProjectData = async () => {
@@ -57,18 +59,18 @@ const HomePage = async () => {
       {/* Greetings JSX */}
       <div style={{height:"150px"}}>
         <Suspense fallback={<Skeleton classNameProps="medium-container"/>}>
-        <Greetings classNameProps="medium-container"/>
+        <Greetings classNameProps={clsx("medium-container", "primary-border-radius")}/>
         </Suspense>
       </div>
 
       {/* All Projects Card */}
-      <GlassPane styles={{padding:SECONDARY_DISTANCE}}>
-        <div className="column-flex-container" style={{gap:SECONDARY_DISTANCE, maxHeight:"40%", overflow:"auto"}}>
-            <div className="new-project-container">
+      <GlassPane className={clsx("primary-border-radius")} styles={{padding:SECONDARY_DISTANCE}}>
+        <div className="column-flex-container" >
+            <div className="new-project-container" style={{marginRight:SECONDARY_DISTANCE}}>
               <NewProject />
             </div>
 
-            <div className="card-row-flex-container" style={{gap:PRIMARY_DISTANCE, justifyContent:"space-between", padding:SECONDARY_DISTANCE}}>
+            <div className="card-row-flex-container" style={{gap:PRIMARY_DISTANCE, justifyContent:"space-between", padding:SECONDARY_DISTANCE, maxHeight:"600px", overflow:"auto"}}>
               {projectData && projectData.map((project : ProjectWithTaskModel) => (
                 <div className="card-container" style={{}} key={project.id}>
                   <Link style={{textDecoration:"none"}} href={`/project/${project.id}`}>
@@ -80,6 +82,11 @@ const HomePage = async () => {
 
         </div>
       </GlassPane>
+      
+      {/* Task card - random project - top 5 */}
+      {/* <GlassPane styles={{padding: `calc(${SECONDARY_DISTANCE}*2)`}}>
+                <TaskCard/>
+      </GlassPane> */}
 
 
     </div>
