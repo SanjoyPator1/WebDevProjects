@@ -67,7 +67,7 @@ const HomePage = async () => {
       <GlassPane className={clsx("primary-border-radius")} styles={{padding:SECONDARY_DISTANCE}}>
         <div className="column-flex-container" >
             <div className="new-project-container" style={{marginRight:SECONDARY_DISTANCE}}>
-              <NewProject />
+              <NewProject mode="create" />
             </div>
 
             <div className="card-row-flex-container" style={{gap:PRIMARY_DISTANCE, justifyContent:"space-between", padding:SECONDARY_DISTANCE, maxHeight:"600px", overflow:"auto"}}>

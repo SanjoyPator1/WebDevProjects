@@ -4,22 +4,21 @@ import { cookies } from "next/headers";
 import Card from "@/components/Card/Card";
 import { SECONDARY_DISTANCE, TASK_STATUS } from "@/lib/constants";
 // import Button from '@mui/material/Button';
-import { TaskModel } from "@/model/databaseType";
+import { ProjectModel, ProjectWithTaskModel, TaskModel } from "@/model/databaseType";
 import "@/styles/global.css";
 import clsx from "clsx";
 import { PRIMARY_DISTANCE } from "@/lib/constants";
 import { headerFont, subheaderFont } from "@/lib/fonts";
 import TaskList from "../TaskList/TaskList";
 import GlassPane from "../GlassPane";
+import NewProject from "../NewProject/NewProject";
 
 interface Props {
-  projectId: string;
-  title: string;
-  tasks: TaskModel[];
+  projectData : ProjectWithTaskModel;
 }
 
-const TaskCard = async ({projectId, title, tasks }: Props) => {
-  const data = tasks;
+const TaskCard = async ({projectData }: Props) => {
+  
 
   return (
     <GlassPane
@@ -30,11 +29,15 @@ const TaskCard = async ({projectId, title, tasks }: Props) => {
         className={clsx("row-flex-container")}
         style={{ justifyContent: "space-between", alignItems: "center" }}
       >
-        <div>
-          <h1 className={clsx("header-font", headerFont.className)}>{title}</h1>
+        <div className={clsx("row-flex-container")}
+          style={{width:"100%", justifyContent: "space-between", alignItems: "center" }}>
+          <h1 className={clsx("header-font", headerFont.className)}>{projectData.project_name}</h1>
+          <div className="new-project-container">
+              <NewProject mode="update"  projectDataProp={projectData}/>
+            </div>
         </div>
       </div>
-      <TaskList projectId={projectId}  data={data}/>
+      <TaskList projectData={projectData}/>
     </GlassPane>
   );
 };

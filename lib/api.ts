@@ -36,19 +36,42 @@ const fetcher = async ({ url, method, body, json = true }) => {
     });
   };
 
-  export const createNewProject = async (name:string) => {
+
+  //PROJECT API
+  export const createNewProject = async (name:string, description:string,due: Date ) => {
     return fetcher({
       url: "/api/project",
       method: "POST",
-      body: { name },
+      body: { name, description, due },
     });
   };
 
-  export const createNewTask = async (projectId: string, name: string, description: string, due: Date) => {
+  export const updateProject = async (projectId: string, name: string, description: string, due: string) => {
+    console.log("fe updateProject", projectId, name, description, due)
+    return fetcher({
+      url: "/api/project",
+      method: "PUT",
+      body: { projectId, name, description, due },
+    });
+  };
+  
+  export const deleteProject = async (projectId: string) => {
+    return fetcher({
+      url: `/api/project?projectId=${projectId}`,
+      method: "DELETE",
+      body: { projectId },
+    });
+  };
+  
+
+
+
+  //TASK API
+  export const createNewTask = async (projectId: string, status:string, name: string, description: string, due: Date) => {
     return fetcher({
       url: "/api/task",
       method: "POST",
-      body: {projectId, name, description, due },
+      body: {projectId,status, name, description, due },
     });
   };
 

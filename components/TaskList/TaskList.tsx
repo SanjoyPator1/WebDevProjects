@@ -1,9 +1,9 @@
 "use client"
 
 import React from 'react'
-import { NORMAL_DISTANCE, SECONDARY_DISTANCE, TASK_STATUS } from "@/lib/constants";
+import { BLUE_COLOR, DARK_COLOR, GREEN_COLOR, LIGHT_SHADE_COLOR, NORMAL_DISTANCE, RED_COLOR, SECONDARY_DISTANCE, TASK_STATUS } from "@/lib/constants";
 // import Button from '@mui/material/Button';
-import { TaskModel } from "@/model/databaseType";
+import { ProjectModel, ProjectWithTaskModel, TaskModel } from "@/model/databaseType";
 import "@/styles/global.css";
 import clsx from "clsx";
 import { PRIMARY_DISTANCE } from "@/lib/constants";
@@ -14,9 +14,9 @@ import NewProject from '../NewProject/NewProject';
 import Chip from '@mui/material/Chip';
 
 const statusChips = {
-  NOT_STARTED : <Chip label="Not started" color="error" />,
-  IN_PROGRESS : <Chip label="In progress" color="success" />,
-  COMPLETED : <Chip label="Completed" color="primary" /> ,
+  NOT_STARTED : <Chip  label="Not started" style={{backgroundColor: RED_COLOR, color:"black"}} />,
+  IN_PROGRESS : <Chip label="In progress" color="success" style={{backgroundColor: GREEN_COLOR, color:"black"}}/>,
+  COMPLETED : <Chip label="Completed" color="primary" style={{backgroundColor: BLUE_COLOR, color:"black"}}/> ,
 }
 
 
@@ -29,11 +29,13 @@ const formatDate = (date) =>
   });
 
 interface Props{
-    projectId: string;
-    data : TaskModel[]
+    projectData: ProjectWithTaskModel;
 }
 
-const TaskList = ({projectId,data}: Props) => {
+const TaskList = ({projectData}: Props) => {
+  console.log("Task List projectData", projectData);
+  const data = projectData.tasks
+
   return (
     <div className={clsx("column-flex-container")} style={{ gap: SECONDARY_DISTANCE }}>
         <div
@@ -45,34 +47,34 @@ const TaskList = ({projectId,data}: Props) => {
           </p>
           <div className="">
             <div style={{display:"none"}}>
-              <NewProject/>
+              <NewProject mode='update' projectDataProp={projectData}/>
             </div>
-            <NewTask mode="create" projectIdProp={projectId}/>
+            <NewTask mode="create" projectIdProp={projectData.id}/>
             </div>
         </div>
         {/* header */}
-        <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between"}}>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)}>
+        <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between",backgroundColor:DARK_COLOR}}>
+            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
                 NAME
             </div>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)}>
+            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
                 DESCRIPTION
             </div>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)}>
+            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
                 STATUS
             </div>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)}>
+            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
                 DUE DATE
             </div>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)}>
+            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
                 UPDATED AT
             </div>
-            <div className={clsx("smallest-container","sub-header-font",subheaderFont.className)} style={{textAlign:"end"}}>
+            <div className={clsx("smallest-container","sub-header-font",subheaderFont.className)} style={{textAlign:"end", color:"white"}}>
                 EDIT
             </div>
         </Card>
         {data && data.length ? (
-          <div className={clsx("column-flex-container")} style={{gap:SECONDARY_DISTANCE}}>
+          <div className={clsx("column-flex-container")} style={{gap:NORMAL_DISTANCE}}>
             {data.map((task: TaskModel, index: number) => (
               <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between"}} key={index}>
                 <div className={clsx("extra-small-container")}>

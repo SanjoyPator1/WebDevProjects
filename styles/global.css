@@ -11,6 +11,9 @@
   --color-1: #4B92FF;
   --color-2: #B7E3FF;
   --color-3: #E7EFF2;
+  --color-blue: #B7E3FF;
+  --color-red : #FFA1B3;
+  --color-green: #CBF5AF;
 }
 
 * {

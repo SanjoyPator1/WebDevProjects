@@ -12,11 +12,12 @@ export default async function handler(
   if (req.method === "POST") {
     const createTaskQuery = `
     INSERT INTO task (id, created_at, updated_at, owner_id, project_id, status, name, description, due, deleted)
-    VALUES (uuid_generate_v4(), NOW(), NULL, $1, $2, 'NOT_STARTED', $3, $4, $5, false)
+    VALUES (uuid_generate_v4(), NOW(), NOW(), $1, $2, $3, $4, $5, $6, false)
   `;
     const createTaskValues = [
       user.id,
       req.body.projectId,
+      req.body.status,
       req.body.name,
       req.body.description,
       req.body.due,

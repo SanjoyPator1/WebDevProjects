@@ -10,7 +10,7 @@ import { createNewTask, deleteTask, updateTask } from "@/lib/api";
 import clsx from "clsx";
 import { headerFont } from "@/lib/fonts";
 import { TaskModel } from "@/model/databaseType";
-import { TASK_STATUS } from "@/lib/constants";
+import { DARK_BLUE_COLOR, DARK_RED_COLOR, RED_COLOR, TASK_STATUS } from "@/lib/constants";
 import { MenuItem, Select } from "@mui/material";
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -49,7 +49,7 @@ const NewTask = ({mode, projectIdProp,taskDataProp }: Props) => {
 
     try {
       if(mode=="create"){
-        await createNewTask(projectIdProp,name, description, due);
+        await createNewTask(projectIdProp, status,name, description, due);
       }else{
         await updateTask(taskId, name, description ,status, due)
       }
@@ -95,11 +95,11 @@ const NewTask = ({mode, projectIdProp,taskDataProp }: Props) => {
   return (
     <div className="new-project-container1" style={{ width: "100%", justifyContent: "flex-end" }}>
       {mode=="create" ? 
-        <Button variant="contained" onClick={openModal}>
+        <Button variant="contained" onClick={openModal} style={{backgroundColor: DARK_BLUE_COLOR}}>
           <RiAddCircleFill style={{ marginRight: "0.4em" }} /> Add task
         </Button>
         :
-        <FiEdit onClick={openModal} style={{ marginRight: "0.4em",cursor:"pointer", color:"#4B92FF" }} />
+        <FiEdit onClick={openModal} style={{ marginRight: "0.4em",cursor:"pointer", color : DARK_BLUE_COLOR }} />
       }
       <Modal
         isOpen={modalIsOpen}
@@ -108,7 +108,7 @@ const NewTask = ({mode, projectIdProp,taskDataProp }: Props) => {
         className="new-project-modal small-container"
       >
         <h1 style={{ textAlign: "left" }} className={clsx("header-font", headerFont.className)}>
-          New Task
+          {mode==="create"?"New Task": "Update Task"}
         </h1>
         <form className="new-project-form" onSubmit={handleSubmit} style={{ opacity: !isMutating ? 1 : 0.7 }}>
           <TextField
@@ -159,11 +159,11 @@ const NewTask = ({mode, projectIdProp,taskDataProp }: Props) => {
             </Select>
           </FormControl>
           <div className={clsx("row-flex-container")} style={{justifyContent:"space-between", width:"100%"}}>
-          <Button variant="contained" type="submit">
+          <Button variant="contained" type="submit" style={{backgroundColor: DARK_BLUE_COLOR}}>
           {mode=="create" ?"Create": "Update" }
           </Button>
           {taskId &&
-            <Button variant="outlined" color="error" onClick={(e)=>handleDelete(taskDataProp?.id)}>
+            <Button variant="outlined" color="error" onClick={(e)=>handleDelete(taskDataProp?.id)} style={{backgroundColor: DARK_RED_COLOR, color:"white"}}>
               Delete
             </Button>
 }
