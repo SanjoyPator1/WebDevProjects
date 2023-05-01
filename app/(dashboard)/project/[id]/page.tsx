@@ -48,12 +48,11 @@ const getProjectData = async (projectId:string) => {
 };
 
 export default async function ProjectPage({ params }) {
-  // console.log("params.id ",params.id)
   const project = await getProjectData(params.id);
 
   return (
     <div className="h-full overflow-y-auto pr-6 w-1/1">
-      <TaskCard tasks={project.tasks} title={project.project_name} />
+      <TaskCard projectId={params.id} tasks={project.tasks} title={project.project_name} />
     </div>
   );
 }

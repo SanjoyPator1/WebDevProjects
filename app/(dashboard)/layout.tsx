@@ -1,10 +1,11 @@
-import { Inter } from "@next/font/google";
 // import Sidebar from "@/components/Sidebar";
 import GlassPane from "@/components/GlassPane";
 import clsx from "clsx";
 import "@/styles/global.css"
 import Sidebar from "@/components/Sidebar/Sidebar";
 import { PRIMARY_DISTANCE } from "@/lib/constants";
+import { bodyFont } from "@/lib/fonts";
+
 
 const glassStyle: React.CSSProperties = {
   height:"100%",
@@ -25,7 +26,7 @@ export default function DashboardRootLayout({ children }: {
               <Sidebar />
             </div>
             <div className="" style={{flex:1,padding:PRIMARY_DISTANCE, height:"100%", overflow:"auto"}}>
-              <main>{children}</main>
+              <main className={bodyFont.className}>{children}</main>
             </div>
         </div>
         <div id="modal"></div>

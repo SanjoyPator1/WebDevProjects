@@ -43,3 +43,30 @@ const fetcher = async ({ url, method, body, json = true }) => {
       body: { name },
     });
   };
+
+  export const createNewTask = async (projectId: string, name: string, description: string, due: Date) => {
+    return fetcher({
+      url: "/api/task",
+      method: "POST",
+      body: {projectId, name, description, due },
+    });
+  };
+
+  export const updateTask = async (taskId: string, name: string, description: string, status: string, due: string)=> {
+    return fetcher({
+      url: "/api/task",
+      method: "PUT",
+      body: { taskId, name, description, status, due },
+    });
+  };
+
+  export const deleteTask = async (taskId: string) => {
+    console.log("deleteTask in fe ", taskId);
+    return fetcher({
+      url: `/api/task?taskId=${taskId}`,
+      method: "DELETE",
+      body:{taskId}
+    });
+  };
+  
+  

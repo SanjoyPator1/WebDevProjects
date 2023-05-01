@@ -9,6 +9,8 @@ import "./newProjectStyle.css"
 import "@/styles/global.css"
 import { RiAddCircleFill } from 'react-icons/ri';
 import { createNewProject } from "@/lib/api";
+import clsx from "clsx";
+import { headerFont } from "@/lib/fonts";
 
 Modal.setAppElement("#modal");
 
@@ -55,7 +57,7 @@ const NewProject = () => {
         overlayClassName="new-project-overlay"
         className="new-project-modal small-container"
       >
-        <h1 style={{textAlign:"left"}} className="header-font">New Project</h1>
+        <h1 style={{textAlign:"left"}} className={clsx("header-font",headerFont.className)}>New Project</h1>
         <form className="new-project-form" onSubmit={handleSubmit} style={{ opacity: !isMutating ? 1 : 0.7 }}>
             <TextField 
                 variant="outlined"

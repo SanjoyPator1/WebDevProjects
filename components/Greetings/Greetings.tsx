@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import Card from "../Card/Card";
 import { PRIMARY_DISTANCE } from "@/lib/constants";
 import clsx from "clsx";
+import { bodyFont, subheaderFont, titleFont } from "@/lib/fonts";
 
 const getData = async () => {
   const user = await getUserFromCookie(cookies());
@@ -18,10 +19,10 @@ const Greetings =async ({classNameProps}: Props ) => {
     return (
             <Card className={clsx("column-flex-container",classNameProps)} styles={{ padding:PRIMARY_DISTANCE, height:"100%"}}>
               <div className="column-flex-container" style={{height:"100%", justifyContent:"space-around"}}>
-                <h1 className="">
+                <h1 className={clsx(titleFont.className,"title-font")}>
                   Hello, {user?.first_name}!
                 </h1>
-                <h4 className="">
+                <h4 className={clsx(bodyFont.className,"body-font")}>
                   Check your daily tasks and schedule
                 </h4>
               </div>

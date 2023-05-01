@@ -100,11 +100,11 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
             <>
               <div className="">
                 <TextField 
+                  variant="outlined"
                   size="small"
                   fullWidth
                   label="First Name"
                   required
-                  placeholder="John"
                   value={formState.firstName}
                   className="border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full"
                   onChange={(e) =>
@@ -113,11 +113,11 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
               </div>
               <div className="">
                 <TextField
+                  variant="outlined"
                   size="small"
                   fullWidth
                   required
                   label="Last Name"
-                  placeholder="Doe"
                   value={formState.lastName}
                   className="border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full"
                   onChange={(e) =>
@@ -129,12 +129,12 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
           )}
 
             <div className="">
-              <TextField size="small" fullWidth required type="email" id="email" label="Email" variant="outlined" placeholder="john_doe@email.com" value={formState.email} onChange={(e) =>
+              <TextField variant="outlined" size="small" fullWidth required type="email" id="email" label="Email" variant="outlined" value={formState.email} onChange={(e) =>
                   setFormState((s) => ({ ...s, email: e.target.value }))
                 } />
             </div>
             <div className="">
-              <TextField size="small" fullWidth required type="password" id="password" label="Password" variant="outlined" placeholder="strong_password" value={formState.password} onChange={(e) =>
+              <TextField variant="outlined" size="small" fullWidth required type="password" id="password" label="Password" variant="outlined" value={formState.password} onChange={(e) =>
                   setFormState((s) => ({ ...s, password: e.target.value }))
                 } />
             </div>
