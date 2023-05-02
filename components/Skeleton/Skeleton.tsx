@@ -9,7 +9,7 @@ interface Props {
 
 const Skeleton = ({ type, styleProps,classNameProps }: Props) => {
   return (
-      <div className={clsx("skeleton",classNameProps)} style={styleProps}>
+      <div className={clsx("skeleton","card","primary-border-radius",classNameProps)} style={{...styleProps,height:"100%"}}>
         <div className="skeleton-left">
           <div className="line h17 w40 m10"></div>
           <div className="line"></div>

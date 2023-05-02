@@ -22,7 +22,7 @@ const Sidebar = () => {
   return (
     <Card className="column-flex-container sidebar-container">
       <div className="logo-container">
-        <Image src={logo} alt="project logo" style={{width:"100%", height:"100%"}}/>
+        <Image src={logo} alt="project logo" style={{width:"100%", height:"100%", mixBlendMode: "darken"}}/>
       </div>
       {links.map((link,index) => (
         <SidebarLink link={link} key={index}/>

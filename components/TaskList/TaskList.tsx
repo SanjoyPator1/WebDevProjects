@@ -37,10 +37,10 @@ const TaskList = ({projectData}: Props) => {
   const data = projectData.tasks
 
   return (
-    <div className={clsx("column-flex-container")} style={{ gap: SECONDARY_DISTANCE }}>
+    <div className={clsx("column-flex-container")} >
         <div
           className={clsx("row-flex-container")}
-          style={{ justifyContent: "space-between", alignItems: "center" }}
+          style={{ justifyContent: "space-between", alignItems: "center", marginBottom:SECONDARY_DISTANCE }}
         >
           <p className={clsx("sub-header-font", subheaderFont.className)}>
             Task List

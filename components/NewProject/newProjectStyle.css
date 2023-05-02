@@ -36,7 +36,6 @@
   .new-project-form {
     display: flex;
     flex-flow: column wrap;
-    gap:0.8em;
     align-items: flex-start;
   }
   

@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { SignJWT, jwtVerify } from "jose";
 import db from "./db"
+import { UserModel } from "@/model/databaseType";
 
 export const hashPassword = (password  : string) => bcrypt.hash(password, 10);
 
@@ -41,7 +42,7 @@ export const getUserFromCookie = async (cookies) => {
 
     const query = 'SELECT * FROM users WHERE id = $1';
     const values = [id];
-    let user
+    let user : UserModel;
     try {
       const result = await db({ text: query, params: values });
       user =  result.rows[0];

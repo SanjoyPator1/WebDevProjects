@@ -11,9 +11,10 @@ import { RiAddCircleFill } from 'react-icons/ri';
 import { createNewProject, deleteProject, updateProject } from "@/lib/api";
 import clsx from "clsx";
 import { headerFont } from "@/lib/fonts";
-import { DARK_BLUE_COLOR, DARK_RED_COLOR } from "@/lib/constants";
+import { DARK_BLUE_COLOR, DARK_COLOR, DARK_RED_COLOR, SECONDARY_DISTANCE } from "@/lib/constants";
 import { ProjectModel } from "@/model/databaseType";
 import { FiEdit } from "react-icons/fi";
+import { LoadingButton } from "@mui/lab";
 
 Modal.setAppElement("#modal");
 
@@ -33,6 +34,7 @@ const NewProject = ({mode, projectDataProp }: Props) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isFetching, setIsFetching] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   console.log("New Project Data: " + projectDataProp)
 
@@ -77,16 +79,21 @@ const NewProject = ({mode, projectDataProp }: Props) => {
 
     try {
       await deleteProject(projectId);
-      setIsFetching(false);
+      setIsDeleting(false);
 
       startTransition(() => {
         router.refresh();
       });
 
-      closeModal();
+       //reset all fields
+       setName("")
+       setDescription("")
+       setDue(new Date().toISOString().slice(0, 10));
+ 
+       closeModal();
     } catch (error) {
       console.error("Error deleting project:", error);
-      setIsFetching(false);
+      setIsDeleting(false);
     }
   };
 
@@ -97,7 +104,7 @@ const NewProject = ({mode, projectDataProp }: Props) => {
           <RiAddCircleFill style={{ marginRight: "0.4em" }} /> Add Project
         </Button>
         :
-        <Button variant="outlined" onClick={openModal} style={{}}>
+        <Button variant="outlined" onClick={openModal} style={{backgroundColor: DARK_COLOR, color:"white"}}>
           <FiEdit onClick={openModal} style={{ marginRight: "0.4em"}} /> Edit project
         </Button>
       }
@@ -111,8 +118,7 @@ const NewProject = ({mode, projectDataProp }: Props) => {
         <h1 style={{textAlign:"left"}} className={clsx("header-font",headerFont.className)}>
         {mode==="create"?"New Project": "Update Project"}
         </h1>
-        <form className="new-project-form" onSubmit={handleSubmit} style={{ opacity: !isMutating ? 1 : 0.7 }}>
-            projectName : {projectDataProp?.project_name}
+        <form className="new-project-form" onSubmit={handleSubmit} style={{ opacity: !isMutating ? 1 : 0.7,gap: SECONDARY_DISTANCE }}>
             <TextField 
                 variant="outlined"
                 fullWidth
@@ -143,13 +149,13 @@ const NewProject = ({mode, projectDataProp }: Props) => {
             required
           />
           <div className={clsx("row-flex-container")} style={{justifyContent:"space-between", width:"100%"}}>
-          <Button variant="contained" type="submit" style={{backgroundColor: DARK_BLUE_COLOR}}>
+          <LoadingButton  loading={isFetching} variant="contained" type="submit" style={{backgroundColor: DARK_BLUE_COLOR}}>
           {mode=="create" ?"Create": "Update" }
-          </Button>
+          </LoadingButton>
           {mode=="update" &&
-            <Button variant="outlined" color="error" onClick={(e)=>handleDelete(projectDataProp?.id)} style={{backgroundColor: DARK_RED_COLOR, color:"white"}}>
+            <LoadingButton  loading={isDeleting} variant="outlined" color="error" onClick={(e)=>handleDelete(projectDataProp?.id)} style={{backgroundColor: DARK_RED_COLOR, color:"white"}}>
               Delete
-            </Button>
+            </LoadingButton>
 }
           </div>
         </form>

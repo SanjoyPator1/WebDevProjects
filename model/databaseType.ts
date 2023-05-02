@@ -1,3 +1,14 @@
+export interface UserModel {
+  id: string;
+  created_at: Date;
+  updated_at: Date;
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+}
+
+
 export interface ProjectModel {
     id: string;
     created_at: Date;

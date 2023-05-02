@@ -24,7 +24,7 @@
       "@/*": ["./*"],
       "@/lib": ["./lib/*"],
       "@/components/*": ["./components/*"],
-      "@/assets/*": ["./assets/*"],
+      "@/public/*": ["./public/*"],
       "@/styles/*": ["./styles/*"],
     }
   },

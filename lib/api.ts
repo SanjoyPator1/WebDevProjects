@@ -18,6 +18,7 @@ const fetcher = async ({ url, method, body, json = true }) => {
     }
   };
   
+  // USER API
   export const register = async (user) => {
     return fetcher({
       url: "/api/register",
@@ -33,6 +34,15 @@ const fetcher = async ({ url, method, body, json = true }) => {
       method: "POST",
       body: user,
       json: false,
+    });
+  };
+
+  export const updateUser = async (firstName: string, lastName: string, email: string ) => {
+    console.log("fe user", firstName,lastName, email)
+    return fetcher({
+      url: "/api/user",
+      method: "PUT",
+      body: { firstName, lastName, email },
     });
   };
 
