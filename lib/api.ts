@@ -29,6 +29,7 @@ const fetcher = async ({ url, method, body, json = true }) => {
   };
 
   export const signin = async (user) => {
+    console.log("fe user api ",user)
     return fetcher({
       url: "/api/signin",
       method: "POST",

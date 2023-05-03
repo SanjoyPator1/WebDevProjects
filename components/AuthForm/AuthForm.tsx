@@ -63,6 +63,7 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
         if (mode === "register") {
           await register(formState);
         } else {
+          console.log("signin button pressed")
           await signin(formState);
         }
         //after successful register - redirect to /home dashboard

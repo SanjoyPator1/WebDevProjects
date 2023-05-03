@@ -16,12 +16,14 @@ export default async function signin(
   `;
   const values = [req.body.email];
 
+  console.log("be api user values",req.body.email,req.body.password);
+
   let user;
 
   try {
     const result = await db({ text: query, params: values });
     user = result.rows[0];
-    console.log("user created in db ",user)
+    console.log("user present in db ",user)
   } catch (error) {
     console.error('Error finding user:', error);
     throw error;
