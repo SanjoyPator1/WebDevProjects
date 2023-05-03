@@ -78,13 +78,12 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
         } else {
           res = await signin(formState);
         }
+        setFormState({ ...initial });
         //after successful register - redirect to /home dashboard
         router.replace("/home");
       } catch (e:{message:string}) {
         setError({status:true,message: e.message});
-      } finally {
-        setFormState({ ...initial });
-      }
+      } 
     },
     [
       formState.email,
