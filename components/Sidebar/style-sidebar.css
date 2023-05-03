@@ -24,7 +24,7 @@
   left:200px;
   height:100vh;
   width: 100vw;
-  z-index: -1;
+  z-index: 5;
 }
 
 .sidebar__toggle {
