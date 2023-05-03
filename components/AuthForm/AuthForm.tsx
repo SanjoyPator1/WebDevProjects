@@ -27,7 +27,7 @@ interface formValuesModel {
 const registerContent: formContentModel = {
   linkUrl: "/signin",
   linkLabel: "Already have an account?",
-  linkText:"Log In",
+  linkText:"Sign In",
   header: "Create a new Account",
   subheader: "Just a few things to get started",
   buttonText: "Register",
@@ -51,7 +51,10 @@ const initial: formValuesModel = {
 
 const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
   const [formState, setFormState] = useState({ ...initial });
-  const [error, setError] = useState("");
+  const [error, setError] = useState({
+    status : false,
+    message: ""
+  });
 
   const router = useRouter();
 
@@ -61,15 +64,21 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
 
       try {
         if (mode === "register") {
-          await register(formState);
+          const res = await register(formState);
+          if(res.status===401 || 400){
+            setError({status:true, message: res.message})
+          }
         } else {
           console.log("signin button pressed")
-          await signin(formState);
+          const res = await signin(formState);
+          if(res.status===401 || 400){
+            setError({status:true, message: res.message})
+          }
         }
         //after successful register - redirect to /home dashboard
         router.replace("/home");
       } catch (e) {
-        setError(`Could not ${mode}`);
+        setError({status:true,message: `Could not ${mode}`});
       } finally {
         setFormState({ ...initial });
       }
@@ -108,6 +117,8 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
                   required
                   value={formState.firstName}
                   className="border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full"
+                  error = {error.status}
+                  helperText= {error.message}
                   onChange={(e) =>
                     setFormState((s) => ({ ...s, firstName: e.target.value }))
                   } />
@@ -120,6 +131,8 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
                   required
                   label="Last Name"
                   value={formState.lastName}
+                  error = {error.status}
+                  helperText= {error.message}
                   className="border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full"
                   onChange={(e) =>
                     setFormState((s) => ({ ...s, lastName: e.target.value }))
@@ -130,12 +143,16 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
           )}
 
             <div className="">
-              <TextField variant="outlined" size="small" fullWidth required type="email" id="email" label="Email" variant="outlined" value={formState.email} onChange={(e) =>
+              <TextField variant="outlined" size="small" fullWidth required type="email" id="email" label="Email"  value={formState.email}
+              error = {error.status}
+              helperText= {error.message}
+              onChange={(e) =>
                   setFormState((s) => ({ ...s, email: e.target.value }))
                 } />
             </div>
             <div className="">
-              <TextField variant="outlined" size="small" fullWidth required type="password" id="password" label="Password" variant="outlined" value={formState.password} onChange={(e) =>
+              <TextField variant="outlined" size="small" fullWidth required type="password" id="password" label="Password" error = {error.status}
+                  helperText= {error.message}  value={formState.password} onChange={(e) =>
                   setFormState((s) => ({ ...s, password: e.target.value }))
                 } />
             </div>

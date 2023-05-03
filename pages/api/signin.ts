@@ -18,20 +18,20 @@ export default async function signin(
 
   console.log("be api user values",req.body.email,req.body.password);
 
+  let result;
   let user;
 
   try {
-    const result = await db({ text: query, params: values });
+    result = await db({ text: query, params: values });
     user = result.rows[0];
-    console.log("user present in db ",user)
   } catch (error) {
-    console.error('Error finding user:', error);
     throw error;
   }
 
     if (!user) {
+      //401 status code : unauthorized
       res.status(401);
-      res.json({ error: "Invalid login" });
+      res.json({ error: "Invalid login", message:"User not found" });
       return;
     }
 
@@ -39,10 +39,6 @@ export default async function signin(
 
     if (isUser) {
       const jwt = await createJWT(user);
-
-    //   console.log("isUser true")
-    //   console.log("signing with jwt",jwt)
-    //   console.log("cookie name",process.env.COOKIE_NAME)
       const cookieHeader = process.env.COOKIE_NAME
       res.setHeader(
         "Set-Cookie",
@@ -54,13 +50,14 @@ export default async function signin(
         })
       );
       res.status(201);
-      res.json({data : user});
+      res.json({...result, message:"Successfully Logged in"});
     } else {
+      // 401 status code : unauthorized
       res.status(401);
-      res.json({ error: "Invalid login" });
+      res.json({ error: "Invalid login", message:"Invalid credentials" });
     }
   } else {
-    res.status(402);
-    res.json({});
+    res.status(400);
+    res.json({ message:"Something went wrong"});
   }
 }

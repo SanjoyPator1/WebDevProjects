@@ -51,7 +51,7 @@ export default async function register(
     res.status(201);
     res.json({});
   } else {
-    res.status(402);
-    res.json({});
+    res.status(400);
+    res.json({message:"Couldn't create your user"});
   }
 }
