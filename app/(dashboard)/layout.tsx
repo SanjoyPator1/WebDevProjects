@@ -5,6 +5,7 @@ import Sidebar from "@/components/Sidebar/Sidebar";
 import { PRIMARY_DISTANCE } from "@/lib/constants";
 import { bodyFont } from "@/lib/fonts";
 import Router from "next/router"
+import ShopSidebar from "@/components/Sidebar/SidebarCustom";
 
 const glassStyle: React.CSSProperties = {
   height:"100%",
@@ -22,10 +23,11 @@ export default function DashboardRootLayout({ children }: {
       <head />
       <body>
       <div className="row-flex-container" style={{height:"100%"}}>
-            <div className="">
+            <div className="sidebar-layout-container">
               <Sidebar />
+              {/* <ShopSidebar/> */}
             </div>
-            <div className="" style={{flex:1,padding:PRIMARY_DISTANCE, height:"100%", overflow:"auto"}}>
+            <div className="main-page-container" style={{flex:1, height:"100%", overflow:"auto"}}>
               <main className={bodyFont.className} style={{height:"100%"}}>{children}</main>
             </div>
         </div>

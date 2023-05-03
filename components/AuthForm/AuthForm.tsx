@@ -55,6 +55,10 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
     status : false,
     message: ""
   });
+  const [passwordError, setPasswordError] = useState({
+    status : false,
+    message: ""
+  });
 
   const router = useRouter();
 
@@ -66,6 +70,10 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
 
       try {
         if (mode === "register") {
+          if(formState.password.length<6){
+            setPasswordError({status:true,message:"Please enter a strong password"})
+            return
+          }
           res =  await register(formState);
         } else {
           res = await signin(formState);
@@ -142,8 +150,8 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
                 } />
             </div>
             <div className="">
-              <TextField variant="outlined" size="small" fullWidth required type="password" id="password" label="Password" error = {error.status}
-                  helperText= {error.message}  value={formState.password} onChange={(e) =>
+              <TextField variant="outlined" size="small" fullWidth required type="password" id="password" label="Password" error = {passwordError.status}
+                  helperText= {passwordError.message}  value={formState.password} onChange={(e) =>
                   setFormState((s) => ({ ...s, password: e.target.value }))
                 } />
             </div>

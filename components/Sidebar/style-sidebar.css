@@ -1,0 +1,58 @@
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.card-props{
+    width: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.hide-container {
+    left: -200px;
+}
+
+.sidebar__toggle {
+  position: absolute;
+  cursor: pointer;
+  right: -14px;
+  top: 9px;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #f6c64f;
+  background-color: #f6c64f;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar__toggle.rotate {
+    right: -29px;
+  transform: rotate(180deg);
+}
+
+.sidebar__toggle-icon {
+  color: #000;
+  text-align: center;
+  font-size: 18px;
+}
+
+.sidebar__logo {
+  cursor: pointer;
+  transition-duration: 500ms;
+  height: 40px;
+}
+
+.sidebar__logo.rotate {
+  transform: rotate(360deg);
+}
+
+/* small screen size only */
+@media (max-width: 768px) {
+}
