@@ -12,8 +12,8 @@ export default function AuthRootLayout({ children }: {
     return (
       <html lang="en" className="rainbow-mesh">
         <head />
-        <body className="" style={{padding:"1.5rem"}}>
-          <GlassPane className="" styles={glassStyle} >
+        <body className="pure-center" style={{padding:"1.5rem"}}>
+          <GlassPane className="medium-container" styles={glassStyle} >
             {children}
           </GlassPane>
         </body>

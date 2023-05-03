@@ -27,7 +27,7 @@ interface formValuesModel {
 const registerContent: formContentModel = {
   linkUrl: "/signin",
   linkLabel: "Already have an account?",
-  linkText:"Sign In",
+  linkText:"Log In",
   header: "Create a new Account",
   subheader: "Just a few things to get started",
   buttonText: "Register",
@@ -62,23 +62,18 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
     async (e: any) => {
       e.preventDefault();
 
+      let res= null;
+
       try {
         if (mode === "register") {
-          const res = await register(formState);
-          if(res.status===401 || 400){
-            setError({status:true, message: res.message})
-          }
+          res =  await register(formState);
         } else {
-          console.log("signin button pressed")
-          const res = await signin(formState);
-          if(res.status===401 || 400){
-            setError({status:true, message: res.message})
-          }
+          res = await signin(formState);
         }
         //after successful register - redirect to /home dashboard
         router.replace("/home");
-      } catch (e) {
-        setError({status:true,message: `Could not ${mode}`});
+      } catch (e:{message:string}) {
+        setError({status:true,message: e.message});
       } finally {
         setFormState({ ...initial });
       }
@@ -93,13 +88,9 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
 
   const content = mode === "register" ? registerContent : signinContent;
 
-  const cardStyle: React.CSSProperties = {
-    height:"85%",
-    minWidth:"30%",
-  };
 
   return (
-    <Card styles={cardStyle}>
+    <div>
       <div className="column-flex-container" style={{padding:"1.5rem", gap:"2rem", height:"100%"}}>
         <div className="column-flex-container text-center" style={{gap:"0.2rem"}}>
           <h1 className="text-3xl mb-2">{content.header}</h1>
@@ -177,7 +168,7 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
                 </Link>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 

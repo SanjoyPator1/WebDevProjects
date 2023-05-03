@@ -30,7 +30,8 @@ export default async function register(
       console.log("user created in db ",user)
     } catch (error) {
       console.error("Error creating user:", error);
-      throw error;
+      res.status(400);
+      res.json({message:"Something went wrong creating user"});
     }
 
     // console.log("prisma user created successfully", user)
@@ -49,7 +50,7 @@ export default async function register(
     );
     console.log("jwt cookie saved successfully")
     res.status(201);
-    res.json({});
+    res.json({message: "User created successfully"});
   } else {
     res.status(400);
     res.json({message:"Couldn't create your user"});

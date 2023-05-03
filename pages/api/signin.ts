@@ -25,17 +25,19 @@ export default async function signin(
     result = await db({ text: query, params: values });
     user = result.rows[0];
   } catch (error) {
-    throw error;
+    //401 status code : unauthorized
+    res.status(401);
+    res.json({message:"Something went wrong while getting user" });
   }
 
     if (!user) {
       //401 status code : unauthorized
       res.status(401);
-      res.json({ error: "Invalid login", message:"User not found" });
+      res.json({ message:"User not found" });
       return;
     }
 
-    const isUser = await comparePasswords(req.body.password, user.password);
+    const isUser = user && await comparePasswords(req.body.password, user.password);
 
     if (isUser) {
       const jwt = await createJWT(user);
@@ -54,7 +56,7 @@ export default async function signin(
     } else {
       // 401 status code : unauthorized
       res.status(401);
-      res.json({ error: "Invalid login", message:"Invalid credentials" });
+      res.json({ message:"Invalid passwords" });
     }
   } else {
     res.status(400);
