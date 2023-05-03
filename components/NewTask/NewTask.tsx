@@ -71,13 +71,12 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
         await updateTask(taskId, name, description, status, due);
       }
 
-      
       startTransition(() => {
         router.refresh();
       });
-      
+
       setIsFetching(false);
-      
+
       //reset all fields
       setStatus(TASK_STATUS.NOT_STARTED);
       setName("");
@@ -154,7 +153,7 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
         <form
           className="new-project-form"
           onSubmit={handleSubmit}
-          style={{ opacity: !isMutating ? 1 : 0.7,gap:SECONDARY_DISTANCE }}
+          style={{ opacity: !isMutating ? 1 : 0.7, gap: SECONDARY_DISTANCE }}
         >
           <TextField
             variant="outlined"
@@ -171,6 +170,8 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
             fullWidth
             className="new-task-input"
             label="Description"
+            multiline
+            rows={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             disabled={isPending}

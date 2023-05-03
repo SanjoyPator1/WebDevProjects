@@ -16,6 +16,8 @@ import clsx from "clsx";
 
 //get project data
 const getProjectData = async () => {
+  let projects : ProjectWithTaskModel[]| null= null;
+  let projectIds : string[] | null = null;
   const user = await getUserFromCookie(cookies());
   const query = `
       SELECT * FROM projects
@@ -25,24 +27,27 @@ const getProjectData = async () => {
   // console.log("values", values);
   const projectsResult  = await db({ text: query, params: values });
   
-  const projectIds = projectsResult.rows.map((project : ProjectWithTaskModel) => project.id);
-  // console.log("projectsIDs", projectIds);
-  const tasksQuery = `
-  SELECT * FROM task
-  WHERE project_id IN (${projectIds.map((_, i) => `$${i + 1}`).join(', ')})
-  `;
-  const tasksValues = projectIds;
+  projectIds = projectsResult.rows.map((project : ProjectWithTaskModel) => project.id);
+  console.log("projectsIDs", projectIds);
+  if(projectIds && projectIds.length > 0){
+    console.log("getting task details for all project")
+    const tasksQuery = `
+    SELECT * FROM task
+    WHERE project_id IN (${projectIds.map((_, i) => `$${i + 1}`).join(', ')})
+    `;
 
-  const tasksResult = await db({ text: tasksQuery, params: tasksValues });
+    const tasksValues = projectIds;
 
-    const projects = projectsResult.rows.map((project: ProjectWithTaskModel) => {
+    const tasksResult = await db({ text: tasksQuery, params: tasksValues });
+
+    projects = projectsResult.rows.map((project: ProjectWithTaskModel) => {
       const tasks = tasksResult.rows.filter((task:TaskModel) => task.project_id === project.id);
       return {
         ...project,
         tasks,
       };
     });
-
+  }
     return projects;
 
 };
@@ -54,23 +59,23 @@ const HomePage = async () => {
   // console.log("Task of a project ", projectData[0].tasks);
 
   return (
-    <div className="column-flex-container" style={{ gap: PRIMARY_DISTANCE }}>
+    <div className="column-flex-container" style={{ gap: PRIMARY_DISTANCE,height:"100%" }}>
 
       {/* Greetings JSX */}
-      <div style={{height:"150px"}}>
+      <div style={{height:"18%"}}>
         <Suspense fallback={<Skeleton classNameProps="medium-container"/>}>
         <Greetings classNameProps={clsx("medium-container", "primary-border-radius")}/>
         </Suspense>
       </div>
 
       {/* All Projects Card */}
-      <GlassPane className={clsx("primary-border-radius")} styles={{padding:SECONDARY_DISTANCE, flex:1}}>
-        <div className="column-flex-container" >
+      <GlassPane className={clsx("primary-border-radius")} styles={{padding:SECONDARY_DISTANCE, height:"78%"}}>
+        <div className="column-flex-container" style={{height:"100%"}}>
             <div className="new-project-container" style={{marginRight:SECONDARY_DISTANCE}}>
               <NewProject mode="create" />
             </div>
 
-            <div className="card-row-flex-container" style={{gap:PRIMARY_DISTANCE, justifyContent:"space-between", padding:SECONDARY_DISTANCE, maxHeight:"600px", overflow:"auto"}}>
+            <div className="card-row-flex-container" style={{overflow:"auto"}}>
               {projectData && projectData.map((project : ProjectWithTaskModel) => (
                 <div className="card-container" style={{}} key={project.id}>
                   <Link style={{textDecoration:"none"}} href={`/project/${project.id}`}>

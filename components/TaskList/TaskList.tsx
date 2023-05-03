@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { BLUE_COLOR, DARK_COLOR, GREEN_COLOR, LIGHT_SHADE_COLOR, NORMAL_DISTANCE, RED_COLOR, SECONDARY_DISTANCE, TASK_STATUS } from "@/lib/constants";
+import { BLUE_COLOR, DARK_BLUE_COLOR, DARK_COLOR, DARK_GREEN_COLOR, DARK_RED_COLOR, GREEN_COLOR, LIGHT_SHADE_COLOR, NORMAL_DISTANCE, RED_COLOR, SECONDARY_DISTANCE, TASK_STATUS } from "@/lib/constants";
 // import Button from '@mui/material/Button';
 import { ProjectModel, ProjectWithTaskModel, TaskModel } from "@/model/databaseType";
 import "@/styles/global.css";
@@ -14,9 +14,9 @@ import NewProject from '../NewProject/NewProject';
 import Chip from '@mui/material/Chip';
 
 const statusChips = {
-  NOT_STARTED : <Chip  label="Not started" style={{backgroundColor: RED_COLOR, color:"black"}} />,
-  IN_PROGRESS : <Chip label="In progress" color="success" style={{backgroundColor: GREEN_COLOR, color:"black"}}/>,
-  COMPLETED : <Chip label="Completed" color="primary" style={{backgroundColor: BLUE_COLOR, color:"black"}}/> ,
+  NOT_STARTED : <Chip  label="Not started" style={{backgroundColor: RED_COLOR, fontWeight:"bold", color: DARK_RED_COLOR}} />,
+  IN_PROGRESS : <Chip label="In progress" color="success" style={{backgroundColor: GREEN_COLOR,fontWeight:"bold", color:DARK_GREEN_COLOR}}/>,
+  COMPLETED : <Chip label="Completed" color="primary" style={{backgroundColor: BLUE_COLOR,fontWeight:"bold", color: DARK_BLUE_COLOR}}/> ,
 }
 
 

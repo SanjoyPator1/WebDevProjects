@@ -24,7 +24,7 @@ const db = async ({ text, params }: Props) => {
   let client;
   try {
     client = await pool.connect(); // Acquire a client from the pool
-
+    console.log({text, params})
     const result = await client.query(text, params); // Execute the query
 
     return result;

@@ -24,7 +24,7 @@ const TaskCard = async ({projectData }: Props) => {
   return (
     <GlassPane
       className={clsx("column-flex-container")}
-      styles={{ gap: PRIMARY_DISTANCE, padding: SECONDARY_DISTANCE, minHeight:"86vh" }}
+      styles={{ gap: PRIMARY_DISTANCE, padding: SECONDARY_DISTANCE, height:"100%" }}
     >
       <div
         className={clsx("column-flex-container")}

@@ -11,8 +11,11 @@ export const TASK_STATUS = {
 
 export const DARK_COLOR = "#2E2B38";
 export const LIGHT_COLOR = "#E7EFF2";
-export const DARK_BLUE_COLOR = "#5E72EB";
+
 export const DARK_RED_COLOR = "#F55050";
-export const BLUE_COLOR = "#B7E3FF";
-export const RED_COLOR = "#FFA1B3";
-export const GREEN_COLOR = "#CBF5AF";
+export const DARK_BLUE_COLOR = "#5E72EB";
+export const DARK_GREEN_COLOR = "#538e15";
+
+export const RED_COLOR = "#ffbdc9";
+export const GREEN_COLOR = "#C9F9CD";
+export const BLUE_COLOR = "#C8EBF8";

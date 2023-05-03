@@ -3,10 +3,10 @@
   --secondary-border-radius: 0.4em;
   --primary-primary-distance:2rem;
   --primary-secondary-distance:1rem;
-  --title-size: 2.85rem;
-  --header-size: 30px;
-  --sub-header-size: 20px;
-  --body-size: 14px; 
+  --title-size: 2.5em;
+  --header-size: 1.6em;
+  --sub-header-size: 1em;
+  --body-size: 0.7em ;  
   --color-0:#5E72EB;
   --color-1: #4B92FF;
   --color-2: #B7E3FF;
@@ -14,6 +14,8 @@
   --color-blue: #B7E3FF;
   --color-red : #FFA1B3;
   --color-green: #CBF5AF;
+  --background-color: #D9DBDD;
+  --card-color:#F9F8FB;
 }
 
 * {
@@ -50,7 +52,7 @@
   }
   
   .candy-mesh {
-    background-color: #ffffff;
+    background-color: var(--background-color);
   }
   /* .candy-mesh {
     background-color: #fff;
@@ -76,7 +78,7 @@
     padding: 10px;
     padding-top: 4px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
-    background-color: #F6F6F6;
+    background-color: var(--card-color);
   }
 
 .column-flex-container{
@@ -98,12 +100,14 @@
 .card-row-flex-container{
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-between;
-  gap: 1em;
+  justify-content: flex-start;
+  gap: 2%;
+  padding:1%
 }
 
 .card-container{
   width: 100%;
+  /* height: 50%; */
 }
 
 .card-row-flex-container::after {
@@ -225,12 +229,12 @@
 
   .card-container{
     /* min-width: fit-content; */
-    width: 60%;
+    width: 31.33%;
   }
   
   .card-row-flex-container::after {
     content: "";
-    width: 60%;
+    width: 31.33%;
   }
 
 }
@@ -255,12 +259,12 @@
 
   .card-container{
     /* min-width: fit-content; */
-    width: 30%;
+    width: 23.40%;
   }
   
   .card-row-flex-container::after {
     content: "";
-    width: 30%;
+    width: 23.40%;
   }
 
 }

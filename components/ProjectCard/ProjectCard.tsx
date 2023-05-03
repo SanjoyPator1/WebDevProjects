@@ -6,7 +6,6 @@ import "@/styles/global.css"
 import { ProjectWithTaskModel } from "@/model/databaseType";
 import { NORMAL_DISTANCE, PRIMARY_DISTANCE, SECONDARY_DISTANCE } from "@/lib/constants";
 import { bodyFont, headerFont } from "@/lib/fonts";
-import NewProject from "../NewProject/NewProject";
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-us", {

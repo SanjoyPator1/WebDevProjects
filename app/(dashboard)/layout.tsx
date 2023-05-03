@@ -21,7 +21,6 @@ export default function DashboardRootLayout({ children }: {
     <html lang="en"  className="candy-mesh">
       <head />
       <body>
-      <GlassPane className="" styles={glassStyle} >
       <div className="row-flex-container" style={{height:"100%"}}>
             <div className="">
               <Sidebar />
@@ -31,7 +30,7 @@ export default function DashboardRootLayout({ children }: {
             </div>
         </div>
         <div id="modal"></div>
-        </GlassPane>
+
       </body>
     </html>
   );

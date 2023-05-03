@@ -25,12 +25,19 @@ export const createJWT = (user) => {
 
 //validate JWT signature
 export const validateJWT = async (jwt) => {
-    const { payload } = await jwtVerify(
-        jwt,
-        new TextEncoder().encode(process.env.JWT_SECRET)
-    );
-
-    return payload.payload as any;
+    try{
+        const { payload } = await jwtVerify(
+            jwt,
+            new TextEncoder().encode(process.env.JWT_SECRET)
+        );
+    
+        return payload.payload as any;
+    } catch(e){
+        throw {
+            error: e,
+            message:"Validation failed"
+        }
+    }
 };
 
 //Getting the JWT from cookies:
@@ -47,7 +54,10 @@ export const getUserFromCookie = async (cookies) => {
       const result = await db({ text: query, params: values });
       user =  result.rows[0];
     } catch (error) {
-      throw error;
+      throw {
+        error: error,
+        message:"problem with getting user details"
+      };
     }
 
     return user;
