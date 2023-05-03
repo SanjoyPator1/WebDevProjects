@@ -47,7 +47,7 @@ const SidebarLink = ({ link, open }: Props) => {
       <div>
         <Icon size={40} className={clsx(isActive && "tab-active")} />
       </div>
-      <div className={clsx(open ? "show" : "hide", "sub-header-font", subheaderFont.className)} style={{height:"100%",color:isActive ?"white":"" }}>{link.label}</div>
+      <div className={clsx(open ? "show" : "hide", "sub-header-font", subheaderFont.className)} style={{margin:0,color:isActive ?"white":"" }}>{link.label}</div>
     </Link>
   );
 };

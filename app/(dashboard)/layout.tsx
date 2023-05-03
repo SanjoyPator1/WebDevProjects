@@ -22,12 +22,12 @@ export default function DashboardRootLayout({ children }: {
     <html lang="en"  className="candy-mesh">
       <head />
       <body>
-      <div className="row-flex-container" style={{height:"100%"}}>
+      <div className="row-flex-container main-page-container" style={{height:"100%"}}>
             <div className="sidebar-layout-container">
               <Sidebar />
               {/* <ShopSidebar/> */}
             </div>
-            <div className="main-page-container" style={{flex:1, height:"100%", overflow:"auto"}}>
+            <div className="" style={{flex:1, height:"100%", overflow:"auto"}}>
               <main className={bodyFont.className} style={{height:"100%"}}>{children}</main>
             </div>
         </div>

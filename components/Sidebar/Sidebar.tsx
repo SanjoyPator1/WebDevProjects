@@ -4,8 +4,9 @@ import Image from "next/image";
 import logo from "../../public/logo.png";
 import SidebarLink from "./SidebarLink";
 import { useState } from "react";
-import { MdArrowBackIosNew } from "react-icons/md";
+import { GiHamburgerMenu } from "react-icons/gi";
 import "./style-sidebar.css"
+import clsx from "clsx";
 
 const links = [
   { label: "Home", icon: "FiHome", link: "/home" },
@@ -27,12 +28,13 @@ const Sidebar = () => {
 
   return (
     <Card className={`column-flex-container sidebar-container card-props ${!open && "hide-container"}`} styles={{padding:0, paddingTop:"0.7em"}}>
+      <div className={clsx(open&&"emptyContainer")} onClick={()=>{setOpen(false)}}></div>
       {/* arrow controller */}
       <div
-        className={`sidebar__toggle ${!open ? "rotate" : ""}`}
+        className={`sidebar__toggle ${open ? "rotate" : ""}`}
         onClick={() => setOpen(!open)}
       >
-        <MdArrowBackIosNew className="sidebar__toggle-icon" />
+        <GiHamburgerMenu className="sidebar__toggle-icon"/>
       </div>
       {/* logo and name */}
       <div className="flex gap-x-4 items-center">

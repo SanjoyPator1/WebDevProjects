@@ -17,7 +17,7 @@ interface Props{
 const Greetings =async ({classNameProps}: Props ) => {
     const user = await getData();
     return (
-            <Card className={clsx("column-flex-container",classNameProps)} styles={{ padding:PRIMARY_DISTANCE, height:"100%"}}>
+            <Card className={clsx("column-flex-container",classNameProps)} styles={{ padding: "0.5em", height:"100%"}}>
               <div className="column-flex-container" style={{height:"100%", justifyContent:"space-around"}}>
                 <h1 className={clsx(greetingsFont.className,"title-font")}>
                   Hello, {user?.first_name}!
