@@ -157,25 +157,21 @@
 
 .title-font {
   font-size: var(--title-size);
-  font-family: var(--font-title);
   color: #333333;
 }
 
 .header-font {
   font-size: var(--header-size);
-  font-family: var(--font-header);
   color: #555555;
 }
 
 .sub-header-font {
   font-size: var(--sub-header-size);
-  font-family: var(--font-sub-header);
   color: #777777;
 }
 
 .body-font {
   font-size: var(--body-size);
-  font-family: var(--font-body);
   color: #999999;
 }
 

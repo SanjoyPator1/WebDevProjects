@@ -94,8 +94,8 @@ const AuthForm = ({ mode }: { mode: "register" | "signin" }) => {
   const content = mode === "register" ? registerContent : signinContent;
 
   const cardStyle: React.CSSProperties = {
-    height:"80%",
-    minWidth:"27%",
+    height:"85%",
+    minWidth:"30%",
   };
 
   return (
