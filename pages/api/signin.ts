@@ -52,7 +52,7 @@ export default async function signin(
         })
       );
       res.status(201);
-      res.json({});
+      res.json({data : user});
     } else {
       res.status(401);
       res.json({ error: "Invalid login" });

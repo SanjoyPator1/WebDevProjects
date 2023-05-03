@@ -4,6 +4,7 @@ import "@/styles/global.css"
 const SigninPage = () => {
   return (
     <div className='pure-center' style={{height:"100%"}}>
+      ENV : {JSON.stringify(process.env)}
       <AuthForm mode='signin' />
     </div>
   )
