@@ -29,19 +29,10 @@ const SidebarLink = ({ link}: Props) => {
     <Link
       href={link.link}
       className={clsx(
+        "sidebar-link-container",
         "tab-normal",
         isActive && "tab-active"
       )}
-      style={{
-        textDecoration: "none",
-        height:"7%",
-        width: "100%",
-        paddingBlock: "0.5em",
-        paddingInline: "1.9em",
-        display:"flex",
-        justifyContent: "space-between",
-        alignItems:"center"
-      }}
     >
       <div>
         <Icon size={40} className={clsx(isActive && "tab-active")} />

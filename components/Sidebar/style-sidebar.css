@@ -1,5 +1,3 @@
-
-
 /* .show {
   display: block;
 }
@@ -8,33 +6,33 @@
   display: none;
 } */
 
-.card-props{
-    width: var(--sidebar-width);
-    position: absolute;
-    top: 0;
-    left: 0;
-    transition: left 0.5s ease-in-out;
+.card-props {
+  width: var(--sidebar-width);
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: left 0.5s ease-in-out;
 }
 
 .hide-container {
-    left: calc(var(--sidebar-width)*-1);
+  left: calc(var(--sidebar-width) * -1);
 }
 
-.emptyContainer{
+.emptyContainer {
   background-color: rgba(0, 0, 0, 0.473);
   position: absolute;
-  top:0;
-  left:var(--sidebar-width);
-  height:100vh;
+  top: 0;
+  left: var(--sidebar-width);
+  height: 100vh;
   z-index: 5;
 }
 
-.emptyContainer.close{
+.emptyContainer.close {
   width: 0%;
 }
 
-.emptyContainer.open{
-  width:calc(100vw - var(--sidebar-width));
+.emptyContainer.open {
+  width: calc(100vw - var(--sidebar-width));
   animation: expandAnimation 0.5s ease-in-out;
 }
 
@@ -47,25 +45,23 @@
   }
 }
 
-
-.logo-container{
+.logo-container {
   position: relative;
   z-index: 6;
-
 }
 
-.navbar{
+.navbar {
   background-color: rgb(255, 255, 255);
-  height:var(--navbar-height);
+  height: var(--navbar-height);
   position: absolute;
   z-index: 4;
 }
 
-.navbar-open-width{
+.navbar-open-width {
   width: 100vw;
 }
 
-.navbar-close-width{
+.navbar-close-width {
   width: calc(100vw);
 }
 
@@ -78,16 +74,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: right 0.5s ease-in-out; 
+  transition: right 0.5s ease-in-out;
 }
 
 .sidebar__toggle.close {
-  background-color: #5E72EB;
+  background-color: #5e72eb;
   right: calc(100% - var(--navbar-height));
 }
 
 .sidebar__toggle.open {
-    right: calc(100vw - var(--sidebar-width));
+  right: calc(100vw - var(--sidebar-width));
 }
 
 .sidebar__toggle-icon {
@@ -106,6 +102,31 @@
   transform: rotate(360deg);
 }
 
-/* small screen size only */
-@media (max-width: 768px) {
+.sidebar-link-container {
+  text-decoration: none;
+  height: 10%;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-block: 0.7em;
+  padding-inline: 1em;
+  gap: 0.5em;
+}
+
+@media (min-width: 600px) {
+  .sidebar-link-container {
+    padding-block: 1em;
+    padding-inline: 1.5em;
+    gap: 2em;
+  }
+}
+
+@media (min-width: 800px) {
+  .sidebar-link-container {
+    padding-block: 1em;
+    padding-inline: 1.9em;
+    gap: 1em;
+  }
 }

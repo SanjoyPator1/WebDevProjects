@@ -7,7 +7,6 @@
   --header-size: 1.6em;
   --sub-header-size: 1em;
   --navbar-height: 40px;
-  --sidebar-width: 50vw;
   --body-size: 0.8em;
   --color-0: #5e72eb;
   --color-1: #4b92ff;
@@ -238,7 +237,18 @@ body {
   height: 78%;
 }
 
+@media (max-width: 600px) {
+  :root {
+    --sidebar-width: 50vw;
+  }
+}
+
 @media (min-width: 600px) {
+
+  :root {
+    --sidebar-width: 40vw;
+  }
+
   .medium-container {
     width: 80%;
   }
@@ -305,6 +315,6 @@ body {
 
   /* sidebar */
   :root {
-    --sidebar-width: 25vw;
+    --sidebar-width: 20vw;
   }
 }

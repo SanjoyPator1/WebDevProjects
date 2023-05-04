@@ -15,8 +15,8 @@ import Chip from '@mui/material/Chip';
 
 const statusChips = {
   NOT_STARTED : <Chip  label="Not started" style={{backgroundColor: RED_COLOR, fontWeight:"bold", color: DARK_RED_COLOR}} />,
-  IN_PROGRESS : <Chip label="In progress" color="success" style={{backgroundColor: GREEN_COLOR,fontWeight:"bold", color:DARK_GREEN_COLOR}}/>,
-  COMPLETED : <Chip label="Completed" color="primary" style={{backgroundColor: BLUE_COLOR,fontWeight:"bold", color: DARK_BLUE_COLOR}}/> ,
+  IN_PROGRESS : <Chip label="In progress" color="success" style={{backgroundColor: BLUE_COLOR,fontWeight:"bold", color:DARK_BLUE_COLOR }}/>,
+  COMPLETED : <Chip label="Completed" color="primary" style={{backgroundColor: GREEN_COLOR,fontWeight:"bold", color: DARK_GREEN_COLOR}}/> ,
 }
 
 

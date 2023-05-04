@@ -23,6 +23,7 @@ const getProjectData = async (projectId: string) => {
       SELECT *
       FROM projects
       WHERE id = $1 AND owner_id = $2
+      ORDER BY updated_at DESC
     `;
     const values = [projectId, user.id];
 
@@ -40,7 +41,9 @@ const getProjectData = async (projectId: string) => {
     console.log("getting task details for a project data")
     const tasksQuery = `
     SELECT * FROM task
-    WHERE project_id = $1`;
+    WHERE project_id = $1
+    ORDER BY updated_at DESC
+    `;
 
     const tasksValues = [projectId];
 
