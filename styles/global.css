@@ -164,6 +164,10 @@ body {
   width: 100%;
 }
 
+.modal-container{
+  width:90%;
+}
+
 .title-font {
   font-size: var(--title-size);
   color: #333333;
@@ -257,6 +261,10 @@ body {
     width: 60%;
   }
 
+  .modal-container{
+    width:70%;
+  }
+
   .card-container {
     /* min-width: fit-content; */
     width: 31.33%;
@@ -279,6 +287,10 @@ body {
 
   .small-container {
     width: 30%;
+  }
+
+  .modal-container{
+    width:30%;
   }
 
   .extra-small-container {

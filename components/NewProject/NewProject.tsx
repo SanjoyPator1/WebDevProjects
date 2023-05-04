@@ -135,7 +135,7 @@ const NewProject = ({ mode, projectDataProp }: Props) => {
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         overlayClassName="new-project-overlay"
-        className="new-project-modal small-container"
+        className="new-project-modal modal-container"
       >
         <h1
           style={{ textAlign: "left" }}
