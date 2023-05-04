@@ -37,10 +37,10 @@ const TaskList = ({projectData}: Props) => {
   const data = projectData.tasks
 
   return (
-    <div className={clsx("column-flex-container")} >
+    <div className={clsx("column-flex-container")} style={{height:"100%"}} >
         <div
           className={clsx("row-flex-container")}
-          style={{ justifyContent: "space-between", alignItems: "center", marginBottom:SECONDARY_DISTANCE }}
+          style={{ justifyContent: "space-between", alignItems: "center", marginBottom:"2%", height:"8%" }}
         >
           <p className={clsx("sub-header-font", subheaderFont.className)}>
             Task List
@@ -53,7 +53,7 @@ const TaskList = ({projectData}: Props) => {
             </div>
         </div>
         {/* header */}
-        <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between",backgroundColor:DARK_COLOR}}>
+        <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between",backgroundColor:DARK_COLOR, height:"15%"}}>
             <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
                 NAME
             </div>
@@ -74,7 +74,7 @@ const TaskList = ({projectData}: Props) => {
             </div>
         </Card>
         {data && data.length ? (
-          <div className={clsx("column-flex-container")} style={{gap:NORMAL_DISTANCE}}>
+          <div className={clsx("column-flex-container")} style={{gap:NORMAL_DISTANCE, height:"75%", overflow:"auto", flexWrap:"nowrap"}}>
             {data.map((task: TaskModel, index: number) => (
               <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between"}} key={index}>
                 <div className={clsx("extra-small-container")}>

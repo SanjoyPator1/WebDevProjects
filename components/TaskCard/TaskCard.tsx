@@ -24,11 +24,11 @@ const TaskCard = async ({projectData }: Props) => {
   return (
     <GlassPane
       className={clsx("column-flex-container")}
-      styles={{ gap: PRIMARY_DISTANCE, padding: SECONDARY_DISTANCE, height:"100%" }}
+      styles={{ gap: "2%", padding: SECONDARY_DISTANCE, height:"100%" }}
     >
       <div
-        className={clsx("column-flex-container")}
-        style={{ justifyContent: "space-between", alignItems: "center", gap:NORMAL_DISTANCE }}
+        className={clsx("column-flex-container ","project-details-container")}
+        style={{justifyContent: "space-between", alignItems: "center", gap:NORMAL_DISTANCE }}
       >
         {/* project name and edit project button */}
         <div className={clsx("row-flex-container")}
@@ -50,7 +50,10 @@ const TaskCard = async ({projectData }: Props) => {
             </div>
         </div>
       </div>
-      <TaskList projectData={projectData}/>
+      {/* task list for this project */}
+      <div className="task-list-container">
+        <TaskList projectData={projectData}/>
+      </div>
     </GlassPane>
   );
 };

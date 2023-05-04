@@ -9,30 +9,45 @@
 }
 
 .card-props{
-    width: 200px;
+    width: var(--sidebar-width);
     position: absolute;
     top: 0;
     left: 0;
 }
 
 .hide-container {
-    left: -200px;
+    left: calc(var(--sidebar-width)*-1);
 }
 
 .emptyContainer{
   background-color: rgba(0, 0, 0, 0.473);
   position: absolute;
   top:0;
-  left:200px;
+  left:var(--sidebar-width);
   height:100vh;
-  width: 100vw;
+  width: calc(100vw - var(--sidebar-width));
   z-index: 5;
+}
+
+.logo-container{
+  position: relative;
+  z-index: 6;
+
 }
 
 .navbar{
   background-color: rgb(255, 255, 255);
-  width: calc(130vw);
   height:var(--navbar-height);
+  position: absolute;
+  z-index: 4;
+}
+
+.navbar-open-width{
+  width: 100vw;
+}
+
+.navbar-close-width{
+  width: calc(100vw);
 }
 
 .sidebar__toggle {
@@ -45,16 +60,17 @@
   padding: 5px;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .sidebar__toggle.rotate {
-    left: 160px;
+    left: var(--navbar-width);
 }
 
 .sidebar__toggle-icon {
   color: #ffffff;
   text-align: center;
-  font-size: 18px;
+  font-size: 23px;
 }
 
 .sidebar__logo {

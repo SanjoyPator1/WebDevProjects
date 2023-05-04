@@ -21,7 +21,7 @@ export default function DashboardRootLayout({ children }: {
     <html lang="en"  className="candy-mesh">
       <head />
       <body>
-      <div className="row-flex-container " style={{height:"100%"}}>
+      <div className="row-flex-container " style={{height:"100%", width:"100vw", overflow:"hidden"}}>
             <div className="sidebar-layout-container">
               <Sidebar />
               {/* <ShopSidebar/> */}

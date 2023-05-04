@@ -5,6 +5,7 @@ import logo from "../../public/logo.png";
 import SidebarLink from "./SidebarLink";
 import { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { GrClose } from "react-icons/gr";
 import "./style-sidebar.css";
 import clsx from "clsx";
 
@@ -29,12 +30,15 @@ const Sidebar = () => {
   return (
     <>
       {/* arrow controller */}
-      <div className="navbar">
+      <div className={clsx("navbar", open ? "navbar-open-width":"navbar-close-width")}>
         <div
           className={`sidebar__toggle ${open ? "rotate" : ""}`}
           onClick={() => setOpen(!open)}
         >
-          <GiHamburgerMenu className="sidebar__toggle-icon" />
+          {open ? 
+          <GrClose className="sidebar__toggle-icon" style={{backgroundColor:"transparent", color:"red"}}/> 
+          : <GiHamburgerMenu className="sidebar__toggle-icon" />}
+          
         </div>
       </div>
       <Card
