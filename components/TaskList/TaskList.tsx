@@ -74,7 +74,7 @@ const TaskList = ({projectData}: Props) => {
             </div>
         </Card>
         {data && data.length ? (
-          <div className={clsx("column-flex-container")} style={{gap:NORMAL_DISTANCE, height:"75%", overflow:"auto", flexWrap:"nowrap"}}>
+          <div className={clsx("column-flex-container")} style={{gap:NORMAL_DISTANCE, height:"72%", overflow:"auto", flexWrap:"nowrap"}}>
             {data.map((task: TaskModel, index: number) => (
               <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between"}} key={index}>
                 <div className={clsx("extra-small-container")}>
