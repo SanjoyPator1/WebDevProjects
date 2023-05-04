@@ -26,7 +26,7 @@ export default function DashboardRootLayout({ children }: {
               <Sidebar />
               {/* <ShopSidebar/> */}
             </div>
-            <div className="" style={{height:"100%",width:"100%", overflow:"auto"}}>
+            <div className="" style={{height:"100%",width:"100%", overflow:"hidden"}}>
               <main className={clsx(bodyFont.className,"main-page-container")} style={{height:"100%"}}>{children}</main>
             </div>
         </div>
