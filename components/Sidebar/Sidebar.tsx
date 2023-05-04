@@ -32,7 +32,7 @@ const Sidebar = () => {
       {/* arrow controller */}
       <div className={clsx("navbar", open ? "navbar-open-width":"navbar-close-width")}>
         <div
-          className={`sidebar__toggle ${open ? "rotate" : ""}`}
+          className={`sidebar__toggle ${open ? "open" : "close"}`}
           onClick={() => setOpen(!open)}
         >
           {open ? 
@@ -48,7 +48,7 @@ const Sidebar = () => {
         styles={{ padding: 0 }}
       >
         <div
-          className={clsx(open && "emptyContainer")}
+          className={clsx("emptyContainer",open ? "open" : "close")}
           onClick={() => {
             setOpen(false);
           }}
@@ -65,7 +65,7 @@ const Sidebar = () => {
           </div>
         </div>
         {links.map((link, index) => (
-          <SidebarLink link={link} key={index} open={open} />
+          <SidebarLink link={link} key={index} />
         ))}
       </Card>
     </>

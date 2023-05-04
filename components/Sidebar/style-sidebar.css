@@ -1,18 +1,19 @@
 
 
-.show {
+/* .show {
   display: block;
 }
 
 .hide {
   display: none;
-}
+} */
 
 .card-props{
     width: var(--sidebar-width);
     position: absolute;
     top: 0;
     left: 0;
+    transition: left 0.5s ease-in-out;
 }
 
 .hide-container {
@@ -25,9 +26,27 @@
   top:0;
   left:var(--sidebar-width);
   height:100vh;
-  width: calc(100vw - var(--sidebar-width));
   z-index: 5;
 }
+
+.emptyContainer.close{
+  width: 0%;
+}
+
+.emptyContainer.open{
+  width: 100%;
+  animation: expandAnimation 0.5s ease-in-out;
+}
+
+@keyframes expandAnimation {
+  0% {
+    width: 100vw;
+  }
+  100% {
+    width: calc(100vw - var(--sidebar-width));
+  }
+}
+
 
 .logo-container{
   position: relative;
@@ -53,18 +72,22 @@
 .sidebar__toggle {
   position: absolute;
   cursor: pointer;
-  left: 0;
   width: var(--navbar-height);
   height: var(--navbar-height);
-  background-color: #5E72EB;
   padding: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: right 0.5s ease-in-out; 
 }
 
-.sidebar__toggle.rotate {
-    left: var(--navbar-width);
+.sidebar__toggle.close {
+  background-color: #5E72EB;
+  right: calc(100% - var(--navbar-height));
+}
+
+.sidebar__toggle.open {
+    right: var(--sidebar-width);
 }
 
 .sidebar__toggle-icon {

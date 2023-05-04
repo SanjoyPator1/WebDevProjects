@@ -14,10 +14,9 @@ interface Props {
     icon: string;
     link: string;
   };
-  open: boolean;
 }
 
-const SidebarLink = ({ link, open }: Props) => {
+const SidebarLink = ({ link}: Props) => {
   const pathname = usePathname();
   let isActive = false;
 
@@ -40,14 +39,14 @@ const SidebarLink = ({ link, open }: Props) => {
         paddingBlock: "0.5em",
         paddingInline: "1.9em",
         display:"flex",
-        justifyContent: open ? "space-between" : "center",
+        justifyContent: "space-between",
         alignItems:"center"
       }}
     >
       <div>
         <Icon size={40} className={clsx(isActive && "tab-active")} />
       </div>
-      <div className={clsx(open ? "show" : "hide", "sub-header-font", subheaderFont.className)} style={{margin:0,color:isActive ?"white":"" }}>{link.label}</div>
+      <div className={clsx("sub-header-font", subheaderFont.className)} style={{margin:0,color:isActive ?"white":"" }}>{link.label}</div>
     </Link>
   );
 };

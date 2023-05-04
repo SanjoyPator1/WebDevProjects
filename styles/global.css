@@ -7,7 +7,7 @@
   --header-size: 1.6em;
   --sub-header-size: 1em;
   --navbar-height: 40px;
-  --sidebar-width: 25vw;
+  --sidebar-width: 50vw;
   --body-size: 0.8em;
   --color-0: #5e72eb;
   --color-1: #4b92ff;
@@ -301,5 +301,10 @@ body {
 
   .task-list-container {
     height: 88%;
+  }
+
+  /* sidebar */
+  :root {
+    --sidebar-width: 25vw;
   }
 }
