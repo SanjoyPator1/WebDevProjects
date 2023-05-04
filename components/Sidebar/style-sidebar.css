@@ -34,7 +34,7 @@
 }
 
 .emptyContainer.open{
-  width: 100%;
+  width:calc(100vw - var(--sidebar-width));
   animation: expandAnimation 0.5s ease-in-out;
 }
 
@@ -87,7 +87,7 @@
 }
 
 .sidebar__toggle.open {
-    right: var(--sidebar-width);
+    right: calc(100vw - var(--sidebar-width));
 }
 
 .sidebar__toggle-icon {
