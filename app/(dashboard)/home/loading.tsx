@@ -14,7 +14,7 @@ export default function HomePageLoader() {
   const divArray = Array.from({ length: divCount }, (_, index) => index);
 
   return (
-    <div className="column-flex-container" style={{ gap: PRIMARY_DISTANCE, height:"100%" }}>
+    <div className="column-flex-container" style={{ gap: "2%", height:"100%" }}>
 
     {/* Greetings JSX */}
     <div style={{height:"18%"}}>
@@ -22,7 +22,7 @@ export default function HomePageLoader() {
     </div>
 
     {/* All Projects Card */}
-    <GlassPane className={clsx("primary-border-radius")} styles={{padding:SECONDARY_DISTANCE, height:"75%"}}>
+    <GlassPane className={clsx("primary-border-radius")} styles={{padding:SECONDARY_DISTANCE, height:"80%"}}>
       <div className="column-flex-container" style={{height:"100%"}}>
           <div style={{display:"flex",marginRight:SECONDARY_DISTANCE, justifyContent:"flex-end"}}>
             <div className="rectangle " style={{width:"155px"}}></div>

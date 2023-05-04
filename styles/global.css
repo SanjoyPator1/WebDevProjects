@@ -6,6 +6,7 @@
   --title-size: 2em;
   --header-size: 1.6em;
   --sub-header-size: 1em;
+  --navbar-height:40px;
   --body-size: 0.8em ;  
   --color-0:#5E72EB;
   --color-1: #4B92FF;
@@ -119,6 +120,7 @@
   text-align: center;
 }
 
+
 .sidebar-layout-container{
   width: 0;
   position: absolute;
@@ -223,8 +225,9 @@
 }
 
 .main-page-container{
-  padding-top:2.5em;
-  padding-inline: 0.2em;
+  padding-top: calc(var(--navbar-height) + 10px);
+  padding-bottom: 10px;
+  padding-inline: 10px;
 }
 
 @media(min-width: 600px){
@@ -247,7 +250,6 @@
   }
 
   .main-page-container{
-    padding-block: 1.2em;
     padding-inline: 0.5em;
   }
 
@@ -282,7 +284,6 @@
   }
 
   .main-page-container{
-    padding-block: 1.5em;
     padding-inline: 1em;
   }
 

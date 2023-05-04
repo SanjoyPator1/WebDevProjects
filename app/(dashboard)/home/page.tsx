@@ -59,7 +59,7 @@ const HomePage = async () => {
   // console.log("Task of a project ", projectData[0].tasks);
 
   return (
-    <div className="column-flex-container" style={{ gap: PRIMARY_DISTANCE,height:"100%" }}>
+    <div className="column-flex-container" style={{ gap: "2%",height:"100%" }}>
 
       {/* Greetings JSX */}
       <div style={{height:"18%"}}>
@@ -69,13 +69,13 @@ const HomePage = async () => {
       </div>
 
       {/* All Projects Card */}
-      <GlassPane className={clsx("primary-border-radius", "main-page-container")} styles={{padding:SECONDARY_DISTANCE, height:"75%"}}>
+      <GlassPane className={clsx("primary-border-radius", "main-page-container")} styles={{padding:SECONDARY_DISTANCE, height:"80%"}}>
         <div className="column-flex-container" style={{height:"100%"}}>
             <div className="new-project-container" style={{marginRight:SECONDARY_DISTANCE}}>
               <NewProject mode="create" />
             </div>
 
-            <div className="card-row-flex-container" style={{overflow:"auto"}}>
+            <div className="card-row-flex-container" style={{maxHeight:"90%",overflow:"auto"}}>
               {projectData && projectData.map((project : ProjectWithTaskModel) => (
                 <div className="card-container" style={{}} key={project.id}>
                   <Link style={{textDecoration:"none"}} href={`/project/${project.id}`}>

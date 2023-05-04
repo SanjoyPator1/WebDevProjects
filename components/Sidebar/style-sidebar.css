@@ -1,3 +1,5 @@
+
+
 .show {
   display: block;
 }
@@ -27,24 +29,26 @@
   z-index: 5;
 }
 
+.navbar{
+  background-color: rgb(255, 255, 255);
+  width: calc(130vw);
+  height:var(--navbar-height);
+}
+
 .sidebar__toggle {
   position: absolute;
   cursor: pointer;
-  right: -14px;
-  top: -32px;
-  right: -33px;
-  width: 40px;
-  height: 40px;
+  left: 0;
+  width: var(--navbar-height);
+  height: var(--navbar-height);
   background-color: #5E72EB;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
   padding: 5px;
   display: flex;
   justify-content: center;
 }
 
 .sidebar__toggle.rotate {
-    right: 0;
+    left: 160px;
 }
 
 .sidebar__toggle-icon {
