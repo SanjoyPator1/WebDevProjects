@@ -70,7 +70,7 @@ const HomePage = async () => {
 
       {/* All Projects Card */}
       <GlassPane className={clsx("primary-border-radius", "task-list-container")} styles={{padding:SECONDARY_DISTANCE, width:"100%"}}>
-        <div className="column-flex-container" style={{height:"100%"}}>
+        <div className="column-flex-container" style={{height:"100%", width:"100%", gap:"1em"}}>
             <div className="new-project-container">
               <NewProject mode="create" />
             </div>

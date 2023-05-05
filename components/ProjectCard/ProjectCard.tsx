@@ -30,9 +30,9 @@ const ProjectCard = ({ project }: Props) => {
 
   return (
     <Card className={clsx("project-card","secondary-border-radius")}  styles={{display:"flex", flexFlow:"column wrap",gap:PRIMARY_DISTANCE, padding: FORM_GAP, height:"100%", justifyContent:"space-between"}}>
-      <div className="column-flex-container">
+      <div className="column-flex-container" style={{width:"100%"}}>
         <span className={clsx("body-font",bodyFont.className)}> <p style={{fontWeight:"bold", fontSize:"16px", display:"inline"}}>Created :</p> {formatDate(project.created_at)}</span>
-        <span className={clsx("header-font",headerFont.className)} >{project.project_name}</span>
+        <span className={clsx("header-font",headerFont.className,"text-word-wrap")} >{project.project_name}</span>
       </div>
       <div className="column-flex-container" style={{gap:NORMAL_DISTANCE}}>
         <span className={clsx("body-font",bodyFont.className)}>

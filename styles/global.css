@@ -9,7 +9,6 @@
   --body-size: 0.87rem;
   --navbar-height: 40px;
   --navbar-bottom-margin: 10px;
-  --top-content-height:10%;
   --padding : 2%;
   --color-0: #5e72eb;
   --color-1: #4b92ff;
@@ -29,7 +28,7 @@
   --dark-green-color:#538e15;
   --dark-blue-color:#5E72EB;
 
-  --full-screen-height:  calc(100% + var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height) + 2%);
+  --full-screen-height:  calc(100% + var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height) + 3%);
 
 }
 
@@ -113,11 +112,13 @@ body {
 }
 
 .new-project-container{
-  height:6%
+  /* height:6% */
+  width: 100%;
 }
 
 .card-row-flex-container {
-  height: 94%;
+  height: 90%;
+  width: 100%;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
@@ -210,6 +211,20 @@ body {
   font-weight: normal;
 }
 
+.text-word-wrap{
+  width: 100%;
+  overflow-wrap: break-word;
+}
+
+.text-ellipsis{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  
+}
+
 /* progress bar style */
 .progress-bar {
   width: 100%;
@@ -268,6 +283,7 @@ body {
 }
 
 .task-list-container {
+  width:100%;
   height: calc(100% - var(--top-content-height) - var(--padding));
   /* background-color: #8ec5fc; */
 }
@@ -275,12 +291,14 @@ body {
 @media (max-width: 600px) {
   :root {
     --sidebar-width: 50vw;
+    --top-content-height:19%;
   }
 }
 
 @media (min-width: 600px) {
   :root {
     --sidebar-width: 40vw;
+    --top-content-height:17%;
   }
 
   .medium-container {
@@ -358,5 +376,6 @@ body {
   /* sidebar */
   :root {
     --sidebar-width: 20vw;
+    --top-content-height:17%;
   }
 }
