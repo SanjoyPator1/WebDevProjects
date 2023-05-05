@@ -2,7 +2,7 @@ import { getUserFromCookie } from "@/lib/auth";
 import db from "@/lib/db";
 import { cookies } from "next/headers";
 import Card from "@/components/Card/Card";
-import { NORMAL_DISTANCE, SECONDARY_DISTANCE, TASK_STATUS } from "@/lib/constants";
+import { DISTANCE_CONSTANT, NORMAL_DISTANCE, SECONDARY_DISTANCE, TASK_STATUS } from "@/lib/constants";
 // import Button from '@mui/material/Button';
 import { ProjectModel, ProjectWithTaskModel, TaskModel } from "@/model/databaseType";
 import "@/styles/global.css";
@@ -24,7 +24,7 @@ const TaskCard = async ({projectData }: Props) => {
   return (
     <GlassPane
       className={clsx("column-flex-container")}
-      styles={{ gap: "2%", padding: SECONDARY_DISTANCE, height:"100%" }}
+      styles={{ gap: DISTANCE_CONSTANT, paddingBlock: DISTANCE_CONSTANT, height:"100%" }}
     >
       <div
         className={clsx("column-flex-container ","project-details-container")}

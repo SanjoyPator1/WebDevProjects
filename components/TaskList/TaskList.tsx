@@ -12,6 +12,7 @@ import NewTask from '../NewTask/NewTask';
 import Card from '../Card/Card';
 import NewProject from '../NewProject/NewProject';
 import Chip from '@mui/material/Chip';
+import TiltedCard from '../TiltedCard/TiltedCard';
 
 const statusChips = {
   NOT_STARTED : <Chip  label="Not started" style={{backgroundColor: RED_COLOR, fontWeight:"bold", color: DARK_RED_COLOR}} />,
@@ -39,7 +40,7 @@ const TaskList = ({projectData}: Props) => {
   return (
     <div className={clsx("column-flex-container")} style={{height:"100%"}} >
         <div
-          className={clsx("row-flex-container")}
+          className={clsx("row-flex-container", "card-list-title-container")}
           style={{ justifyContent: "space-between", alignItems: "center", marginBottom:"2%", height:"8%" }}
         >
           <p className={clsx("sub-header-font", subheaderFont.className)}>
@@ -52,50 +53,10 @@ const TaskList = ({projectData}: Props) => {
             <NewTask mode="create" projectIdProp={projectData.id}/>
             </div>
         </div>
-        {/* header */}
-        <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between",backgroundColor:DARK_COLOR, height:"15%"}}>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
-                NAME
-            </div>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
-                DESCRIPTION
-            </div>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
-                STATUS
-            </div>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
-                DUE DATE
-            </div>
-            <div className={clsx("extra-small-container","sub-header-font",subheaderFont.className)} style={{color:"white"}}>
-                UPDATED AT
-            </div>
-            <div className={clsx("smallest-container","sub-header-font",subheaderFont.className)} style={{textAlign:"end", color:"white"}}>
-                EDIT
-            </div>
-        </Card>
         {data && data.length ? (
-          <div className={clsx("column-flex-container")} style={{gap:NORMAL_DISTANCE, height:"72%", overflow:"auto", flexWrap:"nowrap"}}>
+          <div className={clsx("row-flex-container", "card-list-map-container")} style={{gap:"5%", height:"88%", overflow:"auto"}}>
             {data.map((task: TaskModel, index: number) => (
-              <Card className={clsx("secondary-border-radius","row-flex-container")} styles={{gap:NORMAL_DISTANCE, alignItems:"center", justifyContent:"space-between"}} key={index}>
-                <div className={clsx("extra-small-container")}>
-                    {task.name}
-                </div>
-                <div className={clsx("extra-small-container")}>
-                    {task.description}
-                </div>
-                <div className={clsx("extra-small-container")}>
-                    {statusChips[task.status]}
-                </div>
-                <div className={clsx("extra-small-container")}>
-                    {formatDate(task.due)}
-                </div>
-                <div className={clsx("extra-small-container")}>
-                    {formatDate(task.updated_at)}
-                </div>
-                <div className={clsx("smallest-container")}>
-                    <NewTask mode='update' projectIdProp={task.project_id} taskDataProp={task} />
-                </div>
-              </Card>
+              <TiltedCard task={task} key={index}/>
             ))}
           </div>
         ) : (

@@ -8,15 +8,27 @@
   --sub-header-size: 1rem;
   --body-size: 0.87rem;
   --navbar-height: 40px;
+  --navbar-bottom-margin: 10px;
+  --top-content-height:10%;
+  --padding : 2%;
   --color-0: #5e72eb;
   --color-1: #4b92ff;
   --color-2: #b7e3ff;
   --color-3: #e7eff2;
-  --color-blue: #b7e3ff;
   --color-red: #ffa1b3;
   --color-green: #cbf5af;
+  --color-blue: #b7e3ff;
   --background-color: #d9dbdd;
   --card-color: #f9f8fb;
+
+  --light-red-color:#ffbdc9;
+  --light-green-color:#C9F9CD;
+  --light-blue-color:#C8EBF8;
+
+  --dark-red-color:#F55050;
+  --dark-green-color:#538e15;
+  --dark-blue-color:#5E72EB;
+
 }
 
 * {
@@ -35,7 +47,7 @@
 }
 
 html {
-  height: 100%;
+  height: calc(100% + var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height) + 2%);
 }
 
 body {
@@ -164,8 +176,8 @@ body {
   width: 100%;
 }
 
-.modal-container{
-  width:90%;
+.modal-container {
+  width: 90%;
 }
 
 .title-font {
@@ -230,18 +242,27 @@ body {
 }
 
 .main-page-container {
-  padding-top: calc(var(--navbar-height) + 10px);
-  padding-bottom: 10px;
-  padding-inline: 10px;
+  padding-top: calc(var(--navbar-height) + var(--navbar-bottom-margin));
+  padding-bottom: var(--padding);
+  padding-inline: var(--padding);
 }
 
 /* project-container */
 .project-details-container {
-  height: 20%;
+  height: var(--top-content-height);
+}
+
+.project-details-container, .card-list-title-container{
+  padding-inline: var(--padding);
+}
+
+.card-list-map-container{
+  padding: var(--padding);
 }
 
 .task-list-container {
-  height: 78%;
+  height: calc(100% - var(--top-content-height) - var(--padding));
+  /* background-color: #8ec5fc; */
 }
 
 @media (max-width: 600px) {
@@ -251,7 +272,6 @@ body {
 }
 
 @media (min-width: 600px) {
-
   :root {
     --sidebar-width: 40vw;
   }
@@ -264,8 +284,8 @@ body {
     width: 60%;
   }
 
-  .modal-container{
-    width:70%;
+  .modal-container {
+    width: 70%;
   }
 
   .card-container {
@@ -279,7 +299,7 @@ body {
   }
 
   .main-page-container {
-    padding-inline: 0.5em;
+    padding-inline: var(--padding);
   }
 }
 
@@ -292,8 +312,8 @@ body {
     width: 30%;
   }
 
-  .modal-container{
-    width:30%;
+  .modal-container {
+    width: 30%;
   }
 
   .extra-small-container {
@@ -316,17 +336,17 @@ body {
   }
 
   .main-page-container {
-    padding-inline: 1em;
+    padding-inline: var(--padding);
   }
 
   /* project-container */
-  .project-details-container {
+  /* .project-details-container {
     height: 10%;
   }
 
   .task-list-container {
     height: 88%;
-  }
+  } */
 
   /* sidebar */
   :root {

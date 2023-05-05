@@ -1,6 +1,8 @@
 export const PRIMARY_DISTANCE = "1.8em";
-export const SECONDARY_DISTANCE = "1em";
+export const SECONDARY_DISTANCE = "2%";
 export const NORMAL_DISTANCE = "0.3em";
+
+export const DISTANCE_CONSTANT = "2%";
 
 export const TASK_STATUS = {
     NOT_STARTED:"NOT_STARTED",

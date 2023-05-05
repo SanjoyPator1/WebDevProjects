@@ -2,7 +2,7 @@ import Greetings from "@/components/Greetings/Greetings";
 import ProjectCard from "@/components/ProjectCard/ProjectCard";
 import Skeleton from "@/components/Skeleton/Skeleton";
 import { getUserFromCookie } from "@/lib/auth";
-import { NORMAL_DISTANCE, PRIMARY_DISTANCE, SECONDARY_DISTANCE } from "@/lib/constants";
+import { DISTANCE_CONSTANT, NORMAL_DISTANCE, PRIMARY_DISTANCE, SECONDARY_DISTANCE } from "@/lib/constants";
 import db from "@/lib/db";
 import { ProjectWithTaskModel, TaskModel } from "@/model/databaseType";
 import { cookies } from "next/headers";
@@ -59,19 +59,19 @@ const HomePage = async () => {
   // console.log("Task of a project ", projectData[0].tasks);
 
   return (
-    <div className="column-flex-container" style={{ gap: "2%",height:"100%" }}>
+    <div className="column-flex-container" style={{ gap: DISTANCE_CONSTANT,height:"100%" }}>
 
       {/* Greetings JSX */}
-      <div style={{height:"18%"}}>
+      <div className="project-details-container">
         <Suspense fallback={<Skeleton classNameProps="medium-container"/>}>
         <Greetings classNameProps={clsx("medium-container", "primary-border-radius")}/>
         </Suspense>
       </div>
 
       {/* All Projects Card */}
-      <GlassPane className={clsx("primary-border-radius", "main-page-container")} styles={{padding:SECONDARY_DISTANCE, height:"80%"}}>
+      <GlassPane className={clsx("primary-border-radius", "task-list-container")} styles={{padding:SECONDARY_DISTANCE}}>
         <div className="column-flex-container" style={{height:"100%"}}>
-            <div className="new-project-container" style={{marginRight:SECONDARY_DISTANCE}}>
+            <div className="new-project-container">
               <NewProject mode="create" />
             </div>
 

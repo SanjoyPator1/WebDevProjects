@@ -118,7 +118,7 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
   return (
     <div
       className="new-project-container1"
-      style={{ width: "100%", justifyContent: "flex-end" }}
+      style={{justifyContent: "flex-end", display:"inline" }}
     >
       {mode == "create" ? (
         <Button
@@ -134,7 +134,6 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
           style={{
             marginRight: "0.4em",
             cursor: "pointer",
-            color: DARK_BLUE_COLOR,
           }}
         />
       )}
