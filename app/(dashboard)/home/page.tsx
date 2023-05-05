@@ -69,13 +69,13 @@ const HomePage = async () => {
       </div>
 
       {/* All Projects Card */}
-      <GlassPane className={clsx("primary-border-radius", "task-list-container")} styles={{padding:SECONDARY_DISTANCE}}>
+      <GlassPane className={clsx("primary-border-radius", "task-list-container")} styles={{padding:SECONDARY_DISTANCE, width:"100%"}}>
         <div className="column-flex-container" style={{height:"100%"}}>
             <div className="new-project-container">
               <NewProject mode="create" />
             </div>
 
-            <div className="card-row-flex-container" style={{maxHeight:"90%",overflow:"auto"}}>
+            <div className="card-row-flex-container" style={{overflow:"auto"}}>
               {projectData && projectData.map((project : ProjectWithTaskModel) => (
                 <div className="card-container" style={{}} key={project.id}>
                   <Link style={{textDecoration:"none"}} href={`/project/${project.id}`}>
@@ -87,13 +87,7 @@ const HomePage = async () => {
 
         </div>
       </GlassPane>
-      
-      {/* Task card - random project - top 5 */}
-      {/* <GlassPane styles={{padding: `calc(${SECONDARY_DISTANCE}*2)`}}>
-                <TaskCard/>
-      </GlassPane> */}
-
-
+      <div id="modal"></div>
     </div>
   );
 };

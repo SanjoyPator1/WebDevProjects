@@ -15,6 +15,7 @@ import {
   DARK_BLUE_COLOR,
   DARK_COLOR,
   DARK_RED_COLOR,
+  FORM_GAP,
   SECONDARY_DISTANCE,
 } from "@/lib/constants";
 import { ProjectModel } from "@/model/databaseType";
@@ -110,13 +111,13 @@ const NewProject = ({ mode, projectDataProp }: Props) => {
   return (
     <div
       className="new-project-container1"
-      style={{ width: "100%", justifyContent: "flex-end" }}
+      style={{ width: "100%", justifyContent: "flex-end"}}
     >
       {mode == "create" ? (
         <Button
           variant="contained"
           onClick={openModal}
-          style={{ backgroundColor: DARK_BLUE_COLOR }}
+          style={{ backgroundColor: DARK_BLUE_COLOR, marginRight:"1%" }}
         >
           <RiAddCircleFill style={{ marginRight: "0.4em" }} /> Add Project
         </Button>
@@ -146,7 +147,7 @@ const NewProject = ({ mode, projectDataProp }: Props) => {
         <form
           className="new-project-form"
           onSubmit={handleSubmit}
-          style={{ opacity: !isMutating ? 1 : 0.7, gap: SECONDARY_DISTANCE }}
+          style={{ opacity: !isMutating ? 1 : 0.7, gap: FORM_GAP }}
         >
           <TextField
             variant="outlined"

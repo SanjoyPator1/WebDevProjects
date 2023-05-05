@@ -4,6 +4,8 @@ export const NORMAL_DISTANCE = "0.3em";
 
 export const DISTANCE_CONSTANT = "2%";
 
+export const FORM_GAP = "15px";
+
 export const TASK_STATUS = {
     NOT_STARTED:"NOT_STARTED",
     IN_PROGRESS:"IN_PROGRESS",

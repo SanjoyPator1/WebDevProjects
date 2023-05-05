@@ -21,14 +21,6 @@ const statusChips = {
 }
 
 
-const formatDate = (date) =>
-  new Date(date).toLocaleDateString("en-us", {
-    weekday: "long",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-
 interface Props{
     projectData: ProjectWithTaskModel;
 }
@@ -38,7 +30,7 @@ const TaskList = ({projectData}: Props) => {
   const data = projectData.tasks
 
   return (
-    <div className={clsx("column-flex-container")} style={{height:"100%"}} >
+    <div className={clsx("column-flex-container")} style={{height:"100%", flexWrap:"nowrap"}} >
         <div
           className={clsx("row-flex-container", "card-list-title-container")}
           style={{ justifyContent: "space-between", alignItems: "center", marginBottom:"2%", height:"8%" }}
@@ -62,7 +54,7 @@ const TaskList = ({projectData}: Props) => {
         ) : (
           <div>no tasks</div>
         )}
-        <div id="tmodal"></div>
+        <div id="modal"></div>
       </div>
   )
 }

@@ -13,6 +13,7 @@ import { TaskModel } from "@/model/databaseType";
 import {
   DARK_BLUE_COLOR,
   DARK_RED_COLOR,
+  FORM_GAP,
   RED_COLOR,
   SECONDARY_DISTANCE,
   TASK_STATUS,
@@ -118,7 +119,7 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
   return (
     <div
       className="new-project-container1"
-      style={{justifyContent: "flex-end", display:"inline" }}
+      style={{width:"100%", justifyContent: "flex-end", display: "inline" }}
     >
       {mode == "create" ? (
         <Button
@@ -129,13 +130,20 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
           <RiAddCircleFill style={{ marginRight: "0.4em" }} /> Add task
         </Button>
       ) : (
-        <FiEdit
+        <Button
+          fullWidth
+          variant="contained"
           onClick={openModal}
-          style={{
-            marginRight: "0.4em",
-            cursor: "pointer",
-          }}
-        />
+          style={{ backgroundColor: DARK_BLUE_COLOR }}
+        >
+          <FiEdit
+            onClick={openModal}
+            style={{
+              marginRight: "0.4em",
+            }}
+          />
+          Edit
+        </Button>
       )}
       <Modal
         isOpen={modalIsOpen}
@@ -152,7 +160,7 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
         <form
           className="new-project-form"
           onSubmit={handleSubmit}
-          style={{ opacity: !isMutating ? 1 : 0.7, gap: SECONDARY_DISTANCE }}
+          style={{ opacity: !isMutating ? 1 : 0.7, gap: FORM_GAP }}
         >
           <TextField
             variant="outlined"

@@ -31,7 +31,6 @@ export default function DashboardRootLayout({ children }: {
             </div>
         </div>
         <div id="modal"></div>
-
       </body>
     </html>
   );

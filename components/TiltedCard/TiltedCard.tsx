@@ -3,97 +3,65 @@ import "./tiltedCardStyle.css";
 import clsx from "clsx";
 import NewTask from "../NewTask/NewTask";
 import { NORMAL_DISTANCE } from "@/lib/constants";
-
+import { headerFont, subheaderFont } from "@/lib/fonts";
+import { formatDate } from "@/lib/functions";
 
 interface Props {
-    task: TaskModel
+  task: TaskModel;
 }
 
-const TiltedCard = ({task}: Props) => {
-
-    const statusClass = {
-        NOT_STARTED : "status-not-started",
-        IN_PROGRESS : "status-in-progress",
-        COMPLETED : "status-complete"
-    }
+const TiltedCard = ({ task }: Props) => {
+  const statusClass = {
+    NOT_STARTED: {
+      label : "Not started",
+      className: "status-not-started"
+    },
+    IN_PROGRESS: {
+      label:"In progress",
+      className:"status-in-progress",
+    },
+    COMPLETED: {
+      label:"Completed",
+      className: "status-complete"
+    },
+  };
 
   return (
-    <div className="custom-card">
+    <div className={clsx("custom-card", statusClass[task.status].className)}>
       <div className="content">
-        <div className="plan">
-          <div className="inner">
-            <span className={clsx("status", statusClass[task.status])}>
-              <span>
-              <small>{task.status}</small>
-              </span>
-            </span>
-            <p className="title">{task.name}</p>
-            <p className="info">
-              {task.description}
-            </p>
-            <ul className="features">
-              <li>
-                <span className="icon">
-                  <svg
-                    height="24"
-                    width="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                    <path
-                      fill="currentColor"
-                      d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"
-                    ></path>
-                  </svg>
-                </span>
-                <span>
-                  <strong>20</strong> team members
-                </span>
-              </li>
-              <li>
-                <span className="icon">
-                  <svg
-                    height="24"
-                    width="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                    <path
-                      fill="currentColor"
-                      d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"
-                    ></path>
-                  </svg>
-                </span>
-                <span>
-                  Plan <strong>team meetings</strong>
-                </span>
-              </li>
-              <li>
-                <span className="icon">
-                  <svg
-                    height="24"
-                    width="24"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                    <path
-                      fill="currentColor"
-                      d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"
-                    ></path>
-                  </svg>
-                </span>
-                <span>File sharing</span>
-              </li>
-            </ul>
-            <div className="action">
-              <a className="button" href="#">
-              <span style={{marginRight:NORMAL_DISTANCE}}>Edit</span><NewTask mode='update' projectIdProp={task.project_id} taskDataProp={task} />
-              </a>
-            </div>
+        <div className={clsx("status")}>
+          <div>
+            {statusClass[task.status].label}
           </div>
+        </div>
+        <div className={clsx(headerFont.className, "header-font")}>
+          {task.name}
+        </div>
+        <div className={clsx("description")}>
+          {task.description}
+        </div>
+        <div className="row-flex-container">
+          <div className={clsx(subheaderFont.className, "sub-header-font")}>
+            CREATED : 
+          </div>
+          <div>
+            {formatDate(task.created_at)}
+          </div>
+        </div>
+        <div className="row-flex-container">
+          <div className={clsx(subheaderFont.className, "sub-header-font")}>
+            DUE : 
+          </div>
+          <div>
+            {formatDate(task.due)}
+          </div>
+        </div>
+        <div className="action">
+          <NewTask
+            mode="update"
+            projectIdProp={task.project_id}
+            taskDataProp={task}
+          />
         </div>
       </div>
     </div>

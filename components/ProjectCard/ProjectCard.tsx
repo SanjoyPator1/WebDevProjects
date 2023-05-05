@@ -4,7 +4,7 @@ import clsx from "clsx";
 import "./ProjectStyle.css"
 import "@/styles/global.css"
 import { ProjectWithTaskModel } from "@/model/databaseType";
-import { NORMAL_DISTANCE, PRIMARY_DISTANCE, SECONDARY_DISTANCE } from "@/lib/constants";
+import { FORM_GAP, NORMAL_DISTANCE, PRIMARY_DISTANCE, SECONDARY_DISTANCE } from "@/lib/constants";
 import { bodyFont, headerFont } from "@/lib/fonts";
 
 const formatDate = (date) =>
@@ -29,7 +29,7 @@ const ProjectCard = ({ project }: Props) => {
   const progress = project.tasks.length ? Math.ceil((completedCount / project.tasks.length) * 100):0;
 
   return (
-    <Card className={clsx("project-card","secondary-border-radius")}  styles={{display:"flex", flexFlow:"column wrap",gap:PRIMARY_DISTANCE, padding: SECONDARY_DISTANCE, height:"100%", justifyContent:"space-between"}}>
+    <Card className={clsx("project-card","secondary-border-radius")}  styles={{display:"flex", flexFlow:"column wrap",gap:PRIMARY_DISTANCE, padding: FORM_GAP, height:"100%", justifyContent:"space-between"}}>
       <div className="column-flex-container">
         <span className={clsx("body-font",bodyFont.className)}> <p style={{fontWeight:"bold", fontSize:"16px", display:"inline"}}>Created :</p> {formatDate(project.created_at)}</span>
         <span className={clsx("header-font",headerFont.className)} >{project.project_name}</span>

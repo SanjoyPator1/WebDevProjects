@@ -54,6 +54,7 @@ const TaskCard = async ({projectData }: Props) => {
       <div className="task-list-container">
         <TaskList projectData={projectData}/>
       </div>
+      <div id="modal"></div>
     </GlassPane>
   );
 };
