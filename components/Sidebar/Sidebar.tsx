@@ -8,6 +8,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { GrClose } from "react-icons/gr";
 import "./style-sidebar.css";
 import clsx from "clsx";
+import { Button } from "@mui/material";
+import { DARK_COLOR } from "@/lib/constants";
 
 const links = [
   { label: "Home", icon: "FiHome", link: "/home" },
@@ -26,6 +28,11 @@ const links = [
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
+  
+
+  const handleSignOut =() =>{
+    console.log("logout")
+  }
 
   return (
     <>
@@ -45,7 +52,7 @@ const Sidebar = () => {
         className={`column-flex-container sidebar-container card-props ${
           !open && "hide-container"
         }`}
-        styles={{ padding: 0 }}
+        styles={{ padding: 0 , position: "relative" }}
       >
         <div
           className={clsx("emptyContainer",open ? "open" : "close")}
@@ -67,6 +74,7 @@ const Sidebar = () => {
         {links.map((link, index) => (
           <SidebarLink link={link} key={index} />
         ))}
+        <Button className="sign-out-button" fullWidth style={{ borderRadius:0 ,backgroundColor:DARK_COLOR, color:"white" }} onClick={()=>handleSignOut}>Sign out</Button>
       </Card>
     </>
   );

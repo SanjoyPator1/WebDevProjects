@@ -28,7 +28,7 @@
   --dark-green-color:#538e15;
   --dark-blue-color:#5E72EB;
 
-  --full-screen-height:  calc(100% + var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height) + 3%);
+  --full-screen-height:  calc(100% + var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height));
 
 }
 

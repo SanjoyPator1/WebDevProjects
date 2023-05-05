@@ -124,11 +124,19 @@
   gap: 0.5em;
 }
 
+.sign-out-button{
+  padding-block:1.5em;
+  width: var(--sidebar-width);
+  position: fixed;
+  bottom:0
+  /* bottom:  calc(var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height) + 3%); */
+}
+
 @media (min-width: 600px) {
   .sidebar-link-container {
     padding-block: 1em;
     padding-inline: 1.5em;
-    gap: 2em;
+    gap: 4em;
   }
 }
 
