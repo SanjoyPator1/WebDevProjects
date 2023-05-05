@@ -59,9 +59,9 @@
   gap:5px
 }
 
-.custom-card:hover::before {
+/* .custom-card:hover::before {
   transform: rotateZ(8deg);
-}
+} */
 
 .custom-card:active::before,
 .custom-card:active .content {
@@ -107,6 +107,10 @@
 @media (min-width: 600px) {
   .custom-card{
     width: 29%;
+  }
+
+  .custom-card:hover::before {
+    transform: rotateZ(8deg);
   }
 }
 
