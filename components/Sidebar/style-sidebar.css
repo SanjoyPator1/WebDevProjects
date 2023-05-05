@@ -84,6 +84,16 @@
 
 .sidebar__toggle.open {
   right: calc(100vw - var(--sidebar-width));
+  animation: rotateAnimation 0.5s;
+}
+
+@keyframes rotateAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .sidebar__toggle-icon {
@@ -98,7 +108,7 @@
   height: 40px;
 }
 
-.sidebar__logo.rotate {
+.sidebar__logo.open {
   transform: rotate(360deg);
 }
 

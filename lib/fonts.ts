@@ -13,18 +13,18 @@ export const greetingsFont = Domine({
 });
 
 export const headerFont = Montserrat({
-  weight: ["500", "600", "700"],
+  weight: ["600"],
   subsets: ["latin"],
   variable: '--font-header',
 });
 export const subheaderFont = Montserrat({
-  weight: ["500", "600", "700"],
+  weight: ["600"],
   subsets: ["latin"],
   variable: '--font-sub-header',
 });
 
 export const bodyFont = Montserrat({
-  weight: ["200","300"],
+  weight: ["300"],
   subsets: ["latin"],
   variable: '--font-body',
 });
