@@ -46,7 +46,7 @@ const TaskList = ({projectData}: Props) => {
             </div>
         </div>
         {data && data.length ? (
-          <div className={clsx("row-flex-container", "card-list-map-container")} style={{gap:"5%", height:"88%", overflow:"auto"}}>
+          <div className={clsx("row-flex-container", "card-list-map-container")} style={{gap:"5%", overflow:"auto"}}>
             {data.map((task: TaskModel, index: number) => (
               <TiltedCard task={task} key={index}/>
             ))}
