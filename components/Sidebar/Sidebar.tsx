@@ -52,7 +52,7 @@ const Sidebar = () => {
         className={`column-flex-container sidebar-container card-props ${
           !open && "hide-container"
         }`}
-        styles={{ padding: 0 , position: "relative" }}
+        styles={{ padding: 0 }}
       >
         <div
           className={clsx("emptyContainer",open ? "open" : "close")}

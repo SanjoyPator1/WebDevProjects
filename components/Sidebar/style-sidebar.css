@@ -8,9 +8,7 @@
 
 .card-props {
   width: var(--sidebar-width);
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   transition: left 0.5s ease-in-out;
 }
 
@@ -127,10 +125,8 @@
 .sign-out-button{
   padding-block:1.5em;
   width: var(--sidebar-width);
-  position: fixed;
-  bottom:0
-  /* bottom:  calc(var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height) + 3%); */
-}
+  position: absolute;
+  bottom:0}
 
 @media (min-width: 600px) {
   .sidebar-link-container {
