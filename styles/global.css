@@ -117,7 +117,6 @@ body {
 }
 
 .card-row-flex-container {
-  height: 90%;
   width: 100%;
   display: flex;
   flex-flow: row wrap;
