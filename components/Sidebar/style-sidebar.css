@@ -123,10 +123,10 @@
 }
 
 .sign-out-button{
-  padding-block:1.5em;
   width: var(--sidebar-width);
   position: absolute;
-  bottom:0}
+  bottom:0
+}
 
 @media (min-width: 600px) {
   .sidebar-link-container {

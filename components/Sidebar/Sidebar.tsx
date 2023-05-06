@@ -28,24 +28,32 @@ const links = [
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
-  
 
-  const handleSignOut =() =>{
-    console.log("logout")
-  }
+  const handleSignOut = () => {
+    console.log("logout");
+  };
 
   return (
     <>
       {/* arrow controller */}
-      <div className={clsx("navbar", open ? "navbar-open-width":"navbar-close-width")}>
+      <div
+        className={clsx(
+          "navbar",
+          open ? "navbar-open-width" : "navbar-close-width"
+        )}
+      >
         <div
           className={`sidebar__toggle ${open ? "open" : "close"}`}
           onClick={() => setOpen(!open)}
         >
-          {open ? 
-          <GrClose className="sidebar__toggle-icon" style={{backgroundColor:"transparent", color:"red"}}/> 
-          : <GiHamburgerMenu className="sidebar__toggle-icon" />}
-          
+          {open ? (
+            <GrClose
+              className="sidebar__toggle-icon"
+              style={{ backgroundColor: "transparent", color: "red" }}
+            />
+          ) : (
+            <GiHamburgerMenu className="sidebar__toggle-icon" />
+          )}
         </div>
       </div>
       <Card
@@ -55,7 +63,7 @@ const Sidebar = () => {
         styles={{ padding: 0 }}
       >
         <div
-          className={clsx("emptyContainer",open ? "open" : "close")}
+          className={clsx("emptyContainer", open ? "open" : "close")}
           onClick={() => {
             setOpen(false);
           }}
@@ -74,7 +82,20 @@ const Sidebar = () => {
         {links.map((link, index) => (
           <SidebarLink link={link} key={index} />
         ))}
-        <Button className="sign-out-button" fullWidth style={{ borderRadius:0 ,backgroundColor:DARK_COLOR, color:"white" }} onClick={()=>handleSignOut}>Sign out</Button>
+        <div className="sign-out-button">
+          <Button
+            fullWidth
+            style={{
+              borderRadius: 0,
+              backgroundColor: DARK_COLOR,
+              color: "white",
+              paddingBlock:"1.5em",
+            }}
+            onClick={() => handleSignOut}
+          >
+            Sign out
+          </Button>
+        </div>
       </Card>
     </>
   );

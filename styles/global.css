@@ -151,7 +151,6 @@ body {
 .sidebar-container {
   align-items: center;
   border-radius: 0;
-  height: var(--full-screen-height);
   gap: 1rem;
   margin: 0;
   position: relative;
