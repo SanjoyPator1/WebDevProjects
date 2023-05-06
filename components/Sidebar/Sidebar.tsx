@@ -91,7 +91,7 @@ const Sidebar = () => {
               color: "white",
               paddingBlock:"1.5em",
             }}
-            onClick={() => handleSignOut}
+            onClick={() => handleSignOut()}
           >
             Sign out
           </Button>

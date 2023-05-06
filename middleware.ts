@@ -10,12 +10,22 @@ const verifyJWT = async (jwt) => {
     new TextEncoder().encode(process.env.JWT_SECRET)
   );
 
+
   return payload;
 };
 
-export default async function middleware(req: NextApiRequest,
-    res: NextApiResponse) {
+export default async function middleware(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { pathname } = req.nextUrl;
+
+  //redirect to /home for /
+  if (req.nextUrl.pathname === "/") {
+    req.nextUrl.pathname = "/home";
+    return NextResponse.redirect(req.nextUrl);
+  }
+
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
@@ -30,17 +40,15 @@ export default async function middleware(req: NextApiRequest,
   const jwt = req.cookies.get(process.env.COOKIE_NAME);
 
   if (!jwt) {
-    // console.log("no jwt middleware")
     req.nextUrl.pathname = "/signin";
     return NextResponse.redirect(req.nextUrl);
   }
 
   try {
     await verifyJWT(jwt.value);
-    
+
     return NextResponse.next();
   } catch (e) {
-    console.error(e);
     req.nextUrl.pathname = "/signin";
     return NextResponse.redirect(req.nextUrl);
   }
