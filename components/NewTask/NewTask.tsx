@@ -47,9 +47,10 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
   );
   const [due, setDue] = useState(
     taskDataProp?.due
-      ? taskDataProp?.due.toISOString().slice(0, 10)
+      ? new Date(taskDataProp.due).toISOString().slice(0, 10)
       : new Date().toISOString().slice(0, 10)
   );
+  
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isFetching, setIsFetching] = useState(false);

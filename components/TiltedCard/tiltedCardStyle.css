@@ -1,4 +1,4 @@
-.custom-card {
+/* .custom-card {
   width: 100%;
   overflow: visible;
   cursor: pointer;
@@ -42,7 +42,7 @@
   display: flex;
   flex-direction: column;
   gap:20px
-  /* transform: rotateZ(-5deg); */
+
 }
 
 .top-section{
@@ -68,7 +68,7 @@
 }
 
 /* content css */
-
+/* 
 .content {
   display: flex;
   flex-flow: column;
@@ -117,4 +117,4 @@
   .custom-card{
     width: 21%;
   }
-}
+} */ */

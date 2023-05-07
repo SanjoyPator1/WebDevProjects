@@ -1,12 +1,13 @@
 const fetcher = async ({ url, method, body, json = true }) => {
   const res = await fetch(url, {
     method,
-    body: body && JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
   });
+
 
   const data = await res.json();
   if (!res.ok) {
@@ -81,6 +82,20 @@ export const deleteProject = async (projectId: string) => {
 };
 
 //TASK API
+export const getTask = async (
+  startDate?: Date,
+  endDate?: Date,
+) => {
+  
+  const isoStartDate = startDate?.toISOString();
+  const isoEndDate = endDate?.toISOString();
+
+  return fetcher({
+    url: `/api/task?startDate=${isoStartDate}&endDate=${isoEndDate}`,
+    method: "GET",
+  });
+};
+
 export const createNewTask = async (
   projectId: string,
   status: string,

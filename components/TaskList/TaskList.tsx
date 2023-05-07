@@ -13,6 +13,8 @@ import Card from '../Card/Card';
 import NewProject from '../NewProject/NewProject';
 import Chip from '@mui/material/Chip';
 import TiltedCard from '../TiltedCard/TiltedCard';
+import { Grid } from '@mui/material';
+import ColorCard from '../ColorCard/ColorCard';
 
 const statusChips = {
   NOT_STARTED : <Chip  label="Not started" style={{backgroundColor: RED_COLOR, fontWeight:"bold", color: DARK_RED_COLOR}} />,
@@ -46,11 +48,15 @@ const TaskList = ({projectData}: Props) => {
             </div>
         </div>
         {data && data.length ? (
-          <div className={clsx("row-flex-container", "card-list-map-container")} style={{gap:"5%", overflow:"auto"}}>
-            {data.map((task: TaskModel, index: number) => (
-              <TiltedCard task={task} key={index}/>
-            ))}
-          </div>
+          <Grid container item xs={12} spacing={2} sx={{padding:"2%", alignContent: "flex-start"}}>
+            {data.map((task: TaskModel, index:number)=>{
+                return (
+                <Grid key={index} item xs={12} md={4} lg={3}>
+                  <ColorCard task={task} />
+                </Grid>
+              );
+            })}
+          </Grid>
         ) : (
           <div>no tasks</div>
         )}
