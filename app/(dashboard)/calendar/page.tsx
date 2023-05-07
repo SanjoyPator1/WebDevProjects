@@ -4,6 +4,7 @@ import { pageTitleFont } from "@/lib/fonts";
 import clsx from "clsx";
 import workingImage from "@/public/working-page.png"
 import Image from 'next/image';
+import CustomCalendar from "@/components/customCalendar/CustomCalendar";
 
 const CalendarPage = () => {
   return (
@@ -13,7 +14,7 @@ const CalendarPage = () => {
         <p className={clsx(pageTitleFont.className,"title-font")}>CALENDAR</p>
       </div>
       <GlassPane className={clsx("primary-border-radius")} styles={{padding:SECONDARY_DISTANCE, height:"88%", width:"100%", overflow:"hidden"}}>
-        <Image src={workingImage} alt="working on this page" style={{maxHeight:"100%", maxWidth:"100%", objectFit:"cover"}}/>
+        <CustomCalendar/>
       </GlassPane>
     </div>
   )

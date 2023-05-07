@@ -1,17 +1,14 @@
 "use client";
-import Link from "next/link";
-import { FiHome, FiCalendar, FiUser, FiSettings } from "react-icons/fi";
-import "@/styles/global.css";
+import Link from "next/link";import "@/styles/global.css";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { IconType } from 'react-icons';
 import { subheaderFont } from "@/lib/fonts";
-
-const icons = { FiHome, FiCalendar, FiUser, FiSettings };
 
 interface Props {
   link: {
     label: string;
-    icon: string;
+    icon : IconType;
     link: string;
   };
 }
@@ -24,7 +21,7 @@ const SidebarLink = ({ link}: Props) => {
     isActive = true;
   }
 
-  const Icon = icons[link.icon];
+  const Icon = link.icon;
   return (
     <Link
       href={link.link}

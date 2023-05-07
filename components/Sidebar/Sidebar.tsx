@@ -8,30 +8,38 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { GrClose } from "react-icons/gr";
 import "./style-sidebar.css";
 import clsx from "clsx";
-import { Button } from "@mui/material";
-import { DARK_COLOR } from "@/lib/constants";
+import { FiHome, FiCalendar, FiUser, FiSettings } from "react-icons/fi";
+import {TbLogout} from "react-icons/tb"
+
 
 const links = [
-  { label: "Home", icon: "FiHome", link: "/home" },
+  { label: "Home", icon: FiHome, link: "/home" },
   {
     label: "Calendar",
-    icon: "FiCalendar",
+    icon: FiCalendar,
     link: "/calendar",
   },
-  { label: "Profile", icon: "FiUser", link: "/profile" },
+  { label: "Profile", icon: FiUser, link: "/profile" },
   {
     label: "Settings",
-    icon: "FiSettings",
+    icon: FiSettings,
     link: "/settings",
+  },
+  {
+    label: "Signout",
+    icon: TbLogout,
+    link: "/signin",
   },
 ];
 
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
 
-  const handleSignOut = () => {
-    console.log("logout");
-  };
+  // const handleSignOut = () => {
+  //   console.log("logout");
+    
+    
+  // };
 
   return (
     <>
@@ -82,20 +90,6 @@ const Sidebar = () => {
         {links.map((link, index) => (
           <SidebarLink link={link} key={index} />
         ))}
-        <div className="sign-out-button">
-          <Button
-            fullWidth
-            style={{
-              borderRadius: 0,
-              backgroundColor: DARK_COLOR,
-              color: "white",
-              paddingBlock:"1.5em",
-            }}
-            onClick={() => handleSignOut()}
-          >
-            Sign out
-          </Button>
-        </div>
       </Card>
     </>
   );
