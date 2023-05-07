@@ -73,9 +73,12 @@ const CustomCalendar: FC<CalendarProps> = ({
   }, [currentMonth, setDaysProp]);
 
 
-  //update eventData
-  useEffect(()=>{
-    setEventData(eventDataProps)
+  // Update eventData
+  useEffect(() => {
+    console.log("updating eventData in useEffect with ", eventDataProps)
+    // Create a new object with the updated events
+    const updatedEventData = eventDataProps
+    setEventData(updatedEventData)
   }, [eventDataProps])
 
   function previousMonth() {
@@ -100,7 +103,6 @@ const CustomCalendar: FC<CalendarProps> = ({
   return (
     <>
       <div className="calendar-container">
-         Child : {hasEventProps && hasEventProps}
         {/* Header - current date and prev next button */}
         <div className="header">
           <div className="header-date">
@@ -183,6 +185,6 @@ const CustomCalendar: FC<CalendarProps> = ({
 
 export default memo(CustomCalendar, (prev, next) => {
   return (
-    prev.currentMonthProp === next.currentMonthProp
+    prev.currentMonthProp === next.currentMonthProp && prev.eventDataProps ===next.eventDataProps
   );
 });
