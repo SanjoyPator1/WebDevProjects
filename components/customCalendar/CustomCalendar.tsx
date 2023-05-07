@@ -35,7 +35,6 @@ interface CalendarProps {
   onDateClick?: (date: Date) => void | Date;
   eventDataProps?: any[];
   eventKeyName?: string;
-  hasEventProps?:string;
 }
 
 const CustomCalendar: FC<CalendarProps> = ({
@@ -44,8 +43,7 @@ const CustomCalendar: FC<CalendarProps> = ({
   setDaysProp,
   onDateClick,
   eventDataProps,
-  eventKeyName,
-  hasEventProps
+  eventKeyName
 }) => {
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -98,7 +96,6 @@ const CustomCalendar: FC<CalendarProps> = ({
 
   console.log("custom calendar called");
   console.log("eventDataProp",eventDataProps)
-  console.log("eventData",eventData)
 
   return (
     <>

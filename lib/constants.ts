@@ -12,6 +12,21 @@ export const TASK_STATUS = {
     COMPLETED : "COMPLETED",
 }
 
+export const STATUS_CLASS = {
+    NOT_STARTED: {
+      label : "Not started",
+      className: "status-not-started"
+    },
+    IN_PROGRESS: {
+      label:"In progress",
+      className:"status-in-progress",
+    },
+    COMPLETED: {
+      label:"Completed",
+      className: "status-complete"
+    },
+  };
+
 
 export const DARK_COLOR = "#2E2B38";
 export const LIGHT_COLOR = "#E7EFF2";

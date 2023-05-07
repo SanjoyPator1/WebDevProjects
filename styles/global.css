@@ -287,6 +287,20 @@ body {
   /* background-color: #8ec5fc; */
 }
 
+/* status colors */
+.status-not-started {
+  background-color: var(--light-red-color);
+  color: var(--dark-red-color);
+}
+.status-in-progress {
+  background-color: var(--light-green-color);
+  color: var(--dark-green-color);
+}
+.status-complete {
+  background-color: var(--light-blue-color);
+  color: var(--dark-blue-color);
+}
+
 @media (max-width: 600px) {
   :root {
     --sidebar-width: 50vw;
