@@ -9,7 +9,10 @@
   --body-size: 0.87rem;
   --navbar-height: 40px;
   --navbar-bottom-margin: 10px;
-  --padding : 2%;
+  --sticky-item-top: 40px;
+  --padding: 1rem;
+  --padding-small: 0.6rem;
+  --gap: 1rem;
   --color-0: #5e72eb;
   --color-1: #4b92ff;
   --color-2: #b7e3ff;
@@ -20,16 +23,18 @@
   --background-color: #d9dbdd;
   --card-color: #f9f8fb;
 
-  --light-red-color:#ffbdc9;
-  --light-green-color:#C9F9CD;
-  --light-blue-color:#C8EBF8;
+  --light-red-color: #ffbdc9;
+  --light-green-color: #c9f9cd;
+  --light-blue-color: #c8ebf8;
 
-  --dark-red-color:#F55050;
-  --dark-green-color:#538e15;
-  --dark-blue-color:#5E72EB;
+  --dark-red-color: #f55050;
+  --dark-green-color: #538e15;
+  --dark-blue-color: #5e72eb;
 
-  --full-screen-height:  calc(100% + var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height));
-
+  --full-screen-height: calc(
+    100% + var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding) +
+      var(--top-content-height)
+  );
 }
 
 * {
@@ -47,14 +52,14 @@
   display: none;
 }
 
-html {
+/* html {
   height: calc(100% + var(--navbar-height) + var(--navbar-bottom-margin) + var(--padding ) + var(--top-content-height) + 2%);
-}
+} */
 
-body {
+/* body {
   margin: 0;
   height: 100%;
-}
+} */
 
 .testClass {
   border: 2px solid red !important;
@@ -97,13 +102,12 @@ body {
 
 .column-flex-container {
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column;
 }
 
 .row-flex-container {
   display: flex;
   flex-flow: row wrap;
-  align-items: stretch;
 }
 
 .center-of-screen {
@@ -111,9 +115,13 @@ body {
   align-items: center;
 }
 
-.new-project-container{
-  /* height:6% */
+.new-project-container {
   width: 100%;
+  background-color: transparent;
+  position: sticky;
+  top: var(--sticky-item-top);
+  padding-bottom: var(--padding);
+  z-index: 3;
 }
 
 .card-row-flex-container {
@@ -121,8 +129,7 @@ body {
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
-  gap: 2%;
-  padding: 1%;
+  gap: var(--gap);
 }
 
 .card-container {
@@ -177,6 +184,7 @@ body {
 
 .medium-container {
   width: 100%;
+  padding: var(--padding);
 }
 
 .small-container {
@@ -210,18 +218,17 @@ body {
   font-weight: normal;
 }
 
-.text-word-wrap{
+.text-word-wrap {
   width: 100%;
   overflow-wrap: break-word;
 }
 
-.text-ellipsis{
+.text-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  
 }
 
 /* progress bar style */
@@ -262,33 +269,59 @@ body {
   border-radius: var(--secondary-border-radius);
 }
 
+/* The main container in layout that's the parent */
 .main-page-container {
   padding-top: calc(var(--navbar-height) + var(--navbar-bottom-margin));
   padding-bottom: var(--padding);
   padding-inline: var(--padding);
 }
 
+.top-content-container {
+  padding-block: var(--padding);
+}
+
 /* project-container */
-.project-details-container {
-  height: var(--top-content-height);
+.top-content-container.project-details-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: var(--gap);
 }
 
-.project-details-container, .card-list-title-container{
-  padding-inline: var(--padding);
+.card-list-title-container {
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--background-color);
 }
 
-.card-list-map-container{
+.card-list-map-container {
   padding: var(--padding);
 }
 
 .task-list-container {
-  width:100%;
-  height: calc(100% - var(--top-content-height) - var(--padding));
-  /* background-color: #8ec5fc; */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-block: var(--padding);
+}
+
+.task-row-container {
+  width: 100%;
+  padding-inline: var(--padding-small);
+}
+
+.calendar-glass-container {
+  padding-block: var(--padding);
+}
+
+.new-project-container.sticky-header {
+  background-color: var(--background-color);
 }
 
 /* status colors */
-.status-not-started {
+/* .status-not-started {
   background-color: var(--light-red-color);
   color: var(--dark-red-color);
 }
@@ -299,23 +332,24 @@ body {
 .status-complete {
   background-color: var(--light-blue-color);
   color: var(--dark-blue-color);
-}
+} */
 
 @media (max-width: 600px) {
   :root {
     --sidebar-width: 50vw;
-    --top-content-height:19%;
+    --top-content-height: 19%;
   }
 }
 
 @media (min-width: 600px) {
   :root {
     --sidebar-width: 40vw;
-    --top-content-height:17%;
+    --top-content-height: 17%;
   }
 
   .medium-container {
     width: 80%;
+    padding: var(--padding);
   }
 
   .small-container {
@@ -328,15 +362,32 @@ body {
 
   .card-container {
     /* min-width: fit-content; */
-    width: 31.33%;
+    /* width: 31.33%; */
+    width: calc((100% - (var(--gap) * 3)) / 3);
   }
 
-  .card-row-flex-container::after {
-    content: "";
-    width: 31.33%;
+  .card-row-flex-container {
+    padding-top: var(--padding-small);
+    padding-inline: var(--padding-small);
   }
 
   .main-page-container {
+    padding-inline: var(--padding);
+  }
+
+  .top-content-container.project-details-container {
+    padding-inline: var(--padding-small);
+  }
+
+  .card-list-title-container {
+    padding-inline: var(--padding-small);
+  }
+
+  .calendar-glass-container {
+    padding: var(--padding);
+  }
+
+  .top-content-container > .title-font {
     padding-inline: var(--padding);
   }
 }
@@ -365,16 +416,21 @@ body {
 
   .card-container {
     /* min-width: fit-content; */
-    width: 23.4%;
-  }
-
-  .card-row-flex-container::after {
-    content: "";
-    width: 23.4%;
+    /* width: 23.4%; */
+    width: calc((100% - (var(--gap) * 3)) / 4);
   }
 
   .main-page-container {
     padding-inline: var(--padding);
+  }
+
+  .calendar-sticky {
+    width: 100%;
+    background-color: transparent;
+    position: sticky;
+    top: var(--sticky-item-top);
+    padding-bottom: var(--padding);
+    z-index: 3;
   }
 
   /* project-container */
@@ -389,6 +445,6 @@ body {
   /* sidebar */
   :root {
     --sidebar-width: 20vw;
-    --top-content-height:17%;
+    --top-content-height: 17%;
   }
 }

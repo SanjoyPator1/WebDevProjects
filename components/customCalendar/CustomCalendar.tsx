@@ -61,7 +61,6 @@ const CustomCalendar: FC<CalendarProps> = ({
   const [days, setDays] = useState<Date[]>(initialDaysData);
 
   useEffect(() => {
-    console.log("setting days")
     const daysData = eachDayOfInterval({
       start: startOfWeek( parse(currentMonth, 'MMM-yyyy', new Date())),
       end: endOfWeek(endOfMonth( parse(currentMonth, 'MMM-yyyy', new Date()))),
@@ -73,7 +72,6 @@ const CustomCalendar: FC<CalendarProps> = ({
 
   // Update eventData
   useEffect(() => {
-    console.log("updating eventData in useEffect with ", eventDataProps)
     // Create a new object with the updated events
     const updatedEventData = eventDataProps
     setEventData(updatedEventData)
@@ -94,8 +92,6 @@ const CustomCalendar: FC<CalendarProps> = ({
     onDateClick && onDateClick(day);
   };
 
-  console.log("custom calendar called");
-  console.log("eventDataProp",eventDataProps)
 
   return (
     <>
@@ -158,7 +154,6 @@ const CustomCalendar: FC<CalendarProps> = ({
                   {eventData &&
                     eventKeyName &&
                     eventData.some((event) => {
-                      console.log("checking event for ", event[eventKeyName]);
                       return isSameDay(parseISO(event[eventKeyName]), day);
                     }) && (
                       <div

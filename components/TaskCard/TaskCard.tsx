@@ -22,13 +22,12 @@ const TaskCard = async ({projectData }: Props) => {
   
 
   return (
-    <GlassPane
+    <div
       className={clsx("column-flex-container")}
-      styles={{ gap: DISTANCE_CONSTANT, paddingBlock: DISTANCE_CONSTANT, height:"100%", width:"100%" }}
+      style={{ gap: DISTANCE_CONSTANT }}
     >
       <div
-        className={clsx("project-details-container")}
-        style={{display:"flex", flexDirection:"column",justifyContent: "space-between", alignItems: "center", width:"100%"}}
+        className={clsx("project-details-container","top-content-container")}
       >
         {/* project name and edit project button */}
         <div className={clsx("row-flex-container")}
@@ -42,10 +41,10 @@ const TaskCard = async ({projectData }: Props) => {
         {/* project description and due date */}
         <div className={clsx("row-flex-container")}
           style={{width:"100%", justifyContent: "space-between", alignItems: "center" }}>
-            <div className="new-project-container" style={{display:"flex", width:"100%"}}>
+            <div className="" style={{display:"flex", width:"85%"}}>
               <p className={clsx(subheaderFont.className)} style={{display:"inline"}}>DESCRIPTION : </p><p className="text-ellipsis" style={{flex:1}}>{projectData.description}</p>
             </div>
-            <div className="new-project-container">
+            <div className="">
               <p className={clsx(subheaderFont.className)} style={{display:"inline"}}>DUE : </p>{formatDate(projectData.due)}
             </div>
         </div>
@@ -55,7 +54,7 @@ const TaskCard = async ({projectData }: Props) => {
         <TaskList projectData={projectData}/>
       </div>
       <div id="modal"></div>
-    </GlassPane>
+    </div>
   );
 };
 

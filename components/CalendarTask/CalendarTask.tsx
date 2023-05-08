@@ -31,21 +31,13 @@ const CalendarTask = () => {
     try {
       const taskRes = await getTask(startDate, endDate);
       const tasksListResRows = await taskRes.rows;
-      console.log("new task list fetched", tasksListResRows.length);
-      if (tasksListResRows.length > 0) {
-        console.log("setting has event");
-      }
       setTaskList(tasksListResRows);
     } catch (e) {
       console.log("error while getting task data in calendar");
     }
   };
 
-  console.log({ days });
-  console.log({ taskList });
-
   useEffect(() => {
-    console.log("getting tasks data");
     days.length > 0 && getTaskList();
   }, [days]);
 
@@ -63,7 +55,7 @@ const CalendarTask = () => {
   return (
     <Grid container spacing={2} sx={{ position: "relative" }}>
       <Grid container item lg={12} spacing={3}>
-        <Grid item xs={12} md={5} lg={4}>
+        <Grid item xs={12} md={5} lg={4} className="">
           <CustomCalendar
             setDaysProp={setDays}
             onDateClick={onDateClick}
@@ -80,10 +72,10 @@ const CalendarTask = () => {
           sx={{ alignContent: "flex-start" }}
           spacing={1}
         >
-          <Grid item xs={12}>
-            <Typography variant="h4">Task list</Typography>
-          </Grid>
-          <Grid container item xs={12} spacing={2}>
+          <Grid container item xs={12} className={clsx("new-project-container","sticky-header")}>
+            <Grid item xs={12}>
+              <Typography variant="h4">Task list</Typography>
+            </Grid>
             <Grid item xs={12} md={8} lg={7}>
               {days.length > 0 && filterBy === FILTER_BY.wholeMonth ? (
                 <>
@@ -134,15 +126,16 @@ const CalendarTask = () => {
                 Full Month
               </Button>
             </Grid>
+          </Grid>
+          <Grid container item xs={12} spacing={2}>
             <Grid container item xs={12} spacing={2}>
-                
               {taskList && taskList.length > 0 ? (
                 taskList.map((task: TaskModel, index) => {
                   return filterBy === FILTER_BY.wholeMonth ? (
                     <Grid key={index} item xs={12} md={4} lg={3}>
                       <ColorCard task={task} />
                     </Grid>
-                  ) :  isSameDay(selectedDay, parseISO( task.due)) ? (
+                  ) : isSameDay(selectedDay, parseISO(task.due)) ? (
                     <Grid key={index} item xs={12} md={4} lg={3}>
                       <ColorCard task={task} />
                     </Grid>
