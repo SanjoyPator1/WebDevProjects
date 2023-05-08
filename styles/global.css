@@ -119,7 +119,7 @@
   width: 100%;
   background-color: transparent;
   position: sticky;
-  top: var(--sticky-item-top);
+  top: 39.5px;
   padding-bottom: var(--padding);
   z-index: 3;
 }
@@ -257,12 +257,12 @@
 /* form design */
 .form-card {
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column;
+  gap:var(--gap);
   background-color: #ffffff;
   border-radius: var(--primary-border-radius);
-  padding: 2em;
+  padding: var(--padding);
   align-items: flex-start;
-  min-height: 80%;
 }
 
 .secondary-border-radius {
@@ -424,15 +424,6 @@
     padding-inline: var(--padding);
   }
 
-  .calendar-sticky {
-    width: 100%;
-    background-color: transparent;
-    position: sticky;
-    top: var(--sticky-item-top);
-    padding-bottom: var(--padding);
-    z-index: 3;
-  }
-
   /* project-container */
   /* .project-details-container {
     height: 10%;
@@ -446,5 +437,17 @@
   :root {
     --sidebar-width: 20vw;
     --top-content-height: 17%;
+  }
+}
+
+@media (min-width: 900px){
+  .calendar-sticky {
+    width: 100%;
+    height: fit-content;
+    background-color: transparent;
+    position: sticky;
+    top: var(--sticky-item-top);
+    padding-bottom: var(--padding);
+    z-index: 3;
   }
 }

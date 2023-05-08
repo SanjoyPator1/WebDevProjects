@@ -58,7 +58,7 @@ const ProfileForm = ({ userData }: Props) => {
       <form
         className="form-card medium-container"
         onSubmit={handleSubmit}
-        style={{ opacity: !isMutating ? 1 : 0.7, gap: SECONDARY_DISTANCE }}
+        style={{ opacity: !isMutating ? 1 : 0.7 }}
       >
         <TextField
           variant="outlined"

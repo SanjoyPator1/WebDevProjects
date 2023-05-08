@@ -55,7 +55,7 @@ const CalendarTask = () => {
   return (
     <Grid container spacing={2} sx={{ position: "relative" }}>
       <Grid container item lg={12} spacing={3}>
-        <Grid item xs={12} md={5} lg={4} className="">
+        <Grid item xs={12} md={5} lg={4} className="calendar-sticky">
           <CustomCalendar
             setDaysProp={setDays}
             onDateClick={onDateClick}
