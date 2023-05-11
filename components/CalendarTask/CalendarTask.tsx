@@ -10,6 +10,7 @@ import ColorCard from "../ColorCard/ColorCard";
 import clsx from "clsx";
 import { subheaderFont } from "@/lib/fonts";
 import { DARK_COLOR } from "@/lib/constants";
+import SmallTaskCard from "../SmallTaskCard/SmallTaskCard";
 
 const CalendarTask = () => {
   const FILTER_BY = {
@@ -72,7 +73,12 @@ const CalendarTask = () => {
           sx={{ alignContent: "flex-start" }}
           spacing={1}
         >
-          <Grid container item xs={12} className={clsx("new-project-container","sticky-header")}>
+          <Grid
+            container
+            item
+            xs={12}
+            className={clsx("new-project-container", "sticky-header")}
+          >
             <Grid item xs={12}>
               <Typography variant="h4">Task list</Typography>
             </Grid>
@@ -132,12 +138,36 @@ const CalendarTask = () => {
               {taskList && taskList.length > 0 ? (
                 taskList.map((task: TaskModel, index) => {
                   return filterBy === FILTER_BY.wholeMonth ? (
-                    <Grid key={index} item xs={12} md={4} lg={3}>
-                      <ColorCard task={task} />
+                    <Grid
+                      className="card-container"
+                      key={index}
+                      item
+                      xs={12}
+                      md={4}
+                      lg={3}
+                    >
+                      <div className="big-screen-view">
+                        <ColorCard task={task} />
+                      </div>
+                      <div className="small-screen-view">
+                        <SmallTaskCard task={task} />
+                      </div>
                     </Grid>
                   ) : isSameDay(selectedDay, parseISO(task.due)) ? (
-                    <Grid key={index} item xs={12} md={4} lg={3}>
-                      <ColorCard task={task} />
+                    <Grid
+                      className="card-container"
+                      key={index}
+                      item
+                      xs={12}
+                      md={4}
+                      lg={3}
+                    >
+                      <div className="big-screen-view">
+                        <ColorCard task={task} />
+                      </div>
+                      <div className="small-screen-view">
+                        <SmallTaskCard task={task} />
+                      </div>
                     </Grid>
                   ) : (
                     <React.Fragment key={index}></React.Fragment>
