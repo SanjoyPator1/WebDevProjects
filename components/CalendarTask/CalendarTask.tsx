@@ -85,7 +85,6 @@ const CalendarTask = () => {
           >
             <Grid item xs={12}>
               <Typography variant="h4">Task list</Typography>
-              filter by {filterBy}
             </Grid>
             <Grid item xs={12} md={8} lg={7}>
               {days.length > 0 && filterBy === FILTER_BY.wholeMonth ? (
