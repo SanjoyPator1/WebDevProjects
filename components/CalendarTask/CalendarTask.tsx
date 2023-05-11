@@ -55,7 +55,7 @@ const CalendarTask = () => {
   };
 
   return (
-    <Grid container spacing={2} sx={{ position: "relative" }}>
+    <Grid className="calendar-glass-container" container spacing={2} sx={{ position: "relative" }}>
       <div style={{ display: "none" }}>
             <NewProject/>
           </div>

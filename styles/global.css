@@ -308,7 +308,7 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding-block: var(--padding);
+  padding: var(--padding);
 }
 
 .task-row-container {

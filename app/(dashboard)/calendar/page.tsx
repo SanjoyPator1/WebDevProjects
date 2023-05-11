@@ -14,11 +14,7 @@ const CalendarPage = () => {
       <div className="top-content-container">
         <p className={clsx(pageTitleFont.className, "title-font")}>CALENDAR</p>
       </div>
-      <GlassPane
-        className={clsx("primary-border-radius","calendar-glass-container")}
-      >
         <CalendarTask/>
-      </GlassPane>
     </div>
   );
 };
