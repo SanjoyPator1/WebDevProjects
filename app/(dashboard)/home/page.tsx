@@ -79,10 +79,6 @@ const HomePage = async () => {
       </div>
 
       {/* All Projects Card */}
-      <GlassPane
-        className={clsx("primary-border-radius", "task-list-container")}
-        styles={{ width: "100%" }}
-      >
         <div className="new-project-container">
           <NewProject mode="create" />
         </div>
@@ -99,7 +95,6 @@ const HomePage = async () => {
               </div>
             ))}
         </div>
-      </GlassPane>
       {/* <div id="modal"></div> */}
     </div>
   );

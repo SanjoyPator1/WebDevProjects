@@ -17,12 +17,13 @@ export default function HomePageLoader() {
     <div className="column-flex-container" style={{ gap: "2%", height:"100%" }}>
 
     {/* Greetings JSX */}
-    <div style={{height:"18%"}}>
+    <div style={{height:"18vh"}}>
       <Skeleton classNameProps="medium-container"/>
     </div>
+    
 
     {/* All Projects Card */}
-    <GlassPane className={clsx("primary-border-radius")} styles={{padding:SECONDARY_DISTANCE, height:"80%"}}>
+    <div style={{height:"70vh"}}>
       <div className="column-flex-container" style={{height:"100%"}}>
           <div style={{display:"flex",marginRight:SECONDARY_DISTANCE, justifyContent:"flex-end"}}>
             <div className="rectangle " style={{width:"155px"}}></div>
@@ -35,9 +36,10 @@ export default function HomePageLoader() {
           </div>
 
       </div>
-    </GlassPane>
+    </div>
 
 
   </div>
   );
 }
+
