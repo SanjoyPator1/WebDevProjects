@@ -1,3 +1,4 @@
+"use client"
 import { useState } from "react";
 import Modal from "react-modal";
 import Button from "@mui/material/Button";
@@ -67,6 +68,8 @@ const NewTask = ({
   // Create inline loading UI
   const isMutating = isFetching || isPending;
 
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -75,6 +78,12 @@ const NewTask = ({
     try {
       if (mode == "create") {
         await createNewTask(projectIdProp, status, name, description, due);
+        //reset all fields
+        setStatus(TASK_STATUS.NOT_STARTED);
+        setName("");
+        setDeleted(false);
+        setDescription("");
+        setDue(new Date().toISOString().slice(0, 10));
       } else {
         await updateTask(taskId, name, description, status, due);
       }
@@ -85,12 +94,6 @@ const NewTask = ({
 
       setIsFetching(false);
 
-      //reset all fields
-      setStatus(TASK_STATUS.NOT_STARTED);
-      setName("");
-      setDeleted(false);
-      setDescription("");
-      setDue(new Date().toISOString().slice(0, 10));
       closeModal();
     } catch (error) {
       console.error("Error creating task:", error);
@@ -143,7 +146,7 @@ const NewTask = ({
             marginRight: "0.4em",
             color: DARK_BLUE_COLOR,
             fontWeight: "bold",
-            fontSize:"1rem"
+            fontSize: "1rem",
           }}
         />
       ) : (

@@ -100,7 +100,7 @@ const HomePage = async () => {
             ))}
         </div>
       </GlassPane>
-      <div id="modal"></div>
+      {/* <div id="modal"></div> */}
     </div>
   );
 };

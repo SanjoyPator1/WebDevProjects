@@ -20,8 +20,8 @@ export default function DashboardRootLayout({ children }: {
   return (
     <html lang="en"  className="candy-mesh">
       <head />
-      <body>
-      <div className="row-flex-container" style={{ width:"100vw"}}>
+      <body className={bodyFont.className}>
+      <div id="modal" className="row-flex-container" style={{ width:"100vw"}}>
             <div className="sidebar-layout-container">
               <Sidebar />
             </div>
@@ -29,7 +29,7 @@ export default function DashboardRootLayout({ children }: {
               <main className={clsx(bodyFont.className,"main-page-container")} style={{height:"100%"}}>{children}</main>
             </div>
         </div>
-        <div id="modal"></div>
+        <div ></div>
       </body>
     </html>
   );

@@ -25,7 +25,7 @@ import { LoadingButton } from "@mui/lab";
 Modal.setAppElement("#modal");
 
 interface Props {
-  mode: "create" | "update";
+  mode?: "create" | "update";
   projectDataProp?: ProjectModel;
 }
 
@@ -61,20 +61,18 @@ const NewProject = ({ mode, projectDataProp }: Props) => {
     try {
       if (mode == "create") {
         await createNewProject(name, description, due);
+        //reset all fields
+        setName("");
+        setDescription("");
+        setDue(new Date().toISOString().slice(0, 10));
       } else {
         await updateProject(projectDataProp.id, name, description, due);
       }
 
       setIsFetching(false);
-
       startTransition(() => {
         router.refresh();
       });
-
-      //reset all fields
-      setName("");
-      setDescription("");
-      setDue(new Date().toISOString().slice(0, 10));
 
       closeModal();
     } catch (error) {
@@ -111,13 +109,13 @@ const NewProject = ({ mode, projectDataProp }: Props) => {
   return (
     <div
       className="new-project-container1"
-      style={{ width: "100%", justifyContent: "flex-end"}}
+      style={{ width: "100%", justifyContent: "flex-end" }}
     >
       {mode == "create" ? (
         <Button
           variant="contained"
           onClick={openModal}
-          style={{ backgroundColor: DARK_BLUE_COLOR, marginRight:"1%" }}
+          style={{ backgroundColor: DARK_BLUE_COLOR, marginRight: "1%" }}
         >
           <RiAddCircleFill style={{ marginRight: "0.4em" }} /> Add Project
         </Button>

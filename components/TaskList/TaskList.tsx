@@ -84,7 +84,7 @@ const TaskList = ({ projectData }: Props) => {
           "new-project-container"
         )}
       >
-        <p className={clsx("sub-header-font", subheaderFont.className)}>
+        <p className={clsx("header-font", headerFont.className)}>
           Task List
         </p>
         <div className="">
@@ -112,7 +112,7 @@ const TaskList = ({ projectData }: Props) => {
       ) : (
         <div>no tasks</div>
       )}
-      <div id="modal"></div>
+      {/* <div id="modal"></div> */}
     </div>
   );
 };
