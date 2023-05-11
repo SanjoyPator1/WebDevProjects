@@ -31,6 +31,7 @@ import Chip from "@mui/material/Chip";
 import TiltedCard from "../TiltedCard/TiltedCard";
 import { Grid } from "@mui/material";
 import ColorCard from "../ColorCard/ColorCard";
+import SmallTaskCard from "../SmallTaskCard/SmallTaskCard";
 
 const statusChips = {
   NOT_STARTED: (
@@ -98,7 +99,12 @@ const TaskList = ({ projectData }: Props) => {
           {data.map((task: TaskModel, index: number) => {
             return (
               <div className="card-container" key={index}>
-                <ColorCard task={task} />
+                <div className="big-screen-view">
+                  <ColorCard task={task} />
+                </div>
+                <div className="small-screen-view">
+                  <SmallTaskCard task={task} />
+                </div>
               </div>
             );
           })}

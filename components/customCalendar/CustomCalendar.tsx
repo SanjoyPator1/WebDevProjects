@@ -128,7 +128,7 @@ const CustomCalendar: FC<CalendarProps> = ({
         <div className="days-of-month">
           {days && days.map((day, index) => {
             return (
-              <div key={index}>
+              <div style={{ gridColumnStart: getDay(day) + 1 }} key={index}>
                 <button
                   className={clsx(
                     "bootstrap-button",
@@ -137,7 +137,7 @@ const CustomCalendar: FC<CalendarProps> = ({
                     isEqual(day, selectedDay) && "is-equal"
                   )}
                   onClick={() => handleOnDateClick(day)}
-                  style={{ gridColumnStart: getDay(day) + 1 }}
+                  
                 >
                   <time dateTime={format(day, "yyyy-MM-dd")}>
                     {format(day, "d")}

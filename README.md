@@ -39,8 +39,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 z - index : 
 sidebar-layout-container  : 10
-logo-container : 6
-emptyContainer : 5
+logo-container : 7
+emptyContainer : 6
+new-project-overlay: 5
 navbar : 4
 new-project-container : 3
 

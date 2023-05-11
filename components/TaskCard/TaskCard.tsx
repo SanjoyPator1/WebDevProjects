@@ -40,12 +40,12 @@ const TaskCard = async ({projectData }: Props) => {
 
         {/* project description and due date */}
         <div className={clsx("row-flex-container")}
-          style={{width:"100%", justifyContent: "space-between", alignItems: "center" }}>
-            <div className="" style={{display:"flex", width:"85%"}}>
-              <p className={clsx(subheaderFont.className)} style={{display:"inline"}}>DESCRIPTION : </p><p className="text-ellipsis" style={{flex:1}}>{projectData.description}</p>
+          style={{width:"100%", justifyContent: "space-between", alignItems: "center", gap:"0.1rem" }}>
+            <div className="" style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
+              <p className={clsx(subheaderFont.className, "sub-header-font")}  style={{display:"inline"}}>DESCRIPTION : </p ><p className="text-ellipsis" style={{}}>{projectData.description}</p>
             </div>
-            <div className="">
-              <p className={clsx(subheaderFont.className)} style={{display:"inline"}}>DUE : </p>{formatDate(projectData.due)}
+            <div className="" style={{display:"flex", justifyContent:"space-between", width:"100%"}}>
+              <p className={clsx(subheaderFont.className, "sub-header-font")}  style={{display:"inline"}}>DUE : </p ><p className="text-ellipsis" style={{}}>{formatDate(projectData.due)}</p>
             </div>
         </div>
       </div>

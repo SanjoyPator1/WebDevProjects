@@ -29,9 +29,15 @@ interface Props {
   mode: "create" | "update";
   projectIdProp: string;
   taskDataProp?: TaskModel;
+  onlyIcon?: boolean;
 }
 
-const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
+const NewTask = ({
+  mode,
+  projectIdProp,
+  taskDataProp,
+  onlyIcon = false,
+}: Props) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -50,7 +56,7 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
       ? new Date(taskDataProp.due).toISOString().slice(0, 10)
       : new Date().toISOString().slice(0, 10)
   );
-  
+
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isFetching, setIsFetching] = useState(false);
@@ -120,7 +126,7 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
   return (
     <div
       className="new-project-container1"
-      style={{width:"100%", justifyContent: "flex-end", display: "inline" }}
+      style={{ width: "100%", justifyContent: "flex-end", display: "inline" }}
     >
       {mode == "create" ? (
         <Button
@@ -130,6 +136,16 @@ const NewTask = ({ mode, projectIdProp, taskDataProp }: Props) => {
         >
           <RiAddCircleFill style={{ marginRight: "0.4em" }} /> Add task
         </Button>
+      ) : onlyIcon ? (
+        <FiEdit
+          onClick={openModal}
+          style={{
+            marginRight: "0.4em",
+            color: DARK_BLUE_COLOR,
+            fontWeight: "bold",
+            fontSize:"1rem"
+          }}
+        />
       ) : (
         <Button
           fullWidth

@@ -5,7 +5,7 @@
   --primary-secondary-distance: 1rem;
   --title-size: 2rem;
   --header-size: 1.4rem;
-  --sub-header-size: 1.2rem;
+  --sub-header-size: 0.9rem;
   --body-size: 0.87rem;
   --navbar-height: 40px;
   --navbar-bottom-margin: 10px;
@@ -191,6 +191,10 @@
   width: 100%;
 }
 
+.auth-form-container{
+  width: 100%;
+}
+
 .modal-container {
   width: 90%;
 }
@@ -320,19 +324,14 @@
   background-color: var(--background-color);
 }
 
-/* status colors */
-/* .status-not-started {
-  background-color: var(--light-red-color);
-  color: var(--dark-red-color);
+.big-screen-view{
+  display: none;
+  height:100%
 }
-.status-in-progress {
-  background-color: var(--light-green-color);
-  color: var(--dark-green-color);
+.small-screen-view{
+  display: block;
+  height:100%
 }
-.status-complete {
-  background-color: var(--light-blue-color);
-  color: var(--dark-blue-color);
-} */
 
 @media (max-width: 600px) {
   :root {
@@ -354,6 +353,10 @@
 
   .small-container {
     width: 60%;
+  }
+
+  .auth-form-container{
+    width: 50%;
   }
 
   .modal-container {
@@ -390,6 +393,13 @@
   .top-content-container > .title-font {
     padding-inline: var(--padding);
   }
+
+  .big-screen-view{
+    display: block;
+  }
+  .small-screen-view{
+    display: none;
+  }
 }
 
 @media (min-width: 800px) {
@@ -412,6 +422,10 @@
   .smallest-container {
     width: 5%;
     text-align: center;
+  }
+
+  .auth-form-container{
+    width: 40%;
   }
 
   .card-container {
@@ -450,4 +464,15 @@
     padding-bottom: var(--padding);
     z-index: 3;
   }
+
+  .auth-form-container{
+    width: 35%;
+  }
+}
+
+@media (min-width: 1000px){
+  .auth-form-container{
+    width: 30%;
+  }
+
 }
