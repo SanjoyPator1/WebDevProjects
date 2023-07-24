@@ -35,5 +35,16 @@ const resolvers = {
             return friends;
         },
     },
+    Post: {
+        // Field-level resolver for the 'author' field of the 'Post' type
+        author: (post) => {
+            // Get the author ID from the 'author' field
+            const authorId = post.author;
+            // Find the user object based on the author ID
+            const author = fakeUsers.find((fakeUser) => fakeUser.id === authorId);
+            return author;
+        },
+        // ... other field-level resolvers for the 'Post' type ...
+    },
 };
 export default resolvers;

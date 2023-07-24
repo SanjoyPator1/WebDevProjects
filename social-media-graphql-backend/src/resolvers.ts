@@ -55,8 +55,9 @@ const resolvers = {
 
       return author;
     },
-    // ... other field-level resolvers for the 'Post' type ...
   },
+
+  
 };
 
 export default resolvers;
