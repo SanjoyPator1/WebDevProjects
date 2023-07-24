@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "email": "member@member.com",
+      "password": "password",
+      "role": "ADMIN",
+      "verified": false,
+      "avatar": "http",
+      "createdAt": 1571213104370,
+      "id": "Z2hlvDmLOSRZGebC_Z_aA"
+    }
+  ],
+  "posts": [
+    {
+      "message": "new post 01",
+      "author": "DKx2oLWoyyokRXyk3xXoX",
+      "createdAt": 1678892096789,
+      "id": "sIVxuZpv1iVlB0E9rqBXf"
+    }
+  ],
+  "settings": []
+}
