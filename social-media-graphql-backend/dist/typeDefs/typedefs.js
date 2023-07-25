@@ -42,8 +42,10 @@ const typeDefs = `#graphql
   }
 
   input SignupInput {
+    name: String!
     email: String!
     password: String!
+    avatar: String
   }
 
   input SigninInput {
@@ -67,5 +69,4 @@ const typeDefs = `#graphql
   }
 
 `;
-
 export default typeDefs;

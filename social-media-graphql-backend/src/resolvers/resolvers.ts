@@ -1,4 +1,4 @@
-import { fakePosts, fakeUsers } from "./libs/fakeData";
+import { fakePosts, fakeUsers } from "../libs/fakeData";
 
 const resolvers = {
   Query: {
@@ -38,7 +38,7 @@ const resolvers = {
 
       // Find the friend objects based on their IDs
       const friends = fakeUsers.filter((fakeUser) =>
-        friendIds.includes(fakeUser.id)
+        friendIds.includes(fakeUser._id)
       );
 
       return friends;
@@ -51,13 +51,48 @@ const resolvers = {
       const authorId = post.author;
 
       // Find the user object based on the author ID
-      const author = fakeUsers.find((fakeUser) => fakeUser.id === authorId);
+      const author = fakeUsers.find((fakeUser) => fakeUser._id === authorId);
 
       return author;
     },
   },
 
-  
+//   Mutation: {
+//     createPost: (_, { input }, { user, models }) => {
+//       const post = models.Post.createOne({ ...input, author: user.id });
+//       // pubSub.publish(NEW_POST, { newPost: post })
+//       return post;
+//     },
+
+//     updateMe: (_, { input }, { user, models }) => {
+//       return models.User.updateOne({ id: user.id }, input);
+//     },
+
+//     signup(_, { input }, { models, createToken }) {
+//       const existing = models.User.findOne({ email: input.email });
+
+//       if (existing) {
+//         throw new Error("nope");
+//       }
+//       const user = models.User.createOne({
+//         ...input,
+//         verified: false,
+//         avatar: "http",
+//       });
+//       const token = createToken(user);
+//       return { token, user };
+//     },
+//     signin(_, { input }, { models, createToken }) {
+//       const user = models.User.findOne(input);
+
+//       if (!user) {
+//         throw new Error("nope");
+//       }
+
+//       const token = createToken(user);
+//       return { token, user };
+//     },
+//   },
 };
 
 export default resolvers;

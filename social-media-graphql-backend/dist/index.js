@@ -2,13 +2,13 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import * as dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import typeDefs from "./typedefs";
-import resolvers from "./resolvers";
+import allTypeDefs from "./typeDefs/index.typeDefs";
+import allResolvers from "./resolvers/index.resolver";
 import context from './context';
 dotenv.config();
 const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    typeDefs: allTypeDefs,
+    resolvers: allResolvers,
 });
 const mongoDB = process.env.MONGODB_URL;
 const serverPort = process.env.PORT;

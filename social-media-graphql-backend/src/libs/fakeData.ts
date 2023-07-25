@@ -5,7 +5,7 @@ import { Role } from "../typescript-models";
 // Define some fake user data
 export const fakeUsers = [
   {
-    id: '1',
+    _id: '64bff6cf2fed5b53f8bc5475',
     name: 'User 1',
     email: 'user1@example.com',
     avatar: 'avatar1.jpg',
@@ -38,7 +38,7 @@ export const fakePosts = [
     {
       id: '1',
       message: 'First post by user 1',
-      author: '1', // This should match the id of the user who authored the post
+      author: '64bff6cf2fed5b53f8bc5475', // This should match the id of the user who authored the post
       createdAt: new Date().toISOString(),
       likes: 10,
       comments: 5,
@@ -46,7 +46,7 @@ export const fakePosts = [
     {
       id: '2',
       message: 'Second post by user 1',
-      author: '1',
+      author: '64bff6cf2fed5b53f8bc5475',
       createdAt: new Date().toISOString(),
       likes: 20,
       comments: 15,
