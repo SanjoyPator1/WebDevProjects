@@ -11,10 +11,11 @@ export enum Role {
 }
 
 export interface User {
-  id: string;
+  _id: string;
   email: string;
+  password: string;
+  name: string;
   avatar: string;
-  verified: boolean;
   createdAt: string;
   posts: Post[];
   role: Role;

@@ -17,8 +17,6 @@ const mongoDB = process.env.MONGODB_URL;
 
 const serverPort = process.env.PORT 
 
-console.log({mongoDB})
-
 mongoose.set('strictQuery', true);
 mongoose
   .connect(mongoDB)

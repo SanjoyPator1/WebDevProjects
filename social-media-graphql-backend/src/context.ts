@@ -1,19 +1,31 @@
 import { AuthenticationError } from "apollo-server";
-import UserModel from "./db/user.model";
 import { verifyToken } from "./utils/auth";
+import UserModel from "./db/user.model";
+
+// Function to create a dummy guest user
+const guestUser = {
+    _id: "dummyUserId",
+    email: "dummy@example.com",
+    name: "Dummy User",
+    avatar: "",
+    createdAt: new Date().toISOString(),
+    role: "GUEST",
+    userJwtToken: "dummyToken",
+  };
 
 const context = async ({ req }) => {
-    //allowing introspection query
+  
+   // Allowing introspection query
   if (req.body.operationName === "IntrospectionQuery") {
-    return {};
+    return { user: guestUser };
   }
 
-  // allowing the 'signUp' and 'signIn' queries to pass without giving the token
+  // Allowing the 'signUp' and 'signIn' queries to pass without giving the token
   if (
     req.body.operationName === "signUp" ||
     req.body.operationName === "signIn"
   ) {
-    return {};
+    return { user: guestUser };
   }
 
   // Get the user token from the headers
@@ -23,26 +35,25 @@ const context = async ({ req }) => {
   if (!token) {
     throw new AuthenticationError("Invalid authorization");
   }
+  // Verify and decode the token
+  const decodedToken = verifyToken(token);
 
-  try {
-    // Verify and decode the token
-    const decodedToken = verifyToken(token);
-    const userId = decodedToken.userId;
-
-    // Find the user from the database using the userId
-    const user = await UserModel.findById(userId);
-
-    // If user is not found, throw an error
-    if (!user) {
-      throw new AuthenticationError("User not found");
-    }
-
-    // Return the User typeDef data
-    return { user };
-  } catch (error) {
-    // If token verification or database query fails, throw an error
-    throw new AuthenticationError("Invalid authorization");
+  if(!decodedToken){
+    throw new AuthenticationError("Invalid token");
   }
+
+  const userId = decodedToken.userId;
+
+  // Find the user from the database using the userId
+  const user = await UserModel.findById(userId);
+
+  // If user is not found, throw an error
+  if (!user) {
+    throw new AuthenticationError("User not found");
+  }
+
+  // Return the User typeDef data
+  return { user };
 };
 
 export default context;

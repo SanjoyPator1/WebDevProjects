@@ -23,6 +23,6 @@ export const verifyToken = (token) => {
     }
     catch (error) {
         // If the token is invalid or has expired, throw an error
-        throw new Error('Invalid token');
+        return null;
     }
 };

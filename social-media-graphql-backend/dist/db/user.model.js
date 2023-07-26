@@ -23,9 +23,7 @@ const userSchema = new Schema({
     role: {
         type: String,
         required: true,
-    },
-    friends: {
-        type: [String]
+        enum: ["ADMIN", "MEMBER", "GUEST"],
     },
 }, {
     timestamps: true,

@@ -1,78 +1,163 @@
-import { fakePosts, fakeUsers } from "../libs/fakeData";
+import { UserInputError } from "apollo-server";
+import PostModel from "../db/post.model";
+import UserModel from "../db/user.model";
+import CommentModel from "../db/comment.model";
+import LikeModel from "../db/like.model";
 
 const postResolvers = {
   Query: {
-    //all the posts of a userId
-    posts: (_, __, { user }) => {
-      const userPosts = fakePosts.filter((post) => post.author === user.id);
-      return userPosts;
-    },
-
-    //post of a particular post id
-    post: (_, { id }) => {
-      const post = fakePosts.find((post) => post.id === id);
-
-      if (!post) {
-        throw new Error(`Post with ID ${id} not found`);
+    posts: async (_, { ownerId }) => {
+      try {
+        const userPosts = await PostModel.find({ ownerId });
+        return userPosts;
+      } catch (error) {
+        throw new Error("Failed to fetch user posts");
       }
-
-      return post;
     },
 
-    // all the posts of the social-network
-    feed(_, __, { }) {
-      return fakePosts;
+    post: async (_, { id }) => {
+      try {
+        const post = await PostModel.findById(id);
+
+        if (!post) {
+          throw new UserInputError(`Post with ID ${id} not found`);
+        }
+
+        return post;
+      } catch (error) {
+        throw new Error("Failed to fetch the post");
+      }
+    },
+
+    feed: async () => {
+      try {
+        return PostModel.find();
+      } catch (error) {
+        throw new Error("Failed to fetch the feed");
+      }
     },
   },
   Post: {
-    // Field-level resolver for the 'author' field of the 'Post' type
-    author: (post) => {
-      // Get the author ID from the 'author' field
-      const authorId = post.author;
-
-      // Find the user object based on the author ID
-      const author = fakeUsers.find((fakeUser) => fakeUser._id === authorId);
-
-      return author;
+    owner: async (post) => {
+      try {
+        return UserModel.findById(post.ownerId);
+      } catch (error) {
+        throw new Error("Failed to fetch the post owner");
+      }
+    },
+    likes: async (post) => {
+      console.log(`getting like details for post ${post}`)
+      try {
+        // Find all likes associated with the post using the postId field
+        const likes = await LikeModel.find({ postId: post._id });
+        console.log({likes})
+        return likes;
+      } catch (error) {
+        throw new Error("Failed to fetch likes");
+      }
+    },
+    comments: async (post) => {
+      try {
+        const comments = await CommentModel.find({ postId: post._id });
+        return comments;
+      } catch (error) {
+        throw new Error("Failed to fetch comments");
+      }
     },
   },
+  Like: {
+    likeOwner: async (like) => {
+      try {
+        const owner = await UserModel.findById(like.userId);
+        if (!owner) {
+          throw new Error(`Owner with ID ${like.userId} not found`);
+        }
+        return owner;
+      } catch (error) {
+        throw new Error("Failed to fetch the like owner");
+      }
+    },
+  },
+  Comment: {
+    commentOwner: async (comment) => {
+      try {
+        const owner = await UserModel.findById(comment.userId);
+        if (!owner) {
+          throw new Error(`Owner with ID ${comment.userId} not found`);
+        }
+        return owner;
+      } catch (error) {
+        throw new Error("Failed to fetch the comment owner");
+      }
+    },
+  },
+  Mutation: {
+    createPost: async (_, { input }, { user }) => {
+      const { message } = input;
 
-//   Mutation: {
-//     createPost: (_, { input }, { user, models }) => {
-//       const post = models.Post.createOne({ ...input, author: user.id });
-//       // pubSub.publish(NEW_POST, { newPost: post })
-//       return post;
-//     },
+      try {
+        // Create the post in the database with the provided input
+        const newPost = await PostModel.create({
+          message,
+          ownerId: user._id,
+          createdAt: new Date().toISOString(),
+        });
 
-//     updateMe: (_, { input }, { user, models }) => {
-//       return models.User.updateOne({ id: user.id }, input);
-//     },
+        return newPost;
+      } catch (error) {
+        throw new Error("Failed to create the post");
+      }
+    },
+    likePost: async (_, { input }, { user }) => {
+      const { postId } = input;
 
-//     signup(_, { input }, { models, createToken }) {
-//       const existing = models.User.findOne({ email: input.email });
+      try {
+        // Check if the post exists
+        const post = await PostModel.findById(postId);
+        if (!post) {
+          throw new UserInputError(`Post with ID ${postId} not found`);
+        }
 
-//       if (existing) {
-//         throw new Error("nope");
-//       }
-//       const user = models.User.createOne({
-//         ...input,
-//         verified: false,
-//         avatar: "http",
-//       });
-//       const token = createToken(user);
-//       return { token, user };
-//     },
-//     signin(_, { input }, { models, createToken }) {
-//       const user = models.User.findOne(input);
+        // Check if the user has already liked the post
+        const existingLike = await LikeModel.findOne({
+          userId: user._id,
+          postId,
+        });
 
-//       if (!user) {
-//         throw new Error("nope");
-//       }
+        if (existingLike) {
+          throw new UserInputError("You have already liked this post");
+        }
 
-//       const token = createToken(user);
-//       return { token, user };
-//     },
-//   },
+        // Create a new Like document and associate it with the post and user
+        const newLike = await LikeModel.create({
+          userId: user._id,
+          postId,
+        });
+
+        // Return the post with updated likes
+        return newLike;
+      } catch (error) {
+        throw new Error(`Failed to like the post: ${error.message}`);
+      }
+    },
+    addComment: async (_, { input }, { user }) => {
+      const { postId, comment } = input;
+
+      try {
+        // Create the comment in the database with the provided input
+        const newComment = await CommentModel.create({
+          userId: user._id,
+          postId,
+          comment,
+          date: new Date().toISOString(),
+        });
+
+        return newComment;
+      } catch (error) {
+        throw new Error("Failed to add the comment");
+      }
+    },
+  },
 };
 
 export default postResolvers;

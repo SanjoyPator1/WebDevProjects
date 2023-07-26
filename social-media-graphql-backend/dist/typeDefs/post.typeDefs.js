@@ -1,29 +1,54 @@
-import gql from 'graphql-tag';
+import gql from "graphql-tag";
 const postTypeDefs = gql `
+  type Like {
+    _id: ID!
+    userId: ID!
+    likeOwner: User!
+    postId: ID!
+    createdAt: String!
+  }
+
+  type Comment {
+    userId: ID!
+    commentOwner: User
+    postId: ID!
+    comment: String!
+    date: String!
+  }
 
   type Post {
     _id: ID!
     message: String!
-    author: User!
+    ownerId: ID!
+    owner: User
     createdAt: String!
-    likes: Int!
-    comments: Int!
+    likes: [Like]!
+    comments: [Comment!]!
+  }
+
+  input NewCommentInput {
+    postId: ID!
+    comment: String!
   }
 
   input NewPostInput {
-    userId: ID!
     message: String!
   }
 
+  input likePostInput{
+    postId: String!
+  }
+
   type Query {
-    posts(userId: ID!): [Post]!  #all the posts of a userId
-    post(id: ID!): Post!  #post of a particular post id
+    posts(ownerId: ID!): [Post]! #all the posts of a userId
+    post(id: ID!): Post! #post of a particular post id
     feed: [Post]! #all the posts of the social-network
   }
 
   type Mutation {
     createPost(input: NewPostInput!): Post!
+    likePost(input : likePostInput): Like!
+    addComment(input: NewCommentInput!): Comment!
   }
-
 `;
 export default postTypeDefs;

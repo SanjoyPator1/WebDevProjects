@@ -31,7 +31,7 @@ export const verifyToken = (token) => {
       return decoded;
     } catch (error) {
       // If the token is invalid or has expired, throw an error
-      throw new Error('Invalid token');
+      return null
     }
   };
 

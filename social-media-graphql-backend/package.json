@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc",
     "start": "npm run compile && node --es-module-specifier-resolution=node  ./dist/index.js",
-    "dev": "npm run compile && nodemon --es-module-specifier-resolution=node  ./dist/index.js"
+    "dev": "npm run compile && nodemon --es-module-specifier-resolution=node  ./dist/index.js",
+    "dev:start": "ts-node ./src/index.ts"
   },
   "type": "module",
   "keywords": [],
