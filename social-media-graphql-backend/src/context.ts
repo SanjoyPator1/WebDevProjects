@@ -1,6 +1,9 @@
-import { AuthenticationError } from "apollo-server";
+
 import { verifyToken } from "./utils/auth";
 import UserModel from "./db/user.model";
+import throwCustomError, {
+  ErrorTypes,
+} from "./utils/error-handler";
 
 // Function to create a dummy guest user
 const guestUser = {
@@ -33,13 +36,19 @@ const context = async ({ req }) => {
 
   // If no token, throw an error
   if (!token) {
-    throw new AuthenticationError("Invalid authorization");
+    throwCustomError(
+      'Invalid authorization',
+      ErrorTypes.UNAUTHENTICATED
+    );
   }
   // Verify and decode the token
   const decodedToken = verifyToken(token);
 
   if(!decodedToken){
-    throw new AuthenticationError("Invalid token");
+    throwCustomError(
+      'Invalid token',
+      ErrorTypes.UNAUTHENTICATED
+    );
   }
 
   const userId = decodedToken.userId;
@@ -49,7 +58,10 @@ const context = async ({ req }) => {
 
   // If user is not found, throw an error
   if (!user) {
-    throw new AuthenticationError("User not found");
+    throwCustomError(
+      'User not found',
+      ErrorTypes.NOT_FOUND
+    );
   }
 
   // Return the User typeDef data

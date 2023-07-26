@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server";
+import throwCustomError, { ErrorTypes, } from "../utils/error-handler";
 import PostModel from "../db/post.model";
 import UserModel from "../db/user.model";
 import CommentModel from "../db/comment.model";
@@ -18,7 +18,7 @@ const postResolvers = {
             try {
                 const post = await PostModel.findById(id);
                 if (!post) {
-                    throw new UserInputError(`Post with ID ${id} not found`);
+                    throwCustomError(`Post with ID ${id} not found`, ErrorTypes.NOT_FOUND);
                 }
                 return post;
             }
@@ -45,11 +45,9 @@ const postResolvers = {
             }
         },
         likes: async (post) => {
-            console.log(`getting like details for post ${post}`);
             try {
                 // Find all likes associated with the post using the postId field
                 const likes = await LikeModel.find({ postId: post._id });
-                console.log({ likes });
                 return likes;
             }
             catch (error) {
@@ -116,7 +114,7 @@ const postResolvers = {
                 // Check if the post exists
                 const post = await PostModel.findById(postId);
                 if (!post) {
-                    throw new UserInputError(`Post with ID ${postId} not found`);
+                    throwCustomError(`Post with ID ${postId} not found`, ErrorTypes.NOT_FOUND);
                 }
                 // Check if the user has already liked the post
                 const existingLike = await LikeModel.findOne({
@@ -124,7 +122,7 @@ const postResolvers = {
                     postId,
                 });
                 if (existingLike) {
-                    throw new UserInputError("You have already liked this post");
+                    throwCustomError("You have already liked this post", ErrorTypes.BAD_USER_INPUT);
                 }
                 // Create a new Like document and associate it with the post and user
                 const newLike = await LikeModel.create({

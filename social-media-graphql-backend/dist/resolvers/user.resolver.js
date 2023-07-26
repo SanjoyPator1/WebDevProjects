@@ -1,9 +1,9 @@
-import { AuthenticationError, UserInputError } from "apollo-server";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/auth";
 import UserModel from "../db/user.model";
 import { Role } from "../typescript-models";
 import FriendshipModel from "../db/friendRequest.model";
+import throwCustomError, { ErrorTypes, } from "../utils/error-handler";
 const userResolver = {
     Query: {
         // User details of the logged in user
@@ -13,7 +13,7 @@ const userResolver = {
                 if (userId) {
                     const requestedUser = await UserModel.findById(userId);
                     if (!requestedUser) {
-                        throw new UserInputError("User not found");
+                        throwCustomError(`User not found`, ErrorTypes.NOT_FOUND);
                     }
                     return requestedUser;
                 }
@@ -26,14 +26,12 @@ const userResolver = {
         },
         //query to find pending friend request
         pendingFriendRequests: async (_, __, { user }) => {
-            console.log(`finding pending friend request for user ${user._id}`);
             try {
                 // Find all friendship records where the current user is the receiver and the status is 'pending'
                 const pendingFriendRequests = await FriendshipModel.find({
                     userB: user._id,
                     status: "pending",
                 });
-                console.log({ pendingFriendRequests });
                 // Return the pending friend requests
                 return pendingFriendRequests;
             }
@@ -106,7 +104,7 @@ const userResolver = {
             // Check if the email is already registered
             const isUserExists = await UserModel.exists({ email });
             if (isUserExists) {
-                throw new AuthenticationError("Email is already registered");
+                throwCustomError(`Email is already registered`, ErrorTypes.ALREADY_EXISTS);
             }
             // Hash the password using bcrypt
             const saltRounds = 10;
@@ -140,12 +138,12 @@ const userResolver = {
             // Fetch the user with the provided email from the database
             const user = await UserModel.findOne({ email });
             if (!user) {
-                throw new AuthenticationError("User not found");
+                throwCustomError(`"User not found`, ErrorTypes.NOT_FOUND);
             }
             // Compare the hashed password from the database with the provided password using bcrypt
             const passwordMatches = await bcrypt.compare(password, user.password);
             if (!passwordMatches) {
-                throw new AuthenticationError("Invalid password");
+                throwCustomError(`Invalid password`, ErrorTypes.BAD_USER_INPUT);
             }
             // Generate a JWT token for the authenticated user
             const token = generateToken(user._id);
@@ -167,7 +165,7 @@ const userResolver = {
                 // Check if the receiver exists
                 const receiver = await UserModel.findById(receiverId);
                 if (!receiver) {
-                    throw new UserInputError("Receiver not found");
+                    throwCustomError(`Receiver not found`, ErrorTypes.NOT_FOUND);
                 }
                 // Check if a friend request already exists between the sender and receiver
                 const existingRequest = await FriendshipModel.findOne({
@@ -177,7 +175,7 @@ const userResolver = {
                     ],
                 });
                 if (existingRequest) {
-                    throw new UserInputError("Friend request already sent or received");
+                    throwCustomError(`Friend request already sent or received`, ErrorTypes.BAD_REQUEST);
                 }
                 // Create a new friendship record with status 'pending'
                 const newFriendship = await FriendshipModel.create({
@@ -205,16 +203,16 @@ const userResolver = {
                 // Check if the friendship request exists
                 const friendshipRequest = await FriendshipModel.findById(friendRequestId);
                 if (!friendshipRequest) {
-                    throw new UserInputError("Friendship request not found");
+                    throwCustomError(`Friendship request not found"`, ErrorTypes.NOT_FOUND);
                 }
                 // Check if the current user is the receiver of the friend request (sending self)
                 const isSamePerson = friendshipRequest.userB.equals(user._id);
                 if (isSamePerson) {
-                    throw new UserInputError("You are not authorized to respond to this friend request");
+                    throwCustomError(`You are not authorized to respond to this friend request`, ErrorTypes.BAD_REQUEST);
                 }
                 // Check if the status is valid ('accepted' or 'cancelled')
                 if (status !== "accepted" && status !== "cancelled") {
-                    throw new UserInputError("Invalid status. Status must be 'accepted' or 'cancelled'");
+                    throwCustomError("Invalid status. Status must be 'accepted' or 'cancelled'", ErrorTypes.BAD_USER_INPUT);
                 }
                 // Update the friendship request status
                 friendshipRequest.status = status;
