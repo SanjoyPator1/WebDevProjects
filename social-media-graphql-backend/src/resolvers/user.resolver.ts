@@ -28,16 +28,12 @@ const userResolver = {
     },
     //query to find pending friend request
     pendingFriendRequests: async (_, __, { user }) => {
-      console.log(`finding pending friend request for user ${user._id}`);
       try {
         // Find all friendship records where the current user is the receiver and the status is 'pending'
         const pendingFriendRequests = await FriendshipModel.find({
           userB: user._id,
           status: "pending",
         });
-
-        console.log({ pendingFriendRequests });
-
         // Return the pending friend requests
         return pendingFriendRequests;
       } catch (error) {
