@@ -11,6 +11,7 @@ const userResolver = {
   Query: {
 
     health: () =>{
+      console.log("health query hit")
       const healthObj = {status : "server working"}
       return healthObj
     },
