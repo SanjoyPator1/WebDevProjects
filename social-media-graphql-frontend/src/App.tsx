@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
+import { Route, Routes } from 'react-router-dom';
+import WithNav from './pages/outlet/WithNav';
+import Feed from './pages/feed';
+import SignUp from './pages/auth/signup';
+import SignIn from './pages/auth/signin';
+import Friends from './pages/friends';
+import Profile from './pages/profile';
+import Post from './pages/post';
+import WithoutNav from './pages/outlet/WithoutNav';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App bg-transparent">
+      <Routes>
+
+        {/* Sign Up Page */}
+        <Route path="/signup" element={<WithoutNav />}>
+          <Route index element={<SignUp />} />
+        </Route>
+
+        {/* Sign In Page */}
+        <Route path="/signin" element={<WithoutNav />}>
+          <Route index element={<SignIn />} />
+        </Route>
+
+        {/* Landing Page */}
+        <Route path="/" element={<WithNav />}>
+          <Route index element={<Feed/>} />
+        </Route>
+
+        {/* Friends Page */}
+        <Route path="/friends" element={<WithNav />}>
+          <Route index element={<Friends />} />
+        </Route>
+
+        {/* Profile Page */}
+        <Route
+          path="/profile/:id"
+          element={<WithNav  />}
+        >
+          <Route index element={<Profile />} />
+        </Route>
+
+        {/* Post Page */}
+        <Route
+          path="/post/:id"
+          element={<WithNav />}
+        >
+          <Route index element={<Post />} />
+        </Route>
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;

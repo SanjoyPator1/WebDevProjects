@@ -72,6 +72,11 @@
   * {
     @apply border-border;
   }
+
+  html {
+    @apply min-h-screen;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
