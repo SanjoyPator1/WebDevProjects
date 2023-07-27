@@ -1,6 +1,11 @@
 import gql from "graphql-tag";
 
 const userTypeDefs = gql`
+
+  type HealthCheck {
+    status : String!
+  }
+
   enum Role {
     ADMIN
     MEMBER
@@ -66,6 +71,7 @@ input RespondToFriendRequestInput {
 }
 
   type Query {
+    health: HealthCheck
     findUser(userId: ID): User
     pendingFriendRequests: [FriendRequest]
     getUserById(id: ID!): User!

@@ -19,12 +19,11 @@ const guestUser = {
 const context = async ({ req }) => {
   
    // Allowing introspection query
-  if (req.body.operationName === "IntrospectionQuery") {
-    return { user: guestUser };
-  }
-
+   //Allowing health query
   // Allowing the 'signUp' and 'signIn' queries to pass without giving the token
   if (
+    req.body.operationName === "IntrospectionQuery" ||
+    req.body.operationName === "health" ||
     req.body.operationName === "signUp" ||
     req.body.operationName === "signIn"
   ) {

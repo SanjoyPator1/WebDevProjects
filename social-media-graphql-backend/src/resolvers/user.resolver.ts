@@ -9,6 +9,11 @@ import throwCustomError, {
 
 const userResolver = {
   Query: {
+
+    health: () =>{
+      const healthObj = {status : "server working"}
+      return healthObj
+    },
     // User details of the logged in user
     findUser: async (_, { userId }, { user }) => {
       try {

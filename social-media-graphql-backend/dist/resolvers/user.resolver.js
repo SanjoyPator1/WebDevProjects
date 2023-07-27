@@ -6,6 +6,10 @@ import FriendshipModel from "../db/friendRequest.model";
 import throwCustomError, { ErrorTypes, } from "../utils/error-handler";
 const userResolver = {
     Query: {
+        health: () => {
+            const healthObj = { status: "server working" };
+            return healthObj;
+        },
         // User details of the logged in user
         findUser: async (_, { userId }, { user }) => {
             try {
