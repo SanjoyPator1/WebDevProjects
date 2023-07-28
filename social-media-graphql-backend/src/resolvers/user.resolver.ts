@@ -164,7 +164,7 @@ const userResolver = {
       const user = await UserModel.findOne({ email });
       if (!user) {
         throwCustomError(
-          `"User not found`,
+          `User not found`,
           ErrorTypes.NOT_FOUND
         )
       }
