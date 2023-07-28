@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,6 +11,8 @@ import {
   navigationMenuTriggerStyle,
 } from "../ui/navigation-menu";
 import { cn } from "../../lib/utils";
+import { useRecoilValue } from "recoil";
+import { userDataState } from "../../lib/recoil/atom";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -51,6 +53,9 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export function NavigationMenuBar() {
+  const navigate = useNavigate();
+  const userData = useRecoilValue(userDataState);
+
   return (
     <NavigationMenu className="border">
       <NavigationMenuList className="w-screen flex flex-row justify-between">
@@ -83,17 +88,19 @@ export function NavigationMenuBar() {
           {/* drop down menu */}
           <NavigationMenuItem>
             <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
-            <NavigationMenuContent >
+            <NavigationMenuContent>
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-3">
                   <NavigationMenuLink asChild>
                     <a
                       className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                      href="/profile/asnjansans"
                     >
-                      <div className="mb-2 mt-4 text-lg font-medium">
-                        John Doe
+                      <div
+                        className={`mb-2 mt-4 w-10 h-10 md:w-30 md:h-30 text-lg font-medium bg-cover bg-no-repeat bg-[url(${userData.avatar})]`}
+                      >
+                        {userData.name}
                       </div>
+
                       <p className="text-sm leading-tight text-muted-foreground">
                         See your profile
                       </p>
@@ -106,7 +113,7 @@ export function NavigationMenuBar() {
                 <ListItem href="/settings" title="Settings">
                   Change settings here
                 </ListItem>
-                <ListItem href="/logout" title="Log out">
+                <ListItem title="Log out" onClick={() => navigate("/signin")}>
                   Log out of your account
                 </ListItem>
               </ul>
@@ -130,7 +137,6 @@ export function NavigationMenuBar() {
             </NavigationMenuContent>
           </NavigationMenuItem> */}
       </NavigationMenuList>
-      
     </NavigationMenu>
   );
 }

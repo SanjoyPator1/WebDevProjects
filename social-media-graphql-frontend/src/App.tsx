@@ -10,10 +10,11 @@ import Profile from './pages/profile';
 import Post from './pages/post';
 import WithoutNav from './pages/outlet/WithoutNav';
 import { Toaster } from './components/ui/toaster';
+import Home from './pages/home';
 
 function App() {
   return (
-    <div className="App bg-transparent">
+    <div className="h-screen App bg-transparent">
       <Toaster />
       <Routes>
 
@@ -29,7 +30,7 @@ function App() {
 
         {/* Landing Page */}
         <Route path="/" element={<WithNav />}>
-          <Route index element={<Feed/>} />
+          <Route index element={<Home/>} />
         </Route>
 
         {/* Friends Page */}

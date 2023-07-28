@@ -66,6 +66,61 @@
  
     --ring: 217.2 32.6% 17.5%;
   }
+
+  /* custom padding class */
+  /* padding design system */
+  .py-base {
+    @apply py-1;
+  }
+
+  .px-base {
+    @apply px-2;
+  }
+
+  .p-base-container {
+    @apply px-base py-base;
+  }
+
+  /* constants : section header distance */
+  .py-md {
+    @apply py-2;
+  }
+
+  .px-lg {
+    @apply px-3;
+  }
+
+  .p-md-container {
+    @apply py-2 px-3;
+  }
+
+  .py-lg {
+    @apply py-4;
+  }
+
+  .px-lg {
+    @apply px-5;
+  }
+
+  .p-lg-container {
+    @apply py-lg px-lg;
+  }
+
+  .py-xl {
+    @apply py-7;
+  }
+
+  .px-xl {
+    @apply px-8;
+  }
+
+  .p-xl-container {
+    @apply py-xl px-xl;
+  }
+
+  .px-2xl {
+    @apply px-20;
+  }
 }
  
 @layer base {
@@ -78,6 +133,6 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground min-h-screen;
   }
 }

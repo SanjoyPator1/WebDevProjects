@@ -1,39 +1,30 @@
 // src/graphql/queries/userQueries.ts
 import { gql } from "@apollo/client";
 
-export const GET_USER_BY_ID = gql`
-  query GetUserById($id: ID!) {
-    getUserById(id: $id) {
+export const LOGGEDIN_USER = gql`
+  query LOGGEDIN_USER {
+    me {
       _id
-      email
       name
+      email
+      avatar
+      role
+    }
+  }
+`;
+
+export const GET_USER_BY_ID = gql`
+  query findUser($userId: ID!) {
+    findUser(userId: $userId) {
+      _id
+      name
+      email
       avatar
       createdAt
       role
-      posts {
-        _id
-        message
-        createdAt
-      }
       friends {
         _id
         name
-        avatar
-      }
-      friendRequests {
-        id
-        sender {
-          _id
-          name
-          avatar
-        }
-        receiver {
-          _id
-          name
-          avatar
-        }
-        status
-        createdAt
       }
     }
   }

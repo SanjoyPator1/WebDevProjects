@@ -129,6 +129,7 @@ export function UserAuthForm({
           variant: "destructive",
           title: `Error in ${authType}`,
           description: errorMessage,
+          
         });
       } finally {
         setFormValues({ ...initialFormState });

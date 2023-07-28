@@ -5,7 +5,7 @@ import { JWT_TOKEN_NAME } from "../lib/constants";
 // Get the JWT token from localStorage
 const getToken = () => {
   const userJwtToken = localStorage.getItem(JWT_TOKEN_NAME);
-  return userJwtToken ? `Bearer ${userJwtToken}` : "";
+  return userJwtToken ? userJwtToken : "";
 };
 
 // Create the middleware
