@@ -23,7 +23,7 @@ const userResolver = {
           const requestedUser = await UserModel.findById(userId);
           if (!requestedUser) {
             throwCustomError(
-              `User not found`,
+              "User not found",
               ErrorTypes.NOT_FOUND
             );
           }
@@ -120,7 +120,7 @@ const userResolver = {
       const isUserExists = await UserModel.exists({ email });
       if (isUserExists) {
         throwCustomError(
-          `Email is already registered`,
+          "Email is already registered",
           ErrorTypes.ALREADY_EXISTS
         );
       }
@@ -202,7 +202,7 @@ const userResolver = {
         const receiver = await UserModel.findById(receiverId);
         if (!receiver) {
           throwCustomError(
-            `Receiver not found`,
+            "Receiver not found",
             ErrorTypes.NOT_FOUND
           )
         }
@@ -217,7 +217,7 @@ const userResolver = {
 
         if (existingRequest) {
           throwCustomError(
-            `Friend request already sent or received`,
+            "Friend request already sent or received",
             ErrorTypes.BAD_REQUEST
           )
         }
@@ -253,7 +253,7 @@ const userResolver = {
         );
         if (!friendshipRequest) {
           throwCustomError(
-            `Friendship request not found"`,
+            "Friendship request not found",
             ErrorTypes.NOT_FOUND
           )
         }
@@ -262,7 +262,7 @@ const userResolver = {
         const isSamePerson = friendshipRequest.userB.equals(user._id);
         if (isSamePerson) {
           throwCustomError(
-            `You are not authorized to respond to this friend request`,
+            "You are not authorized to respond to this friend request",
             ErrorTypes.BAD_REQUEST
           )
         }
