@@ -9,10 +9,12 @@ import Friends from './pages/friends';
 import Profile from './pages/profile';
 import Post from './pages/post';
 import WithoutNav from './pages/outlet/WithoutNav';
+import { Toaster } from './components/ui/toaster';
 
 function App() {
   return (
     <div className="App bg-transparent">
+      <Toaster />
       <Routes>
 
         {/* Sign Up Page */}

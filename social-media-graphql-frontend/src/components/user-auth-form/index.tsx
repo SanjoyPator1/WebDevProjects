@@ -10,6 +10,7 @@ import { useMutation } from "@apollo/client";
 import { SIGNIN, SIGNUP } from "../../graphql/mutations/userMutations";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
 import { AiOutlineDelete } from 'react-icons/ai';
+import { useToast } from "../ui/use-toast";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   authType: "signin" | "signup";
@@ -34,21 +35,14 @@ export function UserAuthForm({
   authType,
   ...props
 }: UserAuthFormProps) {
+  const { toast } = useToast()
   const [formValues, setFormValues] = useState<FormValues>(initialFormState);
-  const [signup, { loading: signupLoading, error: signupError }] =
+  const [signup, { loading: signupLoading }] =
     useMutation(SIGNUP);
-  const [signin, { loading: signinLoading, error: signinError }] =
+  const [signin, { loading: signinLoading }] =
     useMutation(SIGNIN);
 
   const navigate = useNavigate();
-
-  if (signupError) {
-    console.log(`error in sign up: ${signupError.message}`);
-  }
-
-  if (signinError) {
-    console.log(`error in sign in: ${signinError.message}`);
-  }
 
   // Function to handle removing the avatar image
   const handleRemoveAvatar = useCallback(() => {
@@ -56,7 +50,12 @@ export function UserAuthForm({
       ...prevState,
       avatar: undefined,
     }));
-  }, []);
+    toast({
+      variant: "default",
+      title: "Selected Image removed",
+      description: "Select a new image if you want to upload",
+    });
+  }, [setFormValues, toast]);
 
   const handleSubmit = useCallback(
     async (e: any) => {
@@ -96,6 +95,12 @@ export function UserAuthForm({
           // Save the userJwtToken to localStorage or a state management system (e.g., Redux)
           const userJwtToken = data.signup.userJwtToken;
           localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
+          //show toast of successful signup
+          toast({
+            variant: "default",
+            title: "Sign up successful",
+            description: "Your account has been created successfully",
+          })
         } else {
           const { data } = await signin({
             variables: {
@@ -109,11 +114,21 @@ export function UserAuthForm({
           // Save the userJwtToken to localStorage or a state management system (e.g., Redux)
           const userJwtToken = data.signin.userJwtToken;
           localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
+          toast({
+            variant: "default",
+            title: "Sign in successful",
+            description: "You are successfully signed in",
+          })
         }
         // After successful sign up or sign in, navigate to the appropriate route
         navigate("/");
       } catch (e) {
         console.error(`Could not ${authType} for ${e}`);
+        toast({
+          variant: "destructive",
+          title: `Error in ${authType}`,
+          description: e instanceof Error ? e.message : "An unknown error occurred.",
+        })
       } finally {
         setFormValues({ ...initialFormState });
       }
