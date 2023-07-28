@@ -7,17 +7,21 @@ import throwCustomError, { ErrorTypes, } from "../utils/error-handler";
 const userResolver = {
     Query: {
         health: () => {
+            console.log("health query hit");
             const healthObj = { status: "server working" };
             return healthObj;
         },
         // User details of the logged in user
+        me: async (_, __, { user }) => {
+            return user;
+        },
         findUser: async (_, { userId }, { user }) => {
             try {
                 // If 'userId' input is provided, find the user by userId
                 if (userId) {
                     const requestedUser = await UserModel.findById(userId);
                     if (!requestedUser) {
-                        throwCustomError(`User not found`, ErrorTypes.NOT_FOUND);
+                        throwCustomError("User not found", ErrorTypes.NOT_FOUND);
                     }
                     return requestedUser;
                 }
@@ -108,7 +112,7 @@ const userResolver = {
             // Check if the email is already registered
             const isUserExists = await UserModel.exists({ email });
             if (isUserExists) {
-                throwCustomError(`Email is already registered`, ErrorTypes.ALREADY_EXISTS);
+                throwCustomError("Email is already registered", ErrorTypes.ALREADY_EXISTS);
             }
             // Hash the password using bcrypt
             const saltRounds = 10;
@@ -142,7 +146,7 @@ const userResolver = {
             // Fetch the user with the provided email from the database
             const user = await UserModel.findOne({ email });
             if (!user) {
-                throwCustomError(`"User not found`, ErrorTypes.NOT_FOUND);
+                throwCustomError(`User not found`, ErrorTypes.NOT_FOUND);
             }
             // Compare the hashed password from the database with the provided password using bcrypt
             const passwordMatches = await bcrypt.compare(password, user.password);
@@ -169,7 +173,7 @@ const userResolver = {
                 // Check if the receiver exists
                 const receiver = await UserModel.findById(receiverId);
                 if (!receiver) {
-                    throwCustomError(`Receiver not found`, ErrorTypes.NOT_FOUND);
+                    throwCustomError("Receiver not found", ErrorTypes.NOT_FOUND);
                 }
                 // Check if a friend request already exists between the sender and receiver
                 const existingRequest = await FriendshipModel.findOne({
@@ -179,7 +183,7 @@ const userResolver = {
                     ],
                 });
                 if (existingRequest) {
-                    throwCustomError(`Friend request already sent or received`, ErrorTypes.BAD_REQUEST);
+                    throwCustomError("Friend request already sent or received", ErrorTypes.BAD_REQUEST);
                 }
                 // Create a new friendship record with status 'pending'
                 const newFriendship = await FriendshipModel.create({
@@ -207,12 +211,12 @@ const userResolver = {
                 // Check if the friendship request exists
                 const friendshipRequest = await FriendshipModel.findById(friendRequestId);
                 if (!friendshipRequest) {
-                    throwCustomError(`Friendship request not found"`, ErrorTypes.NOT_FOUND);
+                    throwCustomError("Friendship request not found", ErrorTypes.NOT_FOUND);
                 }
                 // Check if the current user is the receiver of the friend request (sending self)
                 const isSamePerson = friendshipRequest.userB.equals(user._id);
                 if (isSamePerson) {
-                    throwCustomError(`You are not authorized to respond to this friend request`, ErrorTypes.BAD_REQUEST);
+                    throwCustomError("You are not authorized to respond to this friend request", ErrorTypes.BAD_REQUEST);
                 }
                 // Check if the status is valid ('accepted' or 'cancelled')
                 if (status !== "accepted" && status !== "cancelled") {

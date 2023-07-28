@@ -16,6 +16,9 @@ const userResolver = {
       return healthObj
     },
     // User details of the logged in user
+    me: async (_, __, { user }) => {
+      return user
+    },
     findUser: async (_, { userId }, { user }) => {
       try {
         // If 'userId' input is provided, find the user by userId

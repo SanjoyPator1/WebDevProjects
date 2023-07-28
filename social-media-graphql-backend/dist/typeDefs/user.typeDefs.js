@@ -22,7 +22,6 @@ const userTypeDefs = gql `
   type User {
     _id: ID!
     email: String!
-    password: String
     name: String!
     avatar: String
     createdAt: String!
@@ -71,6 +70,7 @@ input RespondToFriendRequestInput {
 
   type Query {
     health: HealthCheck
+    me: User
     findUser(userId: ID): User
     pendingFriendRequests: [FriendRequest]
     getUserById(id: ID!): User!
