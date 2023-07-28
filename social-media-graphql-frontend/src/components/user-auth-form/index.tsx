@@ -6,11 +6,12 @@ import { Input } from "../ui/input";
 import { Icons } from "../ui/icons";
 import { useNavigate } from "react-router-dom";
 import { uploadFileToCloudinary } from "../../lib/helperFunction";
-import { useMutation } from "@apollo/client";
+import { ServerError, ServerParseError, useMutation } from "@apollo/client";
 import { SIGNIN, SIGNUP } from "../../graphql/mutations/userMutations";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
-import { AiOutlineDelete } from 'react-icons/ai';
+import { AiOutlineDelete } from "react-icons/ai";
 import { useToast } from "../ui/use-toast";
+// import { ApolloError } from "@apollo/client";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   authType: "signin" | "signup";
@@ -35,11 +36,11 @@ export function UserAuthForm({
   authType,
   ...props
 }: UserAuthFormProps) {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [formValues, setFormValues] = useState<FormValues>(initialFormState);
   const [signup, { loading: signupLoading }] =
     useMutation(SIGNUP);
-  const [signin, { loading: signinLoading }] =
+  const [signin, { loading: signinLoading , error: signinError}] =
     useMutation(SIGNIN);
 
   const navigate = useNavigate();
@@ -63,7 +64,6 @@ export function UserAuthForm({
 
       try {
         if (authType === "signup") {
-          console.log("trying to signup");
           // Upload the avatar file to Cloudinary
           let uploadedImageUrl = null;
           if (formValues.avatar) {
@@ -72,7 +72,6 @@ export function UserAuthForm({
             );
             // The image url for the uploaded image
             uploadedImageUrl = await cloudinaryResponse?.url;
-            console.log("uploaded Image Url:", uploadedImageUrl);
           }
 
           //mutation on signup done here
@@ -91,7 +90,6 @@ export function UserAuthForm({
               input: signUpFormData,
             },
           });
-          console.log("User signup successful:", data.signup);
           // Save the userJwtToken to localStorage or a state management system (e.g., Redux)
           const userJwtToken = data.signup.userJwtToken;
           localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
@@ -100,7 +98,7 @@ export function UserAuthForm({
             variant: "default",
             title: "Sign up successful",
             description: "Your account has been created successfully",
-          })
+          });
         } else {
           const { data } = await signin({
             variables: {
@@ -110,7 +108,6 @@ export function UserAuthForm({
               },
             },
           });
-          console.log("signin successful with data", data.signin);
           // Save the userJwtToken to localStorage or a state management system (e.g., Redux)
           const userJwtToken = data.signin.userJwtToken;
           localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
@@ -118,17 +115,21 @@ export function UserAuthForm({
             variant: "default",
             title: "Sign in successful",
             description: "You are successfully signed in",
-          })
+          });
         }
         // After successful sign up or sign in, navigate to the appropriate route
         navigate("/");
-      } catch (e) {
-        console.error(`Could not ${authType} for ${e}`);
+      } catch (e: any) {
+        const errorMessage =
+          e?.networkError?.result?.errors?.[0]?.message ??
+          "An unknown error occurred.";
+        // console.log({ errorMessage });
+        // console.log({signinError})
         toast({
           variant: "destructive",
           title: `Error in ${authType}`,
-          description: e instanceof Error ? e.message : "An unknown error occurred.",
-        })
+          description: errorMessage,
+        });
       } finally {
         setFormValues({ ...initialFormState });
       }
@@ -217,7 +218,7 @@ export function UserAuthForm({
                 />
               </div>
               {/* Display the image selector only when no image is selected */}
-              {!formValues.avatar && 
+              {!formValues.avatar && (
                 <div className="grid gap-1">
                   <Label className="sr-only" htmlFor="avatar">
                     Avatar
@@ -237,7 +238,7 @@ export function UserAuthForm({
                     }}
                   />
                 </div>
-              }
+              )}
               <div className="grid gap-1">
                 {/* Display the selected avatar image */}
                 {formValues.avatar && (
@@ -248,7 +249,9 @@ export function UserAuthForm({
                         src={URL.createObjectURL(formValues.avatar)}
                         alt="Selected Avatar"
                       />
-                      <p className="text-muted-foreground">{formValues.avatar.name}</p>
+                      <p className="text-muted-foreground">
+                        {formValues.avatar.name}
+                      </p>
                     </div>
                     <AiOutlineDelete
                       className="ml-2 text-destructive text-2xl text-bold"
