@@ -1,9 +1,9 @@
 const cloudinaryEndPoint: string = import.meta.env.VITE_CLOUDINARY_ENDPOINT;
 
 interface CloudinaryResponse {
+  url: any;
   public_id: string;
   secure_url: string;
-  // Add more properties if necessary based on the Cloudinary response
 }
 
 export async function uploadFileToCloudinary(file: File): Promise<CloudinaryResponse> {
@@ -30,9 +30,7 @@ export async function uploadFileToCloudinary(file: File): Promise<CloudinaryResp
     console.log("Image upload successful");
     console.log({ data });
 
-    const uploadedImageUrl = await data?.url
-
-    return uploadedImageUrl;
+    return data;
   } catch (error) {
     console.error("Error uploading image to Cloudinary:", error);
     throw error;

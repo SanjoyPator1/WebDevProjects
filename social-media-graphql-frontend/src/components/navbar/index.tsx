@@ -52,7 +52,7 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function NavigationMenuBar() {
   return (
-    <NavigationMenu className="">
+    <NavigationMenu className="border">
       <NavigationMenuList className="w-screen flex flex-row justify-between">
         {/* normal link */}
         <div className="">
