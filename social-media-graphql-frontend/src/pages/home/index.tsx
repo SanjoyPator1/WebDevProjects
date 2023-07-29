@@ -8,7 +8,7 @@ const Home = () => {
         <Feed />
       </div>
       {/* Hidden on small screens (sm) and shown with width w-3/12 on medium screens (md) and above */}
-      <div className="hidden md:block border md:w-3/12 p-lg-container ">
+      <div className="h-full hidden md:block border md:w-3/12 p-lg-container ">
         <Chat />
       </div>
     </div>

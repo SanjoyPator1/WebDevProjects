@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,6 +13,7 @@ import {
 import { cn } from "../../lib/utils";
 import { useRecoilValue } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
+import ThemeSelector from "../ThemeSelector";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -53,7 +54,6 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export function NavigationMenuBar() {
-  const navigate = useNavigate();
   const userData = useRecoilValue(userDataState);
 
   return (
@@ -84,6 +84,9 @@ export function NavigationMenuBar() {
                 Friends
               </NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem className="px-4 py-2">
+            <ThemeSelector/>
           </NavigationMenuItem>
           {/* drop down menu */}
           <NavigationMenuItem>

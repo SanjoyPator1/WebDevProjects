@@ -1,7 +1,7 @@
 
 const Chat = () => {
     return (
-      <div>
+      <div className="h-full flex flex-col gap-lg overflow-auto no-scrollbar">
         Chat
       </div>
     )
