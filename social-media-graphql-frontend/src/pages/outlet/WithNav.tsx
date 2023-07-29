@@ -53,7 +53,7 @@ const WithNav = () => {
   },[error])
 
   return (
-    <div className="h-full flex flex-col w-full overflow-x-hidden">
+    <div className="h-full flex flex-col w-full overflow-hidden">
       <div className="w-full top-0 z-10">
         <NavigationMenuBar />
       </div>

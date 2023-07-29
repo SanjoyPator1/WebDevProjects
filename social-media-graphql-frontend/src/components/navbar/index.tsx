@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   NavigationMenu,
@@ -79,7 +79,7 @@ export function NavigationMenuBar() {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link to="/friends">
+            <Link to={`/friends/${userData._id}`}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Friends
               </NavigationMenuLink>
@@ -88,33 +88,39 @@ export function NavigationMenuBar() {
           {/* drop down menu */}
           <NavigationMenuItem>
             <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
-            <NavigationMenuContent>
+            <NavigationMenuContent >
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-3">
                   <NavigationMenuLink asChild>
-                    <a
-                      className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    >
+                    <Link to={`/profile/${userData._id}`}>
                       <div
-                        className={`mb-2 mt-4 w-10 h-10 md:w-30 md:h-30 text-lg font-medium bg-cover bg-no-repeat bg-[url(${userData.avatar})]`}
+                        className="flex h-full w-full select-none flex-col justify-end rounded-md p-6 no-underline outline-none focus:shadow-md bg-cover bg-no-repeat relative"
+                        style={{ backgroundImage: `url(${userData.avatar})` }}
                       >
-                        {userData.name}
-                      </div>
+                        {/* Semi-transparent dark overlay */}
+                        <div className="absolute inset-0 bg-black opacity-50 rounded-md"></div>
 
-                      <p className="text-sm leading-tight text-muted-foreground">
-                        See your profile
-                      </p>
-                    </a>
+                        <div
+                          className={`mb-md md:mb-lg mt-4 w-10 h-10 md:w-30 md:h-30 text-lg font-medium text-white relative z-10`}
+                        >
+                          {userData.name}
+                        </div>
+
+                        <p className="text-sm leading-tight text-white relative z-10">
+                          See your profile
+                        </p>
+                      </div>
+                    </Link>
                   </NavigationMenuLink>
                 </li>
-                <ListItem href="/friends" title="Friends">
+                <ListItem linkTo={`/friends/${userData._id}`} title="Friends">
                   See all your friends
                 </ListItem>
-                <ListItem href="/settings" title="Settings">
+                <ListItem linkTo={`/settings/${userData._id}`} title="Settings">
                   Change settings here
                 </ListItem>
-                <ListItem title="Log out" onClick={() => navigate("/signin")}>
-                  Log out of your account
+                <ListItem linkTo={"/signin"} title="Log out">
+                  Log out of your account{" "}
                 </ListItem>
               </ul>
             </NavigationMenuContent>
@@ -141,28 +147,39 @@ export function NavigationMenuBar() {
   );
 }
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => {
+interface ListItemProps  {
+  className?: string;
+  title: string;
+  linkTo: string;
+  children: ReactNode;
+};
+
+const ListItem: React.FC<ListItemProps> = ({
+  className,
+  title,
+  linkTo,
+  children,
+}) => {
   return (
     <li>
       <NavigationMenuLink asChild>
-        <a
-          ref={ref}
-          className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-            className
-          )}
-          {...props}
-        >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
-        </a>
+        <Link to={linkTo}>
+          <div
+            className={cn(
+              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              className
+            )}
+          >
+            <div className="text-sm font-medium leading-none">{title}</div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+              {children}
+            </p>
+          </div>
+        </Link>
       </NavigationMenuLink>
     </li>
   );
-});
+};
+
+export default ListItem;
 ListItem.displayName = "ListItem";

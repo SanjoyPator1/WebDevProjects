@@ -12,3 +12,19 @@ export interface navBarModel {
     activeTabBackgroundColor? : string;
     activeTabTextColor? : string;
 }
+
+//post model
+export interface PostCardContent{
+    postId: string;
+    ownerAvatar: string;
+    ownerName: string;
+    createdAt: string;
+    postText: string;
+    likesCount: string;
+    commentsCount: string;
+    isLikedByMe: boolean;
+}
+
+export interface PostCardComponentModel{
+    data: PostCardContent
+}

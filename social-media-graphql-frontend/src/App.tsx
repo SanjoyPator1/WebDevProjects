@@ -11,6 +11,7 @@ import Post from './pages/post';
 import WithoutNav from './pages/outlet/WithoutNav';
 import { Toaster } from './components/ui/toaster';
 import Home from './pages/home';
+import SettingsPage from './pages/settings';
 
 function App() {
   return (
@@ -34,7 +35,7 @@ function App() {
         </Route>
 
         {/* Friends Page */}
-        <Route path="/friends" element={<WithNav />}>
+        <Route path="/friends/:id" element={<WithNav />}>
           <Route index element={<Friends />} />
         </Route>
 
@@ -44,6 +45,14 @@ function App() {
           element={<WithNav  />}
         >
           <Route index element={<Profile />} />
+        </Route>
+
+        {/* Settings Page */}
+        <Route
+          path="/settings/:id"
+          element={<WithNav  />}
+        >
+          <Route index element={<SettingsPage />} />
         </Route>
 
         {/* Post Page */}
