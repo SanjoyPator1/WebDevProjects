@@ -14,6 +14,7 @@ import { cn } from "../../lib/utils";
 import { useRecoilValue } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
 import ThemeSelector from "../ThemeSelector";
+import { ChatSheet } from "../ChatSheet";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -58,7 +59,7 @@ export function NavigationMenuBar() {
 
   return (
     <NavigationMenu className="border">
-      <NavigationMenuList className="w-screen flex flex-row justify-between">
+      <NavigationMenuList className="w-screen flex flex-row justify-between gap-x-2 md:gap-x-3">
         {/* normal link */}
         <div className="">
           {/* logo */}
@@ -70,7 +71,7 @@ export function NavigationMenuBar() {
             </Link>
           </NavigationMenuItem>
         </div>
-        <div className="flex flex-row flex-wrap gap-x-3">
+        <div className="flex flex-row flex-wrap justify-end gap-x-2 md:gap-x-3">
           <NavigationMenuItem>
             <Link to="/">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -87,6 +88,9 @@ export function NavigationMenuBar() {
           </NavigationMenuItem>
           <NavigationMenuItem className="px-4 py-2">
             <ThemeSelector/>
+          </NavigationMenuItem>
+          <NavigationMenuItem className="block md:hidden">
+            <ChatSheet />
           </NavigationMenuItem>
           {/* drop down menu */}
           <NavigationMenuItem>
