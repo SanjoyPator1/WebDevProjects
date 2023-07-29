@@ -57,7 +57,7 @@ const WithNav = () => {
       <div className="w-full top-0 z-10">
         <NavigationMenuBar />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 overflow-hidden">
         <Outlet />
       </div>
     </div>
