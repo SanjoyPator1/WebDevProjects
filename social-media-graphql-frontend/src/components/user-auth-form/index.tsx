@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Icons } from "../ui/icons";
 import { useNavigate } from "react-router-dom";
 import { uploadFileToCloudinary } from "../../lib/helperFunction";
-import { ServerError, ServerParseError, useMutation } from "@apollo/client";
+import {useMutation } from "@apollo/client";
 import { SIGNIN, SIGNUP } from "../../graphql/mutations/userMutations";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -40,7 +40,7 @@ export function UserAuthForm({
   const [formValues, setFormValues] = useState<FormValues>(initialFormState);
   const [signup, { loading: signupLoading }] =
     useMutation(SIGNUP);
-  const [signin, { loading: signinLoading , error: signinError}] =
+  const [signin, { loading: signinLoading }] =
     useMutation(SIGNIN);
 
   const navigate = useNavigate();

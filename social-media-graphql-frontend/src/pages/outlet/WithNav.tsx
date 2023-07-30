@@ -4,22 +4,21 @@ import { NavigationMenuBar } from "../../components/navbar";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
 import { useQuery } from "@apollo/client";
 import {
-  GET_USER_BY_ID,
   LOGGEDIN_USER,
 } from "../../graphql/queries/userQueries";
-import { useRecoilState } from "recoil";
+import {  useSetRecoilState } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
 import { useToast } from "../../components/ui/use-toast";
 import Chat from "../chat";
 
 const WithNav = () => {
   const navigate = useNavigate();
-  const [userData, setUserData] = useRecoilState(userDataState);
+  const setUserData = useSetRecoilState(userDataState);
   const token = localStorage.getItem(JWT_TOKEN_NAME);
 
   const { toast } = useToast();
 
-  const { loading, data, error } = useQuery(LOGGEDIN_USER, {
+  const { data, error } = useQuery(LOGGEDIN_USER, {
     variables: { userId: localStorage.getItem(JWT_TOKEN_NAME) },
   });
 

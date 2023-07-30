@@ -1,16 +1,15 @@
-import React from "react";
+
 import PostCard from "../../components/postCard";
 import TextInputWithButton from "../../components/textInputWithButton/textInputWithButton";
 import { fakePostData, fakeProfileInfoData } from "../../lib/fakeData";
 import { ScrollArea } from "../../components/ui/scroll-area";
 import { useRecoilState } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ProfileInfoCard from "../../components/profileInfoCard/profileInfoCard";
 
 const Profile = () => {
   const [userData] = useRecoilState(userDataState);
-  const navigate = useNavigate();
   const { id } = useParams();
 
   // Compare the current path id with userData._id to determine if it's the user's own profile

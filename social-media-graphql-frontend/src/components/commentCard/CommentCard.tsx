@@ -1,18 +1,15 @@
-import React, { FC } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { FC } from "react";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import { CommentCardComponentModel } from "../../models/component.model";
 import AvatarLogo from "../avatar/AvatarLogo";
-import { Separator } from "../ui/separator";
 import { timeDifference } from "../../lib/helperFunction";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
-import { VscTriangleLeft } from "react-icons/vsc";
 
 const CommentCard: FC<CommentCardComponentModel> = ({ data }) => {
   const { commentId, ownerAvatar, ownerName, createdAt, commentText } = data;
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   return (
     <div key={commentId} className="px-2 w-full flex flex-wrap gap-md md:gap-lg">

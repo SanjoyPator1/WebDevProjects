@@ -1,11 +1,9 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "../ui/card";
 import { PostCardComponentModel } from "../../models/component.model";
 import AvatarLogo from "../avatar/AvatarLogo";

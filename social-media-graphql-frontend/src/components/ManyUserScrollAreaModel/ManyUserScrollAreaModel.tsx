@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import  { FC } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import ProfileInfoCard from "../profileInfoCard/profileInfoCard";
 import { ManyUserScrollAreaModel } from "../../models/component.model";

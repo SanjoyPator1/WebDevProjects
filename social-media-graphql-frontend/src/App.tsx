@@ -2,7 +2,6 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom';
 import WithNav from './pages/outlet/WithNav';
-import Feed from './pages/feed';
 import SignUp from './pages/auth/signup';
 import SignIn from './pages/auth/signin';
 import Friends from './pages/friends';

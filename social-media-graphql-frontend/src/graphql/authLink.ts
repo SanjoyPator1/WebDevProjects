@@ -1,5 +1,5 @@
 // src/graphql/authLink.js
-import { ApolloLink, concat } from "@apollo/client";
+import { ApolloLink } from "@apollo/client";
 import { JWT_TOKEN_NAME } from "../lib/constants";
 
 // Get the JWT token from localStorage

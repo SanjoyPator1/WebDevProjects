@@ -1,4 +1,4 @@
-import React from "react";
+
 import PostCard from "../../components/postCard";
 import TextInputWithButton from "../../components/textInputWithButton/textInputWithButton";
 import { fakePostData } from "../../lib/fakeData";
