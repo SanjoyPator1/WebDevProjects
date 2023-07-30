@@ -13,6 +13,9 @@ import Home from './pages/home';
 import SettingsPage from './pages/settings';
 
 function App() {
+
+  document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + 'px');
+
   return (
     <div className="h-[calc(100dvh)] App bg-transparent">
       <Toaster />
