@@ -1,4 +1,3 @@
-
 import PostCard from "../../components/postCard";
 import TextInputWithButton from "../../components/textInputWithButton/textInputWithButton";
 import { fakePostData, fakeProfileInfoData } from "../../lib/fakeData";
@@ -20,6 +19,7 @@ const Profile = () => {
       {/* profile info */}
       <div className="mb-lg">
         <ProfileInfoCard
+          profileId={fakeProfileInfoData[0].profileId}
           avatar={fakeProfileInfoData[0].avatar}
           name={fakeProfileInfoData[0].name}
           friendStatus={fakeProfileInfoData[0].friendStatus}

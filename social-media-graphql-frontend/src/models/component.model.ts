@@ -42,12 +42,13 @@ export interface CommentCardComponentModel {
   }
 
   export interface ProfileInfoCardProps {
+    profileId: string;
     avatar: string;
     name: string;
     friendStatus: string;
     bio: string;
     isOwnProfile?: boolean;
-    displayType?: "short" | "full"
+    displayType?: "short" | "full";
   }
   
 export  interface ManyUserScrollAreaModel {

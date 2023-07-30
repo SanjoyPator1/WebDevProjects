@@ -4,8 +4,10 @@ import AvatarLogo from "../avatar/AvatarLogo";
 import { ProfileInfoCardProps } from "../../models/component.model";
 import { BsPersonFillAdd, BsFillPersonCheckFill } from "react-icons/bs";
 import { AiFillMessage } from "react-icons/ai";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
+  profileId,
   avatar,
   name,
   friendStatus,
@@ -13,6 +15,11 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   isOwnProfile = false,
   displayType = "short",
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isProfileOpened = location.pathname.includes(`/profile/${profileId}`);
+
   return (
     <div className="w-full flex flex-col gap-base bg-primary-foreground p-4 rounded-lg">
       <div
@@ -24,13 +31,19 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           {/* Avatar */}
           <AvatarLogo image={avatar} text={name} />
           {/* Profile Name */}
+          <Button
+            variant="ghost"
+            className={`px-0 ${isProfileOpened ? "disabled:opacity-100" : ""}`}
+            onClick={() => navigate(`/profile/${profileId}`)}
+            disabled={isProfileOpened}
+          >
+            {name}
+          </Button>
           <h2
             className={`${
               displayType !== "short" ? "text-xl font-bold" : "text-base"
             }`}
-          >
-            {name}
-          </h2>
+          ></h2>
         </div>
         {/* Friend Request or Friend Status */}
         {!isOwnProfile && (
@@ -51,7 +64,10 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               {friendStatus === "friend" ? "Friend" : "Add Friend"}
             </Button>
             {/* Message Button */}
-            <Button className="w-32" variant={friendStatus === "friend" ? "default" : "outline"}>
+            <Button
+              className="w-32"
+              variant={friendStatus === "friend" ? "default" : "outline"}
+            >
               <AiFillMessage className="mr-2 h-4 w-4" />
               Message
             </Button>

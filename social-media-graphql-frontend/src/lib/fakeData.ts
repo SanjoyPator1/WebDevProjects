@@ -1,99 +1,113 @@
-import { CommentCardComponentModel } from "../models/component.model";
+import { CommentCardComponentModel, ProfileInfoCardProps } from "../models/component.model";
 
 // Fake data for the component
-export const fakeProfileInfoData = [
+export const fakeProfileInfoData: ProfileInfoCardProps[] = [
   {
+    profileId: "64c35b98b8802f9a879e2730",
     avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/191112_%EC%A0%84%EC%A7%80%ED%98%84.jpg/640px-191112_%EC%A0%84%EC%A7%80%ED%98%84.jpg",
     name: "John Doe",
-    friendStatus: "not_friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "not_friend",
     bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et ultrices elit. Nullam auctor volutpat felis, vel tincidunt nisl convallis nec.",
   },
   {
+    profileId: "2",
     avatar: "https://example.com/avatar2.jpg",
     name: "Jane Smith",
-    friendStatus: "friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "friend",
     bio: "I'm a software developer and a passionate learner. Love coding and building new things!",
   },
   {
+    profileId: "3",
     avatar: "https://example.com/avatar3.jpg",
     name: "Michael Johnson",
-    friendStatus: "request_sent", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "request_sent",
     bio: "Photographer by profession, capturing moments that last a lifetime.",
   },
   {
+    profileId: "4",
     avatar: "https://example.com/avatar4.jpg",
     name: "Emily Brown",
-    friendStatus: "not_friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "not_friend",
     bio: "Nature lover and traveler. Exploring the world one place at a time!",
   },
   {
+    profileId: "5",
     avatar: "https://example.com/avatar5.jpg",
     name: "David Lee",
-    friendStatus: "friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "friend",
     bio: "Avid reader, book lover, and aspiring writer. Let words take you on a journey!",
   },
   {
+    profileId: "6",
     avatar: "https://example.com/avatar6.jpg",
     name: "Sarah Adams",
-    friendStatus: "request_sent", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "request_sent",
     bio: "Adventurer and adrenaline junkie. Always seeking the thrill of new experiences.",
   },
   {
+    profileId: "7",
     avatar: "https://example.com/avatar7.jpg",
     name: "Michael Johnson Jr.",
-    friendStatus: "not_friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "not_friend",
     bio: "Tech enthusiast and gamer. Building cool stuff with code and conquering virtual worlds.",
   },
   {
+    profileId: "8",
     avatar: "https://example.com/avatar8.jpg",
     name: "Emma Wilson",
-    friendStatus: "friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "friend",
     bio: "Designer with a passion for aesthetics and creating visually stunning experiences.",
   },
   {
+    profileId: "9",
     avatar: "https://example.com/avatar9.jpg",
     name: "James Davis",
-    friendStatus: "not_friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "not_friend",
     bio: "Musician and music producer. Let the rhythm guide your soul.",
   },
   {
+    profileId: "10",
     avatar: "https://example.com/avatar10.jpg",
     name: "Olivia Clark",
-    friendStatus: "friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "friend",
     bio: "Animal lover and animal rights advocate. Making the world a better place for all creatures.",
   },
   {
+    profileId: "11",
     avatar: "https://example.com/avatar11.jpg",
     name: "William Rodriguez",
-    friendStatus: "not_friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "not_friend",
     bio: "Entrepreneur and startup enthusiast. Dream big, start small, and achieve greatness.",
   },
   {
+    profileId: "12",
     avatar: "https://example.com/avatar12.jpg",
     name: "Ava Martinez",
-    friendStatus: "request_sent", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "request_sent",
     bio: "Film buff and cinephile. Exploring the art of storytelling through the magic of cinema.",
   },
   {
+    profileId: "13",
     avatar: "https://example.com/avatar13.jpg",
     name: "Noah Wright",
-    friendStatus: "not_friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "not_friend",
     bio: "Sports enthusiast and fitness freak. Push your limits and conquer the challenges.",
   },
   {
+    profileId: "14",
     avatar: "https://example.com/avatar14.jpg",
     name: "Mia Moore",
-    friendStatus: "friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "friend",
     bio: "Foodie and cooking enthusiast. Savoring the taste of life, one recipe at a time.",
   },
   {
+    profileId: "15",
     avatar: "https://example.com/avatar15.jpg",
     name: "Ethan Turner",
-    friendStatus: "not_friend", // Possible values: "friend", "request_sent", "not_friend"
+    friendStatus: "not_friend",
     bio: "Artist and painter. Discovering the world's beauty and expressing it on canvas.",
   },
 ];
-
 
 export const fakePostData = [
   {
