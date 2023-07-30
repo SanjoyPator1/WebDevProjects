@@ -13,9 +13,9 @@ import Home from './pages/home';
 import SettingsPage from './pages/settings';
 
 function App() {
-  
+
   return (
-    <div className="absolute inset-0 App bg-transparent">
+    <div className="h-[calc(100dvh)] App bg-transparent">
       <Toaster />
       <Routes>
 
