@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { NavigationMenuBar } from "../../components/navbar";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
@@ -53,8 +53,8 @@ const WithNav = () => {
   }, [error]);
 
   return (
-    <div className="h-full flex flex-col w-full overflow-hidden">
-      <div className="w-full top-0 z-10">
+    <div className="h-full flex flex-col w-full overflow-hidden relative">
+      <div className="w-full top-0 z-20 sticky">
         <NavigationMenuBar />
       </div>
       <div className="flex-1 overflow-hidden">
