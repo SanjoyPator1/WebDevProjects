@@ -13,9 +13,7 @@ import Home from './pages/home';
 import SettingsPage from './pages/settings';
 
 function App() {
-
-  document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + 'px');
-
+  
   return (
     <div className="absolute inset-0 App bg-transparent">
       <Toaster />

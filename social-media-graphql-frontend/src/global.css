@@ -261,7 +261,7 @@
   }
 
   html {
-    @apply min-h-screen;
+    /* @apply min-h-screen; */
   }
 
   body {
