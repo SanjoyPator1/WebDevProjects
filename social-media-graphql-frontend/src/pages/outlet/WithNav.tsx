@@ -10,6 +10,7 @@ import {
 import { useRecoilState } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
 import { useToast } from "../../components/ui/use-toast";
+import Chat from "../chat";
 
 const WithNav = () => {
   const navigate = useNavigate();
@@ -36,13 +37,13 @@ const WithNav = () => {
     }
   }, [data]);
 
-  useEffect(()=> {
+  useEffect(() => {
     if (error) {
       const e = error as any;
       const errorMessage =
         e?.networkError?.result?.errors?.[0]?.message ??
         "An unknown error occurred.";
-      console.log({errorMessage})
+      console.log({ errorMessage });
       toast({
         variant: "destructive",
         title: `Authentication error`,
@@ -50,7 +51,7 @@ const WithNav = () => {
       });
       navigate("/signin");
     }
-  },[error])
+  }, [error]);
 
   return (
     <div className="h-full flex flex-col w-full overflow-hidden">
@@ -58,7 +59,14 @@ const WithNav = () => {
         <NavigationMenuBar />
       </div>
       <div className="flex-1 overflow-hidden">
-        <Outlet />
+        <div className="h-full flex flex-wrap">
+          <div className="h-full border w-full md:w-9/12 p-lg-container">
+            <Outlet />
+          </div>
+          <div className="h-full hidden md:block border md:w-3/12 p-lg-container">
+            <Chat />
+          </div>
+        </div>
       </div>
     </div>
   );

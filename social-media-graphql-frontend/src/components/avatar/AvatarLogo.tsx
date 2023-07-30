@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getInitials } from "../../lib/helperFunction";
 
 interface AvatarLogoModel {
     image: string;
@@ -12,7 +13,7 @@ const AvatarLogo: FC<AvatarLogoModel> = ({image, text,size="small"}) => {
   return (
     <Avatar className={sizeClass}>
       <AvatarImage className="object-cover" src={image} />
-      <AvatarFallback>{text && "U"}</AvatarFallback>
+      <AvatarFallback>{text ? getInitials(text): "U"}</AvatarFallback>
     </Avatar>
   );
 };

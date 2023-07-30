@@ -1,3 +1,5 @@
+import { differenceInHours, differenceInMinutes, format } from "date-fns";
+
 const cloudinaryEndPoint: string = import.meta.env.VITE_CLOUDINARY_ENDPOINT;
 
 interface CloudinaryResponse {
@@ -35,4 +37,37 @@ export async function uploadFileToCloudinary(file: File): Promise<CloudinaryResp
     console.error("Error uploading image to Cloudinary:", error);
     throw error;
   }
+}
+
+// Calculate the time difference between now and the given time
+export  const timeDifference = (givenTime: string) => {
+  const currentTime = new Date();
+  const postTime = new Date(givenTime);
+
+  const minutesDiff = differenceInMinutes(currentTime, postTime);
+  const hoursDiff = differenceInHours(currentTime, postTime);
+
+  if (hoursDiff >= 24) {
+    // If more than or equal to 24 hours, show the date in "14 March 2023" format
+    return format(postTime, "dd MMMM yyyy");
+  } else if (hoursDiff >= 1) {
+    // If less than 24 hours but more than or equal to 1 hour, show hours ago
+    return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"} ago`;
+  } else {
+    // If less than 1 hour, show minutes ago
+    return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"} ago`;
+  }
+};
+
+export function getInitials(name: string): string {
+  const words = name.split(' ');
+  let initials = '';
+
+  for (const word of words) {
+    if (word.length > 0) {
+      initials += word[0].toUpperCase();
+    }
+  }
+
+  return initials;
 }

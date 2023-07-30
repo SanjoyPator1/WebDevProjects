@@ -28,3 +28,14 @@ export interface PostCardContent{
 export interface PostCardComponentModel{
     data: PostCardContent
 }
+
+export interface CommentCardComponentModel {
+    data: {
+      commentId: string;
+      ownerId: string;
+      ownerAvatar: string;
+      ownerName: string;
+      createdAt: string;
+      commentText: string;
+    };
+  }

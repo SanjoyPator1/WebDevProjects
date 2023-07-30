@@ -7,14 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Label } from "../ui/label";
 import { PostCardComponentModel } from "../../models/component.model";
 import AvatarLogo from "../avatar/AvatarLogo";
 import { Button } from "../ui/button";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { BiComment } from "react-icons/bi";
 import { Separator } from "../ui/separator";
-import { format, differenceInMinutes, differenceInHours } from "date-fns";
+import { timeDifference } from "../../lib/helperFunction";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PostCard: FC<PostCardComponentModel> = ({ data }) => {
   const {
@@ -28,44 +28,44 @@ const PostCard: FC<PostCardComponentModel> = ({ data }) => {
     isLikedByMe,
   } = data;
 
-  // Calculate the time difference between now and the post creation time
-  const timeDifference = () => {
-    const currentTime = new Date();
-    const postTime = new Date(createdAt);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const minutesDiff = differenceInMinutes(currentTime, postTime);
-    const hoursDiff = differenceInHours(currentTime, postTime);
-
-    if (hoursDiff >= 24) {
-      // If more than or equal to 24 hours, show the date in "14 March 2023" format
-      return format(postTime, "dd MMMM yyyy");
-    } else if (hoursDiff >= 1) {
-      // If less than 24 hours but more than or equal to 1 hour, show hours ago
-      return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"} ago`;
-    } else {
-      // If less than 1 hour, show minutes ago
-      return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"} ago`;
-    }
-  };
+  const isPostOpened = location.pathname.includes(`/post/${postId}`);
 
   return (
-    <Card key={postId}>
+    <Card key={postId} className="bg-secondary">
       <CardHeader className="w-full flex flex-row items-center justify-between">
         <div className="flex items-center gap-base">
           <AvatarLogo image={ownerAvatar} text={ownerName} />
           <span>{ownerName}</span>
         </div>
-        <span className="text-sm">{timeDifference()}</span>
+        <span className="text-sm">{timeDifference(createdAt)}</span>
       </CardHeader>
       <CardContent className="max-h-60 overflow-y-auto">
         <p className="text-lg">{postText}</p>
       </CardContent>
       <CardFooter className="flex flex-col items-center">
         <div className="w-full flex items-center justify-between">
-          <Label>{likesCount} Likes</Label>
-          <Label>{commentsCount} Comments</Label>
+          <Button
+            variant="ghost"
+            className={`px-0 ${isPostOpened ? "disabled:opacity-100" : ""}`}
+            onClick={() => navigate(`post/${postId}`)}
+            disabled={isPostOpened}
+          >
+            {likesCount} Likes
+          </Button>
+          {/* Make the "Comments" label clickable and navigate to the post page */}
+          <Button
+            variant="ghost"
+            className={`px-0 ${isPostOpened ? "disabled:opacity-100" : ""}`}
+            onClick={() => navigate(`post/${postId}`)}
+            disabled={isPostOpened}
+          >
+            {commentsCount} Comments
+          </Button>
         </div>
-        <Separator className="my-2" />
+        <Separator className="my-2 dark:bg-slate-700" />
         <div className="w-full flex items-center justify-between">
           <Button variant="ghost" className="px-0">
             {isLikedByMe ? (
@@ -75,7 +75,12 @@ const PostCard: FC<PostCardComponentModel> = ({ data }) => {
             )}
             Like
           </Button>
-          <Button variant="ghost" className="px-0">
+          <Button
+            variant="ghost"
+            className={`px-0 ${isPostOpened ? "disabled:opacity-100" : ""}`}
+            onClick={() => navigate(`post/${postId}`)}
+            disabled={isPostOpened}
+          >
             <BiComment className="mr-2 h-4 w-4" /> Comments
           </Button>
         </div>
