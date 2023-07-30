@@ -25,7 +25,7 @@ const TextInputWithButton: React.FC<TextInputWithButtonProps > = ({ placeholder,
   };
 
   return (
-    <div className="w-full px-md py-lg border rounded-md flex flex-wrap flex-col md:flex-row gap-base bg-secondary">
+    <div className="w-full px-md py-lg border rounded-md flex flex-wrap flex-col md:flex-row gap-base bg-secondary text-base">
       <div className="flex items-center flex-1 w-full gap-base">
         {/* avatar */}
         <AvatarLogo image={userData.avatar} text={userData.name} />
@@ -35,12 +35,12 @@ const TextInputWithButton: React.FC<TextInputWithButtonProps > = ({ placeholder,
           placeholder={placeholder}
           value={postText}
           onChange={(e) => setPostText(e.target.value)}
-          className="resize-none flex-1 bg--foreground dark:text-input"
+          className="resize-none flex-1 bg--foreground dark:text-input text-base"
         />
       </div>
       {/* post button */}
       <div className="w-full md:w-fit flex justify-end items-end">
-        <Button type="submit" onClick={handlePost}>
+        <Button className="text-base" type="submit" onClick={handlePost}>
           {buttonText}
           <IoMdSend className="ml-2 h-4 w-4" />
         </Button>
