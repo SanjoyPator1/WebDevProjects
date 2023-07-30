@@ -35,7 +35,7 @@ const TextInputWithButton: React.FC<TextInputWithButtonProps > = ({ placeholder,
           placeholder={placeholder}
           value={postText}
           onChange={(e) => setPostText(e.target.value)}
-          className="resize-none flex-1 bg--foreground text-input"
+          className="resize-none flex-1 bg--foreground dark:text-input"
         />
       </div>
       {/* post button */}
