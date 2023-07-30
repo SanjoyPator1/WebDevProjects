@@ -14,7 +14,7 @@ import SettingsPage from './pages/settings';
 
 function App() {
   return (
-    <div className="h-screen App bg-transparent">
+    <div className="h-[calc(100dvh)] App bg-transparent">
       <Toaster />
       <Routes>
 
