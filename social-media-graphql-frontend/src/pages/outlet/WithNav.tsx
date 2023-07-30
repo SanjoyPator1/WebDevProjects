@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 import { NavigationMenuBar } from "../../components/navbar";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
