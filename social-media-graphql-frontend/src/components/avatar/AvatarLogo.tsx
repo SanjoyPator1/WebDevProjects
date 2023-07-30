@@ -13,7 +13,7 @@ const AvatarLogo: FC<AvatarLogoModel> = ({image, text,size="small"}) => {
   return (
     <Avatar className={sizeClass}>
       <AvatarImage className="object-cover" src={image} />
-      <AvatarFallback>{text ? getInitials(text): "U"}</AvatarFallback>
+      <AvatarFallback className="bg-primary text-input">{text ? getInitials(text): "U"}</AvatarFallback>
     </Avatar>
   );
 };

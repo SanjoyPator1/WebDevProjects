@@ -20,6 +20,7 @@ const PostCard: FC<PostCardComponentModel> = ({ data }) => {
   const {
     postId,
     ownerAvatar,
+    ownerId,
     ownerName,
     createdAt,
     postText,
@@ -38,7 +39,13 @@ const PostCard: FC<PostCardComponentModel> = ({ data }) => {
       <CardHeader className="w-full flex flex-row items-center justify-between">
         <div className="flex items-center gap-base">
           <AvatarLogo image={ownerAvatar} text={ownerName} />
-          <span>{ownerName}</span>
+          <Button
+            variant="ghost"
+            className={`px-0 ${isPostOpened ? "disabled:opacity-100" : ""}`}
+            onClick={() => navigate(`/profile/${ownerId}`)}
+          >
+            {ownerName}
+          </Button>
         </div>
         <span className="text-sm">{timeDifference(createdAt)}</span>
       </CardHeader>
@@ -59,7 +66,7 @@ const PostCard: FC<PostCardComponentModel> = ({ data }) => {
           <Button
             variant="ghost"
             className={`px-0 ${isPostOpened ? "disabled:opacity-100" : ""}`}
-            onClick={() => navigate(`post/${postId}`)}
+            onClick={() => navigate(`/post/${postId}`)}
             disabled={isPostOpened}
           >
             {commentsCount} Comments
@@ -78,7 +85,7 @@ const PostCard: FC<PostCardComponentModel> = ({ data }) => {
           <Button
             variant="ghost"
             className={`px-0 ${isPostOpened ? "disabled:opacity-100" : ""}`}
-            onClick={() => navigate(`post/${postId}`)}
+            onClick={() => navigate(`/post/${postId}`)}
             disabled={isPostOpened}
           >
             <BiComment className="mr-2 h-4 w-4" /> Comments

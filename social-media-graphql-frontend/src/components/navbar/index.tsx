@@ -15,6 +15,8 @@ import { useRecoilValue } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
 import ThemeSelector from "../ThemeSelector";
 import { ChatSheet } from "../ChatSheet";
+import BrandLogo from "../BrandLogo";
+
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -58,17 +60,15 @@ export function NavigationMenuBar() {
   const userData = useRecoilValue(userDataState);
 
   return (
-    <NavigationMenu className="border">
+    <NavigationMenu className="border-b-2">
       <NavigationMenuList className="w-screen flex flex-row justify-between gap-x-2 md:gap-x-3">
         {/* normal link */}
-        <div className="">
+        <div className="px-4 py-2">
           {/* logo */}
           <NavigationMenuItem>
-            <Link to="/">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Logo
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+             <BrandLogo/>
+            </NavigationMenuLink>
           </NavigationMenuItem>
         </div>
         <div className="flex flex-row flex-wrap justify-end gap-x-2 md:gap-x-3">
@@ -87,7 +87,7 @@ export function NavigationMenuBar() {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem className="px-4 py-2">
-            <ThemeSelector/>
+            <ThemeSelector />
           </NavigationMenuItem>
           <NavigationMenuItem className="block md:hidden">
             <ChatSheet />
@@ -95,7 +95,7 @@ export function NavigationMenuBar() {
           {/* drop down menu */}
           <NavigationMenuItem>
             <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
-            <NavigationMenuContent >
+            <NavigationMenuContent>
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-3">
                   <NavigationMenuLink asChild>
@@ -154,12 +154,12 @@ export function NavigationMenuBar() {
   );
 }
 
-interface ListItemProps  {
+interface ListItemProps {
   className?: string;
   title: string;
   linkTo: string;
   children: ReactNode;
-};
+}
 
 const ListItem: React.FC<ListItemProps> = ({
   className,

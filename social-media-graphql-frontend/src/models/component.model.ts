@@ -14,20 +14,21 @@ export interface navBarModel {
 }
 
 //post model
-export interface PostCardContent{
+export interface PostCardContent {
     postId: string;
     ownerAvatar: string;
     ownerName: string;
+    ownerId: string;
     createdAt: string;
     postText: string;
     likesCount: string;
     commentsCount: string;
     isLikedByMe: boolean;
-}
-
-export interface PostCardComponentModel{
-    data: PostCardContent
-}
+  }
+  
+  export interface PostCardComponentModel {
+    data: PostCardContent;
+  }
 
 export interface CommentCardComponentModel {
     data: {
@@ -38,4 +39,17 @@ export interface CommentCardComponentModel {
       createdAt: string;
       commentText: string;
     };
+  }
+
+  export interface ProfileInfoCardProps {
+    avatar: string;
+    name: string;
+    friendStatus: string;
+    bio: string;
+    isOwnProfile?: boolean;
+    displayType?: "short" | "full"
+  }
+  
+export  interface ManyUserScrollAreaModel {
+    dataProp : ProfileInfoCardProps[]
   }
