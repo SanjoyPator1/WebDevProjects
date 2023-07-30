@@ -17,7 +17,7 @@ function App() {
   document.documentElement.style.setProperty("--vh", window.innerHeight * 0.01 + 'px');
 
   return (
-    <div className="h-[calc(100dvh)] App bg-transparent">
+    <div className="h-screen App bg-transparent">
       <Toaster />
       <Routes>
 
