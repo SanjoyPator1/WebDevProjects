@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @supports (-webkit-touch-callout: none) {
+@supports (-webkit-touch-callout: none) {
   .h-screen {
     height: -webkit-fill-available;
   }
-} */
+}
 
 /* @supports (-webkit-touch-callout: none) {
   .h-screen {
@@ -261,7 +261,7 @@
   }
 
   html {
-    /* @apply min-h-screen; */
+    @apply min-h-screen;
   }
 
   body {
