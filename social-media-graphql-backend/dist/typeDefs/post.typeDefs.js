@@ -39,7 +39,7 @@ const postTypeDefs = gql `
     message: String!
   }
 
-  input likePostInput{
+  input reactionPostInput{
     postId: String!
   }
 
@@ -51,7 +51,8 @@ const postTypeDefs = gql `
 
   type Mutation {
     createPost(input: NewPostInput!): Post!
-    likePost(input : likePostInput): Like!
+    likePost(input : reactionPostInput): Like!
+    unlikePost(input: reactionPostInput!): ID! # Return the postId
     addComment(input: NewCommentInput!): Comment!
   }
 `;
