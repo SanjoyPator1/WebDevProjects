@@ -10,6 +10,7 @@ const postTypeDefs = gql`
   }
 
   type Comment {
+    _id: ID!
     userId: ID!
     commentOwner: User
     postId: ID!
@@ -23,6 +24,9 @@ const postTypeDefs = gql`
     ownerId: ID!
     owner: User
     createdAt: String!
+    likesCount: String!
+    commentsCount: String!
+    isLikedByMe: Boolean!
     likes: [Like]!
     comments: [Comment!]!
   }

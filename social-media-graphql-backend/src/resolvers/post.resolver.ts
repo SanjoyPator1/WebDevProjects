@@ -51,6 +51,40 @@ const postResolvers = {
         throw new Error("Failed to fetch the post owner");
       }
     },
+    // Field-level resolver for the 'likesCount' field
+    likesCount: async (post) => {
+      try {
+        // Find the total count of likes associated with the post using the postId field
+        const likesCount = await LikeModel.countDocuments({ postId: post._id });
+        return likesCount.toString(); // Convert the count to a string for compatibility with the GraphQL schema
+      } catch (error) {
+        throw new Error("Failed to fetch likes count");
+      }
+    },
+     // Field-level resolver for the 'commentsCount' field
+     commentsCount: async (post) => {
+      try {
+        // Find the total count of comments associated with the post using the postId field
+        const commentsCount = await CommentModel.countDocuments({ postId: post._id });
+        return commentsCount.toString(); // Convert the count to a string for compatibility with the GraphQL schema
+      } catch (error) {
+        throw new Error("Failed to fetch comments count");
+      }
+    },
+     // Field-level resolver for the 'isLikedByMe' field
+     isLikedByMe: async (post, _, { user }) => {
+      try {
+        // Check if the user has already liked the post
+        const existingLike = await LikeModel.findOne({
+          userId: user._id,
+          postId: post._id,
+        });
+
+        return !!existingLike; // Return true if the like exists, otherwise false
+      } catch (error) {
+        throw new Error("Failed to fetch like status");
+      }
+    },
     likes: async (post) => {
       try {
         // Find all likes associated with the post using the postId field
