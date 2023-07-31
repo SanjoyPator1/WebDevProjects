@@ -1,6 +1,6 @@
-import PostCard from "../../components/postCard";
+
 import TextInputWithButton from "../../components/textInputWithButton/textInputWithButton";
-import { fakePostData, fakeProfileInfoData } from "../../lib/fakeData";
+import { fakeProfileInfoData } from "../../lib/fakeData";
 import { ScrollArea } from "../../components/ui/scroll-area";
 import { useRecoilState } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
@@ -40,13 +40,15 @@ const Profile = () => {
         />
       </div>
       {/* all the other posts */}
-      {fakePostData.map((postData) => (
-        <div className="mb-lg">
-          <PostCard key={postData.postId} data={postData} />
-        </div>
-      ))}
+      show post here
     </ScrollArea>
   );
 };
 
 export default Profile;
+
+// {fakePostData.map((postData) => (
+//   <div className="mb-lg">
+//     {/* <PostCard key={postData.postId} data={postData} /> */}
+//   </div>
+// ))}

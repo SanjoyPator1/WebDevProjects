@@ -5,7 +5,6 @@ import {
   CardFooter,
   CardHeader,
 } from "../ui/card";
-import { PostCardComponentModel } from "../../models/component.model";
 import AvatarLogo from "../avatar/AvatarLogo";
 import { Button } from "../ui/button";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
@@ -13,15 +12,21 @@ import { BiComment } from "react-icons/bi";
 import { Separator } from "../ui/separator";
 import { timeDifference } from "../../lib/helperFunction";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PostModel } from "../../models/component.model";
 
-const PostCard: FC<PostCardComponentModel> = ({ data }) => {
+
+interface PostCardProps {
+  data: PostModel;
+  onLikePost: () => void;
+  onUnlikePost: () => void;
+}
+
+const PostCard: FC<PostCardProps> = ({ data, onLikePost, onUnlikePost }) => {
   const {
-    postId,
-    ownerAvatar,
-    ownerId,
-    ownerName,
+    _id: postId,
+    owner: { _id: ownerId, name: ownerName, avatar: ownerAvatar },
     createdAt,
-    postText,
+    message: postText,
     likesCount,
     commentsCount,
     isLikedByMe,
@@ -72,7 +77,8 @@ const PostCard: FC<PostCardComponentModel> = ({ data }) => {
         </div>
         <Separator className="my-2 dark:bg-slate-700" />
         <div className="w-full flex items-center justify-between">
-          <Button variant="ghost" className="px-0">
+          {/* button to handle post reaction : like | unlike */}
+          <Button variant="ghost" className="px-0" onClick={isLikedByMe ? onUnlikePost : onLikePost}>
             {isLikedByMe ? (
               <AiFillLike className="mr-2 h-4 w-4" />
             ) : (

@@ -22,42 +22,47 @@ export const GET_POSTS_BY_OWNER_ID = gql`
 `;
 
 export const GET_POST_BY_ID = gql`
-  query GetPostById($id: ID!) {
-    post(id: $id) {
+  query getPostById($postId: ID!) {
+    post(id: $postId) {
       _id
       message
-      ownerId
       createdAt
-      likes {
+      likesCount
+      commentsCount
+      isLikedByMe
+      owner {
         _id
-        userId
-        createdAt
+        name
+        avatar
       }
       comments {
-        userId
+        _id
         comment
         date
+        commentOwner {
+          _id
+          name
+          avatar
+        }
       }
     }
   }
 `;
 
+//get feed gets all the post available -> irrespective of friend status
 export const GET_FEED = gql`
-  query GetFeed {
+  query getAllPosts {
     feed {
       _id
       message
-      ownerId
       createdAt
-      likes {
+      likesCount
+      commentsCount
+      isLikedByMe
+      owner {
         _id
-        userId
-        createdAt
-      }
-      comments {
-        userId
-        comment
-        date
+        name
+        avatar
       }
     }
   }

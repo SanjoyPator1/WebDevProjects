@@ -54,7 +54,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           >
             <Button
               variant={friendStatus === "friend" ? "outline" : "default"}
-              className="mr-2 w-32"
+              className="w-32"
             >
               {friendStatus === "friend" ? (
                 <BsFillPersonCheckFill className="mr-2 h-4 w-4" />
@@ -66,7 +66,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
             {/* Message Button */}
             <Button
               className="w-32"
-              variant={friendStatus === "friend" ? "default" : "outline"}
+              variant={friendStatus === "friend" ? "outline" : "ghost"}
             >
               <AiFillMessage className="mr-2 h-4 w-4" />
               Message

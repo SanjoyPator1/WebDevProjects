@@ -1,3 +1,36 @@
+// interafce for entity
+export interface CommentModel {
+  _id: string;
+  comment: string;
+  date: string;
+  commentOwner: {
+    _id: string;
+    name: string;
+    avatar: string;
+  };
+}
+
+export interface OwnerModel {
+  _id: string;
+  name: string;
+  avatar: string;
+}
+
+export interface PostModel {
+  _id: string;
+  message: string;
+  createdAt: string;
+  likesCount: string;
+  commentsCount: string;
+  isLikedByMe: boolean;
+  owner: OwnerModel;
+  comments: CommentModel[]
+}
+
+export interface FeedData {
+  feed: PostModel[];
+}
+
 //nav bar model
 export interface navBarObjModel {
     name : string;

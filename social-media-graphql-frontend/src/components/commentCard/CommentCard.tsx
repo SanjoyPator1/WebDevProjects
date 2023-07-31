@@ -1,13 +1,19 @@
 import { FC } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import { CommentCardComponentModel } from "../../models/component.model";
+import { CommentModel } from "../../models/component.model"; // Import the CommentModel interface
 import AvatarLogo from "../avatar/AvatarLogo";
 import { timeDifference } from "../../lib/helperFunction";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
-const CommentCard: FC<CommentCardComponentModel> = ({ data }) => {
-  const { commentId, ownerAvatar, ownerName, createdAt, commentText } = data;
+interface CommentCardProps {
+  data: CommentModel; // Adjust the prop type to use the CommentModel interface
+}
+
+const CommentCard: FC<CommentCardProps> = ({ data }) => {
+  const { _id: commentId, comment, date: createdAt, commentOwner } = data; // Destructure the comment data
+
+  const { _id: ownerId, name: ownerName, avatar: ownerAvatar } = commentOwner; // Destructure the commentOwner data
 
   const navigate = useNavigate();
 
@@ -26,7 +32,7 @@ const CommentCard: FC<CommentCardComponentModel> = ({ data }) => {
               <Button
                 variant="ghost"
                 className={`px-0 `}
-                onClick={() => navigate(`/profile/${data.ownerId}`)}
+                onClick={() => navigate(`/profile/${ownerId}`)}
               >
                 {ownerName}
               </Button>
@@ -35,7 +41,7 @@ const CommentCard: FC<CommentCardComponentModel> = ({ data }) => {
           </CardHeader>
           <CardContent>
             {/* Main Comment */}
-            <p>{commentText}</p>
+            <p>{comment}</p> {/* Use the 'comment' data for the comment text */}
           </CardContent>
           {/* <Separator className="my-2" /> */}
           {false && (
