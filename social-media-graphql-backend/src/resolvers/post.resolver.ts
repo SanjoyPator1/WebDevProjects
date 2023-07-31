@@ -1,7 +1,4 @@
-
-import throwCustomError, {
-  ErrorTypes,
-} from "../utils/error-handler";
+import throwCustomError, { ErrorTypes } from "../utils/error-handler";
 import PostModel from "../db/post.model";
 import UserModel from "../db/user.model";
 import CommentModel from "../db/comment.model";
@@ -61,18 +58,20 @@ const postResolvers = {
         throw new Error("Failed to fetch likes count");
       }
     },
-     // Field-level resolver for the 'commentsCount' field
-     commentsCount: async (post) => {
+    // Field-level resolver for the 'commentsCount' field
+    commentsCount: async (post) => {
       try {
         // Find the total count of comments associated with the post using the postId field
-        const commentsCount = await CommentModel.countDocuments({ postId: post._id });
+        const commentsCount = await CommentModel.countDocuments({
+          postId: post._id,
+        });
         return commentsCount.toString(); // Convert the count to a string for compatibility with the GraphQL schema
       } catch (error) {
         throw new Error("Failed to fetch comments count");
       }
     },
-     // Field-level resolver for the 'isLikedByMe' field
-     isLikedByMe: async (post, _, { user }) => {
+    // Field-level resolver for the 'isLikedByMe' field
+    isLikedByMe: async (post, _, { user }) => {
       try {
         // Check if the user has already liked the post
         const existingLike = await LikeModel.findOne({
@@ -182,6 +181,35 @@ const postResolvers = {
         return newLike;
       } catch (error) {
         throw new Error(`Failed to like the post: ${error.message}`);
+      }
+    },
+    unlikePost: async (_, { input }, { user }) => {
+      const { postId } = input;
+      
+      try {
+        // Check if the post exists
+        const post = await PostModel.findById(postId);
+        if (!post) {
+          throwCustomError(
+            `Post with ID ${postId} not found`,
+            ErrorTypes.NOT_FOUND
+          );
+        }
+
+        // Find and delete the like associated with the post and the current user
+        const deletedLike = await LikeModel.findOneAndDelete({
+          userId: user._id,
+          postId,
+        });
+
+        if (!deletedLike) {
+          throwCustomError("You have not liked this post", ErrorTypes.BAD_USER_INPUT);
+        }
+
+        // Return the postId
+        return postId;
+      } catch (error) {
+        throw new Error(`Failed to unlike the post: ${error.message}`);
       }
     },
     addComment: async (_, { input }, { user }) => {

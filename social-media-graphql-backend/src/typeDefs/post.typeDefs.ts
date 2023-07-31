@@ -53,6 +53,7 @@ const postTypeDefs = gql`
   type Mutation {
     createPost(input: NewPostInput!): Post!
     likePost(input : likePostInput): Like!
+    unlikePost(input: LikePostInput!): ID! # Return the postId
     addComment(input: NewCommentInput!): Comment!
   }
 `;
