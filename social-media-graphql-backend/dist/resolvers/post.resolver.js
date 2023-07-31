@@ -28,7 +28,9 @@ const postResolvers = {
         },
         feed: async () => {
             try {
-                return PostModel.find();
+                const feedData = PostModel.find().sort({ createdAt: -1 });
+                console.log({ feedData });
+                return feedData;
             }
             catch (error) {
                 throw new Error("Failed to fetch the feed");

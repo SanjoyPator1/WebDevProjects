@@ -34,7 +34,8 @@ const postResolvers = {
 
     feed: async () => {
       try {
-        return PostModel.find();
+        const feedData = PostModel.find().sort({ createdAt: -1 });
+        return feedData
       } catch (error) {
         throw new Error("Failed to fetch the feed");
       }
@@ -185,7 +186,7 @@ const postResolvers = {
     },
     unlikePost: async (_, { input }, { user }) => {
       const { postId } = input;
-      
+
       try {
         // Check if the post exists
         const post = await PostModel.findById(postId);
