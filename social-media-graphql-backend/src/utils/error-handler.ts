@@ -27,7 +27,6 @@ export const ErrorTypes = {
     errorStatus: 500,
   },
 };
-
 //throwCustomError function
 export default (errorMessage, errorType) => {
   // console.log('Throwing custom error');

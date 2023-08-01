@@ -99,14 +99,17 @@ const userResolver = {
           ],
         });
 
+        // userA = sender
+        // userB = receiver
+
         // Check if the loggedInUser has sent a friend request
         if (friendshipRecord && friendshipRecord.status === "pending") {
           if (friendshipRecord.userA.toString() === loggedInUser._id.toString()) {
             // If the loggedInUser sent the friend request to the viewed user
-            return "pendingByUser";
+            return "pendingByLoggedInUser";
           } else {
             // If the viewed user sent the friend request to the loggedInUser
-            return "pendingByLoggedInUser";
+            return "pendingByUser";
           }
         }
 
