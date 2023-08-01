@@ -14,17 +14,25 @@ export const LOGGEDIN_USER = gql`
 `;
 
 export const GET_USER_BY_ID = gql`
-  query findUser($userId: ID!) {
+  query GET_USER_BY_ID($userId: ID!) {
     findUser(userId: $userId) {
       _id
-      name
-      email
       avatar
-      createdAt
-      role
-      friends {
+      name
+      bio
+      friendStatus
+      posts {
         _id
-        name
+        message
+        createdAt
+        likesCount
+        commentsCount
+        isLikedByMe
+        owner {
+          _id
+          name
+          avatar
+        }
       }
     }
   }

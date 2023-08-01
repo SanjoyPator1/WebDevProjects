@@ -1,4 +1,4 @@
-// interafce for entity
+// interface for entity
 export interface CommentModel {
   _id: string;
   comment: string;
@@ -10,10 +10,13 @@ export interface CommentModel {
   };
 }
 
-export interface OwnerModel {
+export interface UserModel {
   _id: string;
   name: string;
-  avatar: string;
+  avatar?: string;
+  bio?: string;
+  friendStatus : "self" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
+  posts? : PostModel[]
 }
 
 export interface PostModel {
@@ -23,7 +26,7 @@ export interface PostModel {
   likesCount: string;
   commentsCount: string;
   isLikedByMe: boolean;
-  owner: OwnerModel;
+  owner: UserModel;
   comments: CommentModel[]
 }
 
@@ -76,10 +79,10 @@ export interface CommentCardComponentModel {
 
   export interface ProfileInfoCardProps {
     profileId: string;
-    avatar: string;
+    avatar?: string;
     name: string;
-    friendStatus: string;
-    bio: string;
+    bio?: string;
+    friendStatus:"self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend";
     isOwnProfile?: boolean;
     displayType?: "short" | "full";
   }

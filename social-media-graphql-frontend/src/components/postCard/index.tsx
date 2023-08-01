@@ -41,7 +41,7 @@ const PostCard: FC<PostCardProps> = ({ data, onLikePost, onUnlikePost }) => {
     <Card key={postId} className="bg-secondary">
       <CardHeader className="w-full flex flex-row items-center justify-between">
         <div className="flex items-center gap-base">
-          <AvatarLogo image={ownerAvatar} text={ownerName} />
+          <AvatarLogo image={ownerAvatar ? ownerAvatar : ""} text={ownerName} />
           <Button
             variant="ghost"
             className={`px-0 ${isPostOpened ? "disabled:opacity-100" : ""}`}
