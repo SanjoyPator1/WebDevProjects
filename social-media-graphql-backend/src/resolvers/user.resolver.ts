@@ -101,6 +101,8 @@ const userResolver = {
     
         // userA = sender
         // userB = receiver
+        // pendingByUser = I am the sender so now it is pending on the user side i.e userA === loggedIn use
+        // pendingByLoggedInUser = I am the receiver so now it is pending on the logged in user side i.e userB === loggedIn user
     
         console.log({ friendshipRecord });
         console.log({ loggedInUser });
@@ -109,10 +111,10 @@ const userResolver = {
         if (friendshipRecord && friendshipRecord.status === "pending") {
           if (friendshipRecord.userA.toString() === loggedInUser._id.toString()) {
             // If the loggedInUser sent the friend request to the viewed user
-            return "pendingByLoggedInUser";
+            return "pendingByUser";
           } else {
             // If the viewed user sent the friend request to the loggedInUser
-            return "pendingByUser";
+            return "pendingByLoggedInUser";
           }
         } else if (friendshipRecord && friendshipRecord.status === "accepted") {
           // If the friendship status is 'accepted', the users are friends
