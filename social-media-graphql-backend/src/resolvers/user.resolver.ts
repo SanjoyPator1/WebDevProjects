@@ -102,6 +102,9 @@ const userResolver = {
         // userA = sender
         // userB = receiver
 
+        console.log({friendshipRecord})
+        console.log({loggedInUser})
+
         // Check if the loggedInUser has sent a friend request
         if (friendshipRecord && friendshipRecord.status === "pending") {
           if (friendshipRecord.userA.toString() === loggedInUser._id.toString()) {
