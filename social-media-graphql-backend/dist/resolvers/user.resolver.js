@@ -108,6 +108,10 @@ const userResolver = {
                         return "pendingByUser";
                     }
                 }
+                else if (friendshipRecord && friendshipRecord.status === "accepted") {
+                    // If the friendship status is 'accepted', the users are friends
+                    return "friend";
+                }
                 // If there is no friendship record or the status is 'cancelled', the friend status is 'notFriend'
                 return "notFriend";
             }

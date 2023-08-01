@@ -84,13 +84,13 @@ const userResolver = {
       }
     },
     // Field-level resolver for the 'friendStatus' field of the 'User' type
-    friendStatus: async (user, _, { user: loggedInUser }) => {
+    friendStatus : async (user, _, { user: loggedInUser }) => {
       try {
         // Check if the user is viewing their own profile
         if (user._id.toString() === loggedInUser._id.toString()) {
           return "self";
         }
-
+    
         // Find the friendship record between the logged-in user and the viewed user
         const friendshipRecord = await FriendshipModel.findOne({
           $or: [
@@ -98,13 +98,13 @@ const userResolver = {
             { userA: loggedInUser._id, userB: user._id },
           ],
         });
-
+    
         // userA = sender
         // userB = receiver
-
-        console.log({friendshipRecord})
-        console.log({loggedInUser})
-
+    
+        console.log({ friendshipRecord });
+        console.log({ loggedInUser });
+    
         // Check if the loggedInUser has sent a friend request
         if (friendshipRecord && friendshipRecord.status === "pending") {
           if (friendshipRecord.userA.toString() === loggedInUser._id.toString()) {
@@ -114,8 +114,11 @@ const userResolver = {
             // If the viewed user sent the friend request to the loggedInUser
             return "pendingByUser";
           }
+        } else if (friendshipRecord && friendshipRecord.status === "accepted") {
+          // If the friendship status is 'accepted', the users are friends
+          return "friend";
         }
-
+    
         // If there is no friendship record or the status is 'cancelled', the friend status is 'notFriend'
         return "notFriend";
       } catch (error) {
