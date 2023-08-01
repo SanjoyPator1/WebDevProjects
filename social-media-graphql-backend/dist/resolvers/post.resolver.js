@@ -29,7 +29,6 @@ const postResolvers = {
         feed: async () => {
             try {
                 const feedData = PostModel.find().sort({ createdAt: -1 });
-                console.log({ feedData });
                 return feedData;
             }
             catch (error) {

@@ -25,6 +25,8 @@ const userTypeDefs = gql `
     name: String!
     avatar: String
     createdAt: String!
+    bio: String
+    friendStatus: String!
     posts: [Post]
     role: Role!
     friends: [User]
@@ -45,6 +47,7 @@ const userTypeDefs = gql `
     email: String
     name: String
     avatar: String
+    bio: String
   }
 
   input SignupInput {

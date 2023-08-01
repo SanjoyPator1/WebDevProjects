@@ -3,7 +3,8 @@ import { generateToken } from "../utils/auth";
 import UserModel from "../db/user.model";
 import { Role } from "../typescript-models";
 import FriendshipModel from "../db/friendRequest.model";
-import throwCustomError, { ErrorTypes, } from "../utils/error-handler";
+import throwCustomError, { ErrorTypes } from "../utils/error-handler";
+import postResolvers from "./post.resolver";
 const userResolver = {
     Query: {
         health: () => {
@@ -78,6 +79,52 @@ const userResolver = {
                 throw new Error(`Failed to fetch friends : ${error.message}`);
             }
         },
+        // Field-level resolver for the 'friendStatus' field of the 'User' type
+        friendStatus: async (user, _, { user: loggedInUser }) => {
+            try {
+                // Check if the user is viewing their own profile
+                if (user._id.toString() === loggedInUser._id.toString()) {
+                    return "self";
+                }
+                // Find the friendship record between the logged-in user and the viewed user
+                const friendshipRecord = await FriendshipModel.findOne({
+                    $or: [
+                        { userA: user._id, userB: loggedInUser._id },
+                        { userA: loggedInUser._id, userB: user._id },
+                    ],
+                });
+                // Check if the loggedInUser has sent a friend request
+                if (friendshipRecord && friendshipRecord.status === "pending") {
+                    if (friendshipRecord.userA.toString() === loggedInUser._id.toString()) {
+                        // If the loggedInUser sent the friend request to the viewed user
+                        return "pendingByUser";
+                    }
+                    else {
+                        // If the viewed user sent the friend request to the loggedInUser
+                        return "pendingByLoggedInUser";
+                    }
+                }
+                // If there is no friendship record or the status is 'cancelled', the friend status is 'notFriend'
+                return "notFriend";
+            }
+            catch (error) {
+                // Handle the error gracefully
+                console.error(`Failed to fetch friend status: ${error.message}`);
+                throwCustomError(`Failed to fetch friend status: ${error.message}`, ErrorTypes.INTERNAL_SERVER_ERROR);
+                return "error";
+            }
+        },
+        // Field-level resolver for the 'posts' field of the 'User' type
+        posts: async (user) => {
+            try {
+                // Use the post resolvers to fetch posts based on the 'ownerId' field
+                const posts = await postResolvers.Query.posts(null, { ownerId: user._id });
+                return posts;
+            }
+            catch (error) {
+                throw new Error(`Failed to fetch user posts: ${error.message}`);
+            }
+        },
     },
     FriendRequest: {
         // Field-level resolver for the 'sender' field of the 'FriendRequest' type
@@ -108,7 +155,7 @@ const userResolver = {
     },
     Mutation: {
         signup: async (_, { input }) => {
-            const { name, email, password, avatar } = input;
+            const { name, email, password, avatar, bio } = input;
             // Check if the email is already registered
             const isUserExists = await UserModel.exists({ email });
             if (isUserExists) {
@@ -229,6 +276,36 @@ const userResolver = {
             }
             catch (error) {
                 throw new Error(`Failed to respond to friend request : ${error.message}`);
+            }
+        },
+        //update the logged in user details
+        updateMe: async (_, { input }, { user }) => {
+            try {
+                // Find the user to be updated in the database
+                const userToUpdate = await UserModel.findById(user._id);
+                if (!userToUpdate) {
+                    throwCustomError("User not found", ErrorTypes.NOT_FOUND);
+                }
+                // Update the user's profile with the new data from the input
+                const { email, name, avatar, bio } = input;
+                if (email) {
+                    userToUpdate.email = email;
+                }
+                if (name) {
+                    userToUpdate.name = name;
+                }
+                if (avatar) {
+                    userToUpdate.avatar = avatar;
+                }
+                if (bio) {
+                    userToUpdate.bio = bio;
+                }
+                // Save the updated user profile to the database
+                const updatedUser = await userToUpdate.save();
+                return updatedUser;
+            }
+            catch (error) {
+                throw new Error(`Failed to update user profile: ${error.message}`);
             }
         },
     },
