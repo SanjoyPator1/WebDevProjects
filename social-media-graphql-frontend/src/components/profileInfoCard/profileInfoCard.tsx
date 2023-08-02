@@ -74,7 +74,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
             )}
             {(friendStatus === "pendingByLoggedInUser" ||
               friendStatus === "pendingByUser") && (
-              <Button variant="destructive" className="w-40">
+              <Button variant="destructive" className="w-44">
                 <BiSolidUserX className="mr-2 h-4 w-4" />
                 {friendStatus === "pendingByLoggedInUser"
                   ? "Delete Request"
