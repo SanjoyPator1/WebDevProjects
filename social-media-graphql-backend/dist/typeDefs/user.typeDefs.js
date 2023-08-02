@@ -13,8 +13,8 @@ const userTypeDefs = gql `
 
   type FriendRequest {
     id: ID!
-    sender: User!
-    receiver: User!
+    senderId: ID!
+    receiverId: ID!
     status: String!
     createdAt: String!
   }

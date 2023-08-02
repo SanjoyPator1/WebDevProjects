@@ -119,29 +119,29 @@ const userResolver = {
     },
   },
   FriendRequest: {
-    // Field-level resolver for the 'sender' field of the 'FriendRequest' type
-    sender: async (friendRequest) => {
-      try {
-        const sender = await UserModel.findById(friendRequest.userA);
-        // If the sender is not found, you can return null or an empty object
-        return sender || null;
-      } catch (error) {
-        // Handle the error gracefully
-        console.error(`Failed to fetch sender details: ${error.message}`);
-        return null;
-      }
-    },
-    // Field-level resolver for the 'receiver' field of the 'FriendRequest' type
-    receiver: async (friendRequest) => {
-      try {
-        const receiver = await UserModel.findById(friendRequest.userB);
-        // If the receiver is not found, you can return null or an empty object
-        return receiver || null;
-      } catch (error) {
-        // Handle the error gracefully
-        return null;
-      }
-    },
+    // // Field-level resolver for the 'sender' field of the 'FriendRequest' type
+    // sender: async (friendRequest) => {
+    //   try {
+    //     const sender = await UserModel.findById(friendRequest.userA);
+    //     // If the sender is not found, you can return null or an empty object
+    //     return sender || null;
+    //   } catch (error) {
+    //     // Handle the error gracefully
+    //     console.error(`Failed to fetch sender details: ${error.message}`);
+    //     return null;
+    //   }
+    // },
+    // // Field-level resolver for the 'receiver' field of the 'FriendRequest' type
+    // receiver: async (friendRequest) => {
+    //   try {
+    //     const receiver = await UserModel.findById(friendRequest.userB);
+    //     // If the receiver is not found, you can return null or an empty object
+    //     return receiver || null;
+    //   } catch (error) {
+    //     // Handle the error gracefully
+    //     return null;
+    //   }
+    // },
   },
 
   Mutation: {
@@ -254,8 +254,8 @@ const userResolver = {
 
         const friendRequest = {
           id: newFriendship._id,
-          sender: newFriendship.userA,
-          receiver: newFriendship.userB,
+          senderId: newFriendship.userA,
+          receiverId: newFriendship.userB,
           status: newFriendship.status,
           createdAt: newFriendship.createdAt,
         };
