@@ -25,7 +25,11 @@ const userResolver = {
                 }
                 // Check if the user is viewing their own profile
                 if (requestedUser._id.toString() === user._id.toString()) {
-                    return { ...requestedUser.toObject(), friendStatus: "self", friendId: null };
+                    return {
+                        ...requestedUser.toObject(),
+                        friendStatus: "self",
+                        friendId: null,
+                    };
                 }
                 // Find the friendship record between the logged-in user and the viewed user
                 const friendshipRecord = await FriendshipModel.findOne({
@@ -38,19 +42,35 @@ const userResolver = {
                 if (friendshipRecord && friendshipRecord.status === "pending") {
                     if (friendshipRecord.userA.toString() === user._id.toString()) {
                         // If the loggedInUser sent the friend request to the viewed user
-                        return { ...requestedUser.toObject(), friendStatus: "pendingByUser", friendId: friendshipRecord._id };
+                        return {
+                            ...requestedUser.toObject(),
+                            friendStatus: "pendingByUser",
+                            friendId: friendshipRecord._id,
+                        };
                     }
                     else {
                         // If the viewed user sent the friend request to the loggedInUser
-                        return { ...requestedUser.toObject(), friendStatus: "pendingByLoggedInUser", friendId: friendshipRecord._id };
+                        return {
+                            ...requestedUser.toObject(),
+                            friendStatus: "pendingByLoggedInUser",
+                            friendId: friendshipRecord._id,
+                        };
                     }
                 }
                 else if (friendshipRecord && friendshipRecord.status === "accepted") {
                     // If the friendship status is 'accepted', the users are friends
-                    return { ...requestedUser.toObject(), friendStatus: "friend", friendId: friendshipRecord._id };
+                    return {
+                        ...requestedUser.toObject(),
+                        friendStatus: "friend",
+                        friendId: friendshipRecord._id,
+                    };
                 }
                 // If there is no friendship record or the status is 'cancelled', the friend status is 'notFriend'
-                return { ...requestedUser.toObject(), friendStatus: "notFriend", friendId: null };
+                return {
+                    ...requestedUser.toObject(),
+                    friendStatus: "notFriend",
+                    friendId: null,
+                };
             }
             catch (error) {
                 throw new Error(`Failed to fetch user details: ${error.message}`);
@@ -106,7 +126,9 @@ const userResolver = {
         posts: async (user) => {
             try {
                 // Use the post resolvers to fetch posts based on the 'ownerId' field
-                const posts = await postResolvers.Query.posts(null, { ownerId: user._id });
+                const posts = await postResolvers.Query.posts(null, {
+                    ownerId: user._id,
+                });
                 return posts;
             }
             catch (error) {
@@ -246,11 +268,6 @@ const userResolver = {
                 if (!friendshipRequest) {
                     throwCustomError("Friendship request not found", ErrorTypes.NOT_FOUND);
                 }
-                // Check if the current user is the receiver of the friend request (sending self)
-                const isSamePerson = friendshipRequest.userB.equals(user._id);
-                if (isSamePerson) {
-                    throwCustomError("You are not authorized to respond to this friend request", ErrorTypes.BAD_REQUEST);
-                }
                 // Check if the status is valid ('accepted' or 'cancelled')
                 if (status !== "accepted" && status !== "cancelled") {
                     throwCustomError("Invalid status. Status must be 'accepted' or 'cancelled'", ErrorTypes.BAD_USER_INPUT);
@@ -258,7 +275,13 @@ const userResolver = {
                 // Update the friendship request status
                 friendshipRequest.status = status;
                 await friendshipRequest.save();
-                return friendshipRequest;
+                return {
+                    id: friendshipRequest._id,
+                    senderId: friendshipRequest.userA,
+                    receiverId: friendshipRequest.userB,
+                    status: friendshipRequest.status,
+                    createdAt: friendshipRequest.createdAt
+                };
             }
             catch (error) {
                 throw new Error(`Failed to respond to friend request : ${error.message}`);
