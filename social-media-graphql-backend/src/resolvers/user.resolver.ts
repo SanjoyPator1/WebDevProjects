@@ -245,35 +245,45 @@ const userResolver = {
     sendFriendRequest: async (_, { input }, { user }) => {
       try {
         const { receiverId } = input;
-
+    
         // Check if the receiver exists
         const receiver = await UserModel.findById(receiverId);
         if (!receiver) {
           throwCustomError("Receiver not found", ErrorTypes.NOT_FOUND);
         }
-
-        // Check if a friend request already exists between the sender and receiver
+    
+        // Check if a friend request already exists between the sender and receiver and status is not "cancelled"
         const existingRequest = await FriendshipModel.findOne({
           $or: [
             { userA: user._id, userB: receiverId },
             { userA: receiverId, userB: user._id },
           ],
+          status: { $ne: "cancelled" }, // Check that the status is not equal to "cancelled"
         });
-
+    
         if (existingRequest) {
-          throwCustomError(
-            "Friend request already sent or received",
-            ErrorTypes.BAD_REQUEST
-          );
+          // If an existing request with a status other than "cancelled" is found, update its status to "pending"
+          existingRequest.status = "pending";
+          await existingRequest.save();
+    
+          const friendRequest = {
+            id: existingRequest._id,
+            senderId: existingRequest.userA,
+            receiverId: existingRequest.userB,
+            status: existingRequest.status,
+            createdAt: existingRequest.createdAt,
+          };
+    
+          return friendRequest;
         }
-
+    
         // Create a new friendship record with status 'pending'
         const newFriendship = await FriendshipModel.create({
           userA: user._id,
           userB: receiverId,
           status: "pending",
         });
-
+    
         const friendRequest = {
           id: newFriendship._id,
           senderId: newFriendship.userA,
@@ -281,12 +291,13 @@ const userResolver = {
           status: newFriendship.status,
           createdAt: newFriendship.createdAt,
         };
-
+    
         return friendRequest;
       } catch (error) {
         throw new Error(`Failed to send friend request : ${error.message}`);
       }
     },
+    
     // Respond to a friend request
     respondToFriendRequest: async (_, { input }, { user }) => {
       try {
@@ -320,7 +331,7 @@ const userResolver = {
           senderId: friendshipRequest.userA,
           receiverId: friendshipRequest.userB,
           status: friendshipRequest.status,
-          createdAt: friendshipRequest.createdAt
+          createdAt: friendshipRequest.createdAt,
         };
       } catch (error) {
         throw new Error(
