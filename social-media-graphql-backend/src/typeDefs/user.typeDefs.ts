@@ -28,7 +28,7 @@ const userTypeDefs = gql`
     createdAt: String!
     bio: String
     friendStatus: String!
-    friendId: ID!
+    friendId: ID
     posts: [Post]
     role: Role!
     friends: [User]
