@@ -230,17 +230,30 @@ const userResolver = {
                 if (!receiver) {
                     throwCustomError("Receiver not found", ErrorTypes.NOT_FOUND);
                 }
-                // Check if a friend request already exists between the sender and receiver
+                // Check if a friend request already exists between the sender and receiver and status is not "cancelled"
                 const existingRequest = await FriendshipModel.findOne({
                     $or: [
                         { userA: user._id, userB: receiverId },
                         { userA: receiverId, userB: user._id },
                     ],
                 });
-                if (existingRequest) {
+                // If an existing request with a status = "cancelled" is found, update its status to "pending" else throw error for other status that request already exists
+                if (existingRequest.status == "cancelled") {
+                    existingRequest.status = "pending";
+                    await existingRequest.save();
+                    const friendRequest = {
+                        id: existingRequest._id,
+                        senderId: existingRequest.userA,
+                        receiverId: existingRequest.userB,
+                        status: existingRequest.status,
+                        createdAt: existingRequest.createdAt,
+                    };
+                    return friendRequest;
+                }
+                else {
                     throwCustomError("Friend request already sent or received", ErrorTypes.BAD_REQUEST);
                 }
-                // Create a new friendship record with status 'pending'
+                //If no friend record is found create a new friendship record with status 'pending'
                 const newFriendship = await FriendshipModel.create({
                     userA: user._id,
                     userB: receiverId,
@@ -280,7 +293,7 @@ const userResolver = {
                     senderId: friendshipRequest.userA,
                     receiverId: friendshipRequest.userB,
                     status: friendshipRequest.status,
-                    createdAt: friendshipRequest.createdAt
+                    createdAt: friendshipRequest.createdAt,
                 };
             }
             catch (error) {

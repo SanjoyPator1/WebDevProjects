@@ -258,11 +258,10 @@ const userResolver = {
             { userA: user._id, userB: receiverId },
             { userA: receiverId, userB: user._id },
           ],
-          status: { $ne: "cancelled" }, // Check that the status is not equal to "cancelled"
         });
     
-        if (existingRequest) {
-          // If an existing request with a status other than "cancelled" is found, update its status to "pending"
+        // If an existing request with a status = "cancelled" is found, update its status to "pending" else throw error for other status that request already exists
+        if (existingRequest.status == "cancelled") {
           existingRequest.status = "pending";
           await existingRequest.save();
     
@@ -275,9 +274,14 @@ const userResolver = {
           };
     
           return friendRequest;
+        }else{
+          throwCustomError(
+            "Friend request already sent or received",
+            ErrorTypes.BAD_REQUEST
+          );
         }
     
-        // Create a new friendship record with status 'pending'
+        //If no friend record is found create a new friendship record with status 'pending'
         const newFriendship = await FriendshipModel.create({
           userA: user._id,
           userB: receiverId,
