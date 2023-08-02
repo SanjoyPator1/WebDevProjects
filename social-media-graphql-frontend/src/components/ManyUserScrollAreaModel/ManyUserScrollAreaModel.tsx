@@ -14,7 +14,7 @@ const ManyUserCard: FC<ManyUserScrollAreaModel> = ({ dataProp }) => {
             name={data.name}
             friendStatus={data.friendStatus}
             bio={data.bio}
-            isOwnProfile={data.isOwnProfile}
+            friendId={data.friendId}
           />
         </div>
       ))}

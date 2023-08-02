@@ -82,10 +82,13 @@ export interface CommentCardComponentModel {
     avatar?: string;
     name: string;
     bio?: string;
-    friendStatus:"self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend";
-    isOwnProfile?: boolean;
+    friendStatus: "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend";
+    friendId: string | null;
     displayType?: "short" | "full";
+    onSendFriendRequest?: () => void;
+    onRespondToFriendRequest?: (status: "accepted" | "cancelled", friendRequestId: string) => void;
   }
+  
   
 export  interface ManyUserScrollAreaModel {
     dataProp : ProfileInfoCardProps[]

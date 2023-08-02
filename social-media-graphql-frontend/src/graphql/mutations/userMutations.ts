@@ -41,41 +41,27 @@ export const SIGNIN = gql`
 `;
 
 export const SEND_FRIEND_REQUEST = gql`
-  mutation SendFriendRequest($input: SendFriendRequestInput!) {
-    sendFriendRequest(input: $input) {
+  mutation SEND_FRIEND_REQUEST($receiverId: ID!) {
+    sendFriendRequest(input: { receiverId: $receiverId }) {
       id
-      sender {
-        _id
-        name
-        avatar
-      }
-      receiver {
-        _id
-        name
-        avatar
-      }
-      status
       createdAt
+      status
+      senderId
+      receiverId
     }
   }
 `;
 
 export const RESPOND_TO_FRIEND_REQUEST = gql`
-  mutation RespondToFriendRequest($input: RespondToFriendRequestInput!) {
-    respondToFriendRequest(input: $input) {
+  mutation RESPOND_TO_FRIEND_REQUEST($friendRequestId: ID!, $status: String!) {
+    respondToFriendRequest(
+      input: { friendRequestId: $friendRequestId, status: $status }
+    ) {
       id
-      sender {
-        _id
-        name
-        avatar
-      }
-      receiver {
-        _id
-        name
-        avatar
-      }
-      status
       createdAt
+      status
+      senderId
+      receiverId
     }
   }
 `;

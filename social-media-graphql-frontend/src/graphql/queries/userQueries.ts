@@ -21,6 +21,7 @@ export const GET_USER_BY_ID = gql`
       name
       bio
       friendStatus
+      friendId
       posts {
         _id
         message

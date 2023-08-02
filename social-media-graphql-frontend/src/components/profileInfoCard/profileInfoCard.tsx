@@ -12,21 +12,23 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   avatar,
   name,
   friendStatus,
+  friendId,
   bio,
-  isOwnProfile = false,
   displayType = "short",
+  onSendFriendRequest,
+  onRespondToFriendRequest,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const isProfileOpened = location.pathname.includes(`/profile/${profileId}`);
   console.log({ friendStatus }); //values of friendStatus "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
-
+  console.log({friendId})
   return (
     <div className="w-full flex flex-col gap-base bg-primary-foreground p-4 rounded-lg">
       <div
         className={`flex ${
-          displayType == "short" ? "flex-row" : "flex-col"
+          displayType === "short" ? "flex-row" : "flex-col"
         } justify-between gap-base`}
       >
         <div className="flex items-center justify-start gap-base">
@@ -48,41 +50,55 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           ></h2>
         </div>
         {/* Friend Request or Friend Status */}
-        {!isOwnProfile && (
+        {friendStatus !== "self" && (
           <div
             className={`flex flex-wrap gap-base  ${
               displayType === "short" && "justify-end"
             } items-center`}
           >
-            {friendStatus === "friend" && (
-              <Button variant="outline" className="w-44">
-                Friend
+            {friendStatus === "notFriend" && (
+              <Button
+                variant="default"
+                className="w-24 md:w-44 text-xs md:text-sm"
+                onClick={onSendFriendRequest}
+              >
+                <BsPersonFillAdd className="mr-2 h-4 w-4" />
+                <>
+                  Add <p className="hidden md:block">Friend</p>
+                </>
               </Button>
             )}
-            {(friendStatus === "notFriend" ||
-              friendStatus === "pendingByLoggedInUser") && (
-              <Button variant="default" className="w-24 md:w-44 text-xs md:text-sm">
-                {friendStatus === "notFriend" ? (
-                  <BsPersonFillAdd className="mr-2 h-4 w-4" />
-                ) : (
-                  <BsFillPersonCheckFill className="mr-2 h-4 w-4" />
-                )}
-                {friendStatus === "notFriend" ? (
-                  <>
-                    Add <p className="hidden md:block">Friend</p>
-                  </>
-                ) : (
-                  <>
-                    Confirm <p className="hidden md:block">Request</p>
-                  </>
-                )}
+            {friendStatus === "pendingByLoggedInUser" && (
+              <Button
+                variant="default"
+                className="w-24 md:w-44 text-xs md:text-sm"
+                onClick={() =>
+                  onRespondToFriendRequest?.("accepted", friendId!)
+                }
+              >
+                <BsFillPersonCheckFill className="mr-2 h-4 w-4" />
+
+                <>
+                  Confirm <p className="hidden md:block">Request</p>
+                </>
               </Button>
             )}
-            {(friendStatus === "pendingByLoggedInUser" ||
+            {(friendStatus === "friend" ||
+              friendStatus === "pendingByLoggedInUser" ||
               friendStatus === "pendingByUser") && (
-              <Button variant="destructive" className="w-24 md:w-44 text-xs md:text-sm">
+              <Button
+                variant="destructive"
+                className="w-24 md:w-44 text-xs md:text-sm"
+                onClick={() =>
+                  onRespondToFriendRequest?.("cancelled", friendId!)
+                }
+              >
                 <BiSolidUserX className="mr-2 h-4 w-4" />
-                {friendStatus === "pendingByLoggedInUser" ? (
+                {friendStatus === "friend" ? (
+                  <>
+                    Unfriend <p className="hidden md:block">Request</p>
+                  </>
+                ) : friendStatus === "pendingByLoggedInUser" ? (
                   <>
                     Delete <p className="hidden md:block">Request</p>
                   </>
@@ -93,6 +109,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 )}
               </Button>
             )}
+
             {/* Message Button */}
             <Button
               className="w-28 md:w-44 text-xs md:text-sm"
