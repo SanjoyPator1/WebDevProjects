@@ -27,6 +27,7 @@ const userTypeDefs = gql `
     createdAt: String!
     bio: String
     friendStatus: String!
+    friendId: ID!
     posts: [Post]
     role: Role!
     friends: [User]
@@ -76,7 +77,6 @@ input RespondToFriendRequestInput {
     me: User
     findUser(userId: ID): User
     pendingFriendRequests: [FriendRequest]
-    getUserById(id: ID!): User!
   }
 
   type Mutation {

@@ -19,17 +19,41 @@ const userResolver = {
     },
     findUser: async (_, { userId }, { user }) => {
       try {
-        // If 'userId' input is provided, find the user by userId
-        if (userId) {
-          const requestedUser = await UserModel.findById(userId);
-          if (!requestedUser) {
-            throwCustomError("User not found", ErrorTypes.NOT_FOUND);
-          }
-          return requestedUser;
+        // Find the user by userId
+        const requestedUser = await UserModel.findById(userId);
+        if (!requestedUser) {
+          throwCustomError("User not found", ErrorTypes.NOT_FOUND);
         }
 
-        // If 'userId' input is not provided, return the user from the context
-        return user;
+        // Check if the user is viewing their own profile
+        if (requestedUser._id.toString() === user._id.toString()) {
+          return { ...requestedUser.toObject(), friendStatus: "self", friendId: null };
+        }
+
+        // Find the friendship record between the logged-in user and the viewed user
+        const friendshipRecord = await FriendshipModel.findOne({
+          $or: [
+            { userA: requestedUser._id, userB: user._id },
+            { userA: user._id, userB: requestedUser._id },
+          ],
+        });
+
+        // If the friendship record exists and status is 'pending', set the appropriate friendStatus
+        if (friendshipRecord && friendshipRecord.status === "pending") {
+          if (friendshipRecord.userA.toString() === user._id.toString()) {
+            // If the loggedInUser sent the friend request to the viewed user
+            return { ...requestedUser.toObject(), friendStatus: "pendingByLoggedInUser", friendId: friendshipRecord._id };
+          } else {
+            // If the viewed user sent the friend request to the loggedInUser
+            return { ...requestedUser.toObject(), friendStatus: "pendingByUser", friendId: friendshipRecord._id };
+          }
+        } else if (friendshipRecord && friendshipRecord.status === "accepted") {
+          // If the friendship status is 'accepted', the users are friends
+          return { ...requestedUser.toObject(), friendStatus: "friend", friendId: friendshipRecord._id };
+        }
+
+        // If there is no friendship record or the status is 'cancelled', the friend status is 'notFriend'
+        return { ...requestedUser.toObject(), friendStatus: "notFriend", friendId: null };
       } catch (error) {
         throw new Error(`Failed to fetch user details: ${error.message}`);
       }
@@ -81,56 +105,6 @@ const userResolver = {
         return friends;
       } catch (error) {
         throw new Error(`Failed to fetch friends : ${error.message}`);
-      }
-    },
-    // Field-level resolver for the 'friendStatus' field of the 'User' type
-    friendStatus : async (user, _, { user: loggedInUser }) => {
-      try {
-        // Check if the user is viewing their own profile
-        if (user._id.toString() === loggedInUser._id.toString()) {
-          return "self";
-        }
-    
-        // Find the friendship record between the logged-in user and the viewed user
-        const friendshipRecord = await FriendshipModel.findOne({
-          $or: [
-            { userA: user._id, userB: loggedInUser._id },
-            { userA: loggedInUser._id, userB: user._id },
-          ],
-        });
-    
-        // userA = sender
-        // userB = receiver
-        // pendingByUser = I am the sender so now it is pending on the user side i.e userA === loggedIn use
-        // pendingByLoggedInUser = I am the receiver so now it is pending on the logged in user side i.e userB === loggedIn user
-    
-        console.log({ friendshipRecord });
-        console.log({ loggedInUser });
-    
-        // Check if the loggedInUser has sent a friend request
-        if (friendshipRecord && friendshipRecord.status === "pending") {
-          if (friendshipRecord.userA.toString() === loggedInUser._id.toString()) {
-            // If the loggedInUser sent the friend request to the viewed user
-            return "pendingByUser";
-          } else {
-            // If the viewed user sent the friend request to the loggedInUser
-            return "pendingByLoggedInUser";
-          }
-        } else if (friendshipRecord && friendshipRecord.status === "accepted") {
-          // If the friendship status is 'accepted', the users are friends
-          return "friend";
-        }
-    
-        // If there is no friendship record or the status is 'cancelled', the friend status is 'notFriend'
-        return "notFriend";
-      } catch (error) {
-        // Handle the error gracefully
-        console.error(`Failed to fetch friend status: ${error.message}`);
-        throwCustomError(
-          `Failed to fetch friend status: ${error.message}`,
-          ErrorTypes.INTERNAL_SERVER_ERROR
-        );
-        return "error";
       }
     },
     // Field-level resolver for the 'posts' field of the 'User' type
