@@ -1,5 +1,4 @@
 import TextInputWithButton from "../../components/textInputWithButton/textInputWithButton";
-import { fakeProfileInfoData } from "../../lib/fakeData";
 import { ScrollArea } from "../../components/ui/scroll-area";
 import { useRecoilState } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
@@ -7,11 +6,10 @@ import { useParams } from "react-router-dom";
 import ProfileInfoCard from "../../components/profileInfoCard/profileInfoCard";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_USER_BY_ID } from "../../graphql/queries/userQueries";
-import { PostModel, UserModel } from "../../models/component.model";
+import { PostModel } from "../../models/component.model";
 import PostCard from "../../components/postCard";
-import { handleCreatePost, handleCreatePostFromProfile, handleLikePost, handleLikePostFromProfile, handleUnlikePost, handleUnlikePostFromProfile } from "../../services/postActions";
+import { handleCreatePostFromProfile, handleLikePostFromProfile, handleUnlikePostFromProfile } from "../../services/postActions";
 import { CREATE_POST, LIKE_POST, UNLIKE_POST } from "../../graphql/mutations/postMutations";
-import client from "../../graphql/apolloClient";
 
 const Profile = () => {
   const [userData] = useRecoilState(userDataState);

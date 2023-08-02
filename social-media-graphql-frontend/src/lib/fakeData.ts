@@ -1,7 +1,7 @@
-import { CommentCardComponentModel, ProfileInfoCardProps } from "../models/component.model";
+import { CommentCardComponentModel } from "../models/component.model";
 
 // Fake data for the component
-export const fakeProfileInfoData: ProfileInfoCardProps[] = [
+export const fakeProfileInfoData = [
   {
     profileId: "64c35b98b8802f9a879e2730",
     avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/191112_%EC%A0%84%EC%A7%80%ED%98%84.jpg/640px-191112_%EC%A0%84%EC%A7%80%ED%98%84.jpg",
