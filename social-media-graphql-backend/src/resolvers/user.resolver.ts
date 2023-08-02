@@ -252,7 +252,7 @@ const userResolver = {
           throwCustomError("Receiver not found", ErrorTypes.NOT_FOUND);
         }
     
-        // Check if a friend request already exists between the sender and receiver and status is not "cancelled"
+        // Check if a friend request already exists between the sender and receiver
         const existingRequest = await FriendshipModel.findOne({
           $or: [
             { userA: user._id, userB: receiverId },
@@ -263,6 +263,8 @@ const userResolver = {
         // If an existing request with a status = "cancelled" is found, update its status to "pending" else throw error for other status that request already exists
         if (existingRequest.status == "cancelled") {
           existingRequest.status = "pending";
+          existingRequest.userA = user._id;
+          existingRequest.userB = receiverId;
           await existingRequest.save();
     
           const friendRequest = {
