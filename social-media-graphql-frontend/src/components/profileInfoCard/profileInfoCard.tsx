@@ -61,29 +61,41 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
             )}
             {(friendStatus === "notFriend" ||
               friendStatus === "pendingByLoggedInUser") && (
-              <Button variant="default" className="w-44">
+              <Button variant="default" className="w-24 md:w-44 text-xs md:text-sm">
                 {friendStatus === "notFriend" ? (
                   <BsPersonFillAdd className="mr-2 h-4 w-4" />
                 ) : (
                   <BsFillPersonCheckFill className="mr-2 h-4 w-4" />
                 )}
-                {friendStatus === "notFriend"
-                  ? "Add Friend"
-                  : "Confirm Request"}
+                {friendStatus === "notFriend" ? (
+                  <>
+                    Add <p className="hidden md:block">Friend</p>
+                  </>
+                ) : (
+                  <>
+                    Confirm <p className="hidden md:block">Request</p>
+                  </>
+                )}
               </Button>
             )}
             {(friendStatus === "pendingByLoggedInUser" ||
               friendStatus === "pendingByUser") && (
-              <Button variant="destructive" className="w-44">
+              <Button variant="destructive" className="w-24 md:w-44 text-xs md:text-sm">
                 <BiSolidUserX className="mr-2 h-4 w-4" />
-                {friendStatus === "pendingByLoggedInUser"
-                  ? "Delete Request"
-                  : "Cancel Request"}
+                {friendStatus === "pendingByLoggedInUser" ? (
+                  <>
+                    Delete <p className="hidden md:block">Request</p>
+                  </>
+                ) : (
+                  <>
+                    Cancel <p className="hidden md:block">Request</p>
+                  </>
+                )}
               </Button>
             )}
             {/* Message Button */}
             <Button
-              className="w-32"
+              className="w-28 md:w-44 text-xs md:text-sm"
               variant={friendStatus !== "friend" ? "outline" : "ghost"}
             >
               <AiFillMessage className="mr-2 h-4 w-4" />
@@ -93,7 +105,9 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
         )}
       </div>
       {/* Bio */}
-      {displayType !== "short" && <p className="text-gray-600">{bio ? bio : "no bio to show"}</p>}
+      {displayType !== "short" && (
+        <p className="text-gray-600">{bio ? bio : "no bio to show"}</p>
+      )}
     </div>
   );
 };
