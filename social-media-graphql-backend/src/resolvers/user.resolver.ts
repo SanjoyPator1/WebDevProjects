@@ -42,10 +42,10 @@ const userResolver = {
         if (friendshipRecord && friendshipRecord.status === "pending") {
           if (friendshipRecord.userA.toString() === user._id.toString()) {
             // If the loggedInUser sent the friend request to the viewed user
-            return { ...requestedUser.toObject(), friendStatus: "pendingByLoggedInUser", friendId: friendshipRecord._id };
+            return { ...requestedUser.toObject(), friendStatus: "pendingByUser", friendId: friendshipRecord._id };
           } else {
             // If the viewed user sent the friend request to the loggedInUser
-            return { ...requestedUser.toObject(), friendStatus: "pendingByUser", friendId: friendshipRecord._id };
+            return { ...requestedUser.toObject(), friendStatus: "pendingByLoggedInUser", friendId: friendshipRecord._id };
           }
         } else if (friendshipRecord && friendshipRecord.status === "accepted") {
           // If the friendship status is 'accepted', the users are friends
