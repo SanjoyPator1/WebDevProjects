@@ -77,7 +77,7 @@ input RespondToFriendRequestInput {
     health: HealthCheck
     me: User
     findUser(userId: ID): User
-    pendingFriendRequests: [FriendRequest]
+    pendingFriendRequests: [User]
   }
 
   type Mutation {

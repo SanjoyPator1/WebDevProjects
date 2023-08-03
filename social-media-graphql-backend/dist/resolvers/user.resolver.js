@@ -84,8 +84,25 @@ const userResolver = {
                     userB: user._id,
                     status: "pending",
                 });
-                // Return the pending friend requests
-                return pendingFriendRequests;
+                console.log({ pendingFriendRequests });
+                // Fetch the sender details for each friend request
+                const users = await UserModel.find({
+                    _id: { $in: pendingFriendRequests.map((req) => req.userA) },
+                });
+                console.log({ users });
+                // Map each user and set the friendStatus as "pendingByLoggedInUser" and add the friendId
+                const usersWithFriendStatus = users.map((userItem) => {
+                    console.log({ userItem });
+                    const pendingRequest = pendingFriendRequests.find((request) => request.userA.toString() === userItem._id.toString());
+                    console.log({ pendingRequest });
+                    return {
+                        ...userItem.toObject(),
+                        friendStatus: "pendingByLoggedInUser",
+                        friendId: pendingRequest ? pendingRequest._id : null,
+                    };
+                });
+                console.log({ usersWithFriendStatus });
+                return usersWithFriendStatus;
             }
             catch (error) {
                 throw new Error(`Failed to fetch pending friend requests: ${error.message}`);
@@ -230,7 +247,7 @@ const userResolver = {
                 if (!receiver) {
                     throwCustomError("Receiver not found", ErrorTypes.NOT_FOUND);
                 }
-                // Check if a friend request already exists between the sender and receiver and status is not "cancelled"
+                // Check if a friend request already exists between the sender and receiver
                 const existingRequest = await FriendshipModel.findOne({
                     $or: [
                         { userA: user._id, userB: receiverId },
@@ -240,6 +257,8 @@ const userResolver = {
                 // If an existing request with a status = "cancelled" is found, update its status to "pending" else throw error for other status that request already exists
                 if (existingRequest.status == "cancelled") {
                     existingRequest.status = "pending";
+                    existingRequest.userA = user._id;
+                    existingRequest.userB = receiverId;
                     await existingRequest.save();
                     const friendRequest = {
                         id: existingRequest._id,

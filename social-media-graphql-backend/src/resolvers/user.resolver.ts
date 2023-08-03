@@ -86,14 +86,33 @@ const userResolver = {
           userB: user._id,
           status: "pending",
         });
-        // Return the pending friend requests
-        return pendingFriendRequests;
+    
+        // Fetch the sender details for each friend request
+        const users = await UserModel.find({
+          _id: { $in: pendingFriendRequests.map((req) => req.userA) },
+        });
+    
+        // Map each user and set the friendStatus as "pendingByLoggedInUser" and add the friendId
+        const usersWithFriendStatus = users.map((userItem) => {
+          const pendingRequest = pendingFriendRequests.find(
+            (request) => request.userA.toString() === userItem._id.toString()
+          );
+    
+          return {
+            ...userItem.toObject(),
+            friendStatus: "pendingByLoggedInUser",
+            friendId: pendingRequest ? pendingRequest._id : null,
+          };
+        });
+
+        return usersWithFriendStatus;
       } catch (error) {
         throw new Error(
           `Failed to fetch pending friend requests: ${error.message}`
         );
       }
     },
+    
   },
   User: {
     // Field-level resolver for the 'friends' field of the 'User' type
