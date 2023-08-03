@@ -2,7 +2,7 @@
 const Friends = () => {
 
   return (
-    // <ManyUserCard dataProp={fakeProfileInfoData} />
+    // <ManyUserCard dataProp={fakeProfileInfoData} a />
     <div>many users</div>
   );
 };
