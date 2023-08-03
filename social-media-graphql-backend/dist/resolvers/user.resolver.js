@@ -16,6 +16,16 @@ const userResolver = {
         me: async (_, __, { user }) => {
             return user;
         },
+        // Resolver for the 'findUser' query
+        // This resolver fetches the user details by their provided userId.
+        // If the requested user is the same as the logged-in user, it sets the friendStatus as "self" and friendId as null.
+        // If a friendship record exists between the logged-in user and the viewed user with status 'pending',
+        // it sets the friendStatus appropriately based on who sent the friend request and adds the friendId.
+        // - If the logged-in user sent the friend request to the viewed user, the friendStatus is set as "pendingByUser".
+        // - If the viewed user sent the friend request to the logged-in user, the friendStatus is set as "pendingByLoggedInUser".
+        // If a friendship record exists with status 'accepted', it sets the friendStatus as "friend" and adds the friendId.
+        // If there is no friendship record or the status is 'cancelled', it sets the friendStatus as "notFriend" and friendId as null.
+        // If any error occurs during the process, it throws an error with a detailed message.
         findUser: async (_, { userId }, { user }) => {
             try {
                 // Find the user by userId
@@ -76,7 +86,10 @@ const userResolver = {
                 throw new Error(`Failed to fetch user details: ${error.message}`);
             }
         },
-        //query to find pending friend request
+        // Resolver for the 'pendingFriendRequests' query
+        // This resolver fetches all pending friendship records where the current user is the receiver,
+        // and sets the friendStatus as "pendingByLoggedInUser" and adds the friendId for each pending friend request.
+        // It then returns an array of users who have sent friend requests to the logged-in user.
         pendingFriendRequests: async (_, __, { user }) => {
             try {
                 // Find all friendship records where the current user is the receiver and the status is 'pending'
@@ -84,28 +97,85 @@ const userResolver = {
                     userB: user._id,
                     status: "pending",
                 });
-                console.log({ pendingFriendRequests });
                 // Fetch the sender details for each friend request
                 const users = await UserModel.find({
                     _id: { $in: pendingFriendRequests.map((req) => req.userA) },
                 });
-                console.log({ users });
                 // Map each user and set the friendStatus as "pendingByLoggedInUser" and add the friendId
                 const usersWithFriendStatus = users.map((userItem) => {
-                    console.log({ userItem });
                     const pendingRequest = pendingFriendRequests.find((request) => request.userA.toString() === userItem._id.toString());
-                    console.log({ pendingRequest });
                     return {
                         ...userItem.toObject(),
                         friendStatus: "pendingByLoggedInUser",
                         friendId: pendingRequest ? pendingRequest._id : null,
                     };
                 });
-                console.log({ usersWithFriendStatus });
                 return usersWithFriendStatus;
             }
             catch (error) {
                 throw new Error(`Failed to fetch pending friend requests: ${error.message}`);
+            }
+        },
+        // Resolver for the 'suggestedFriends' query
+        // This resolver fetches all active friendship records related to the user (excluding "cancelled" status),
+        // and then finds users who are not part of the active friendships, including the user themselves.
+        // The resulting list represents the suggested friends for the logged-in user.
+        suggestedFriends: async (_, __, { user }) => {
+            try {
+                //this users will be excluded from the suggested friends list
+                // Find all active friendship records related to the user
+                const activeFriendshipRecords = await FriendshipModel.find({
+                    $and: [
+                        {
+                            $or: [{ userA: user._id }, { userB: user._id }],
+                        },
+                    ],
+                });
+                console.log({ activeFriendshipRecords });
+                // Create a Set to store the user IDs of all the people in the friendship record except for those people whom the loggedIn user has sent friend request and it was cancelled by the logged In user
+                const excludedUserIdsSet = new Set();
+                activeFriendshipRecords.forEach((friendRecord) => {
+                    if (friendRecord.status !== "cancelled" ||
+                        friendRecord.userA.toString() !== user._id.toString()) {
+                        if (friendRecord.userA.toString() === user._id.toString()) {
+                            excludedUserIdsSet.add(friendRecord.userB);
+                        }
+                        else {
+                            excludedUserIdsSet.add(friendRecord.userA);
+                        }
+                    }
+                });
+                console.log({ excludedUserIdsSet });
+                // Find all users who are not in the friendIdsSet (excluding the user themselves)
+                const suggestedFriends = await UserModel.find({
+                    _id: { $nin: Array.from(excludedUserIdsSet).concat([user._id]) },
+                });
+                // Create an array to store the final suggested friends with friendStatus and friendId
+                const suggestedFriendsWithStatus = suggestedFriends.map((friend) => {
+                    let friendId = null;
+                    let friendStatus = "notFriend";
+                    // Check if there's a friendship record between the logged-in user and the friend
+                    const friendshipRecord = activeFriendshipRecords.find((record) => {
+                        return ((record.userA.toString() === friend._id.toString() &&
+                            record.userB.toString() === user._id.toString()) ||
+                            (record.userB.toString() === friend._id.toString() &&
+                                record.userA.toString() === user._id.toString()));
+                    });
+                    // Set the friendId if the status is cancelled and the sender is the logged In user
+                    if (friendshipRecord && friendshipRecord.status === "cancelled") {
+                        console.log(`updating friendId value for ${friend._id}`);
+                        friendId = friendshipRecord._id;
+                    }
+                    return {
+                        ...friend.toObject(),
+                        friendStatus,
+                        friendId,
+                    };
+                });
+                return suggestedFriendsWithStatus;
+            }
+            catch (error) {
+                throw new Error(`Failed to fetch suggested friends: ${error.message}`);
             }
         },
     },
