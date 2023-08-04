@@ -111,6 +111,7 @@ export function UserAuthForm({
           // Save the userJwtToken to localStorage or a state management system (e.g., Redux)
           const userJwtToken = data.signin.userJwtToken;
           localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
+          console.log("jwt token updated in local storage")
           toast({
             variant: "default",
             title: "Sign in successful",

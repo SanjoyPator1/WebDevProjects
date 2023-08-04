@@ -4,7 +4,7 @@ import { NavigationMenuBar } from "../../components/navbar";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
 import { useQuery } from "@apollo/client";
 import {
-  LOGGEDIN_USER,
+  LOGGEDIN_USER as LOGGED_IN_USER,
 } from "../../graphql/queries/userQueries";
 import {  useSetRecoilState } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
@@ -18,7 +18,7 @@ const WithNav = () => {
 
   const { toast } = useToast();
 
-  const { data, error } = useQuery(LOGGEDIN_USER, {
+  const { data, error } = useQuery(LOGGED_IN_USER, {
     variables: { userId: localStorage.getItem(JWT_TOKEN_NAME) },
   });
 
@@ -29,6 +29,7 @@ const WithNav = () => {
 
   useEffect(() => {
     // Update the Recoil atom with the logged-in user data if it exists
+    console.log("inside useEffect to update recoil state")
     if (data && data.me) {
       const userDataReceived = data.me;
       console.log({ userDataReceived });

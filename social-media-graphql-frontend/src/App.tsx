@@ -35,7 +35,7 @@ function App() {
         </Route>
 
         {/* Friends Page */}
-        <Route path="/friends/:id" element={<WithNav />}>
+        <Route path="/friends" element={<WithNav />}>
           <Route index element={<Friends />} />
         </Route>
 

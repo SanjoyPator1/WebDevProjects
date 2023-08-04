@@ -39,22 +39,15 @@ export const GET_USER_BY_ID = gql`
   }
 `;
 
-export const PENDING_FRIEND_REQUESTS = gql`
-  query PendingFriendRequests {
+export const PENDING_FRIEND_REQUEST = gql`
+  query PENDING_FRIEND_REQUEST {
     pendingFriendRequests {
-      id
-      sender {
-        _id
-        name
-        avatar
-      }
-      receiver {
-        _id
-        name
-        avatar
-      }
-      status
-      createdAt
+      _id
+      avatar
+      name
+      bio
+      friendStatus
+      friendId
     }
   }
 `;

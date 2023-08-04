@@ -125,6 +125,7 @@ export function NavigationMenuBar() {
                 <ListItem linkTo={`/settings/${userData._id}`} title="Settings">
                   Change settings here
                 </ListItem>
+                {/* reload , delete local storage jwt token */}
                 <ListItem linkTo={"/signin"} title="Log out">
                   Log out of your account{" "}
                 </ListItem>
