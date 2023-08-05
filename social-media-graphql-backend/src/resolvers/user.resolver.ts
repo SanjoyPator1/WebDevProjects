@@ -100,10 +100,14 @@ const userResolver = {
           status: "pending",
         });
 
+        console.log({ pendingFriendRequests})
+
         // Fetch the sender details for each friend request
         const users = await UserModel.find({
           _id: { $in: pendingFriendRequests.map((req) => req.userA) },
         });
+
+        console.log({users})
 
         // Map each user and set the friendStatus as "pendingByLoggedInUser" and add the friendId
         const usersWithFriendStatus = users.map((userItem) => {
@@ -118,6 +122,8 @@ const userResolver = {
           };
         });
 
+        console.log({usersWithFriendStatus})
+
         return usersWithFriendStatus;
       } catch (error) {
         throw new Error(
@@ -127,9 +133,12 @@ const userResolver = {
     },
 
     // Resolver for the 'suggestedFriends' query
-    // This resolver fetches all active friendship records related to the user (excluding "cancelled" status),
-    // and then finds users who are not part of the active friendships, including the user themselves.
-    // The resulting list represents the suggested friends for the logged-in user.
+    // This resolver fetches all active friendship records related to the user.
+    // It then creates a set of user IDs to exclude from the suggested friends list.
+    // The excludedUserIdsSet contains the user IDs of all the people in the friendship records,
+    // except for those where the logged-in user sent a friend request and then cancelled it.
+    // After excluding these users, the resolver finds users who are not part of the excluded set, including the user themselves.
+    // The resulting list represents the suggested friends for the logged-in user, including friendStatus and friendId if applicable.
     suggestedFriends: async (_, __, { user }) => {
       try {
         //this users will be excluded from the suggested friends list
@@ -141,8 +150,6 @@ const userResolver = {
             },
           ],
         });
-
-        console.log({ activeFriendshipRecords });
 
         // Create a Set to store the user IDs of all the people in the friendship record except for those people whom the loggedIn user has sent friend request and it was cancelled by the logged In user
         const excludedUserIdsSet = new Set();
@@ -158,8 +165,6 @@ const userResolver = {
             }
           }
         });
-
-        console.log({excludedUserIdsSet})
 
         // Find all users who are not in the friendIdsSet (excluding the user themselves)
         const suggestedFriends = await UserModel.find({
@@ -183,8 +188,7 @@ const userResolver = {
 
           // Set the friendId if the status is cancelled and the sender is the logged In user
           if (friendshipRecord && friendshipRecord.status === "cancelled") {
-            console.log(`updating friendId value for ${friend._id}`)
-              friendId = friendshipRecord._id;
+            friendId = friendshipRecord._id;
           }
 
           return {
@@ -350,13 +354,13 @@ const userResolver = {
     sendFriendRequest: async (_, { input }, { user }) => {
       try {
         const { receiverId } = input;
-
+    
         // Check if the receiver exists
         const receiver = await UserModel.findById(receiverId);
         if (!receiver) {
           throwCustomError("Receiver not found", ErrorTypes.NOT_FOUND);
         }
-
+    
         // Check if a friend request already exists between the sender and receiver
         const existingRequest = await FriendshipModel.findOne({
           $or: [
@@ -364,50 +368,55 @@ const userResolver = {
             { userA: receiverId, userB: user._id },
           ],
         });
-
-        // If an existing request with a status = "cancelled" is found, update its status to "pending" else throw error for other status that request already exists
-        if (existingRequest.status == "cancelled") {
-          existingRequest.status = "pending";
-          existingRequest.userA = user._id;
-          existingRequest.userB = receiverId;
-          await existingRequest.save();
-
-          const friendRequest = {
-            id: existingRequest._id,
-            senderId: existingRequest.userA,
-            receiverId: existingRequest.userB,
-            status: existingRequest.status,
-            createdAt: existingRequest.createdAt,
-          };
-
-          return friendRequest;
+    
+        if (existingRequest) {
+          // If an existing request is found, check if it has a status of "cancelled"
+          if (existingRequest.status === "cancelled") {
+            // Update the existing request status to "pending"
+            existingRequest.status = "pending";
+            existingRequest.userA = user._id;
+            existingRequest.userB = receiverId;
+            await existingRequest.save();
+    
+            const friendRequest = {
+              id: existingRequest._id,
+              senderId: existingRequest.userA,
+              receiverId: existingRequest.userB,
+              status: existingRequest.status,
+              createdAt: existingRequest.createdAt,
+            };
+    
+            return friendRequest;
+          } else {
+            // Throw an error if a request already exists with any other status
+            throwCustomError(
+              "Friend request already sent or received",
+              ErrorTypes.BAD_REQUEST
+            );
+          }
         } else {
-          throwCustomError(
-            "Friend request already sent or received",
-            ErrorTypes.BAD_REQUEST
-          );
+          // If no friend record is found, create a new friendship record with status 'pending'
+          const newFriendship = await FriendshipModel.create({
+            userA: user._id,
+            userB: receiverId,
+            status: "pending",
+          });
+    
+          const friendRequest = {
+            id: newFriendship._id,
+            senderId: newFriendship.userA,
+            receiverId: newFriendship.userB,
+            status: newFriendship.status,
+            createdAt: newFriendship.createdAt,
+          };
+    
+          return friendRequest;
         }
-
-        //If no friend record is found create a new friendship record with status 'pending'
-        const newFriendship = await FriendshipModel.create({
-          userA: user._id,
-          userB: receiverId,
-          status: "pending",
-        });
-
-        const friendRequest = {
-          id: newFriendship._id,
-          senderId: newFriendship.userA,
-          receiverId: newFriendship.userB,
-          status: newFriendship.status,
-          createdAt: newFriendship.createdAt,
-        };
-
-        return friendRequest;
       } catch (error) {
         throw new Error(`Failed to send friend request : ${error.message}`);
       }
     },
+    
 
     // Respond to a friend request
     respondToFriendRequest: async (_, { input }, { user }) => {

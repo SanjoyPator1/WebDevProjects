@@ -97,10 +97,12 @@ const userResolver = {
                     userB: user._id,
                     status: "pending",
                 });
+                console.log({ pendingFriendRequests });
                 // Fetch the sender details for each friend request
                 const users = await UserModel.find({
                     _id: { $in: pendingFriendRequests.map((req) => req.userA) },
                 });
+                console.log({ users });
                 // Map each user and set the friendStatus as "pendingByLoggedInUser" and add the friendId
                 const usersWithFriendStatus = users.map((userItem) => {
                     const pendingRequest = pendingFriendRequests.find((request) => request.userA.toString() === userItem._id.toString());
@@ -110,6 +112,7 @@ const userResolver = {
                         friendId: pendingRequest ? pendingRequest._id : null,
                     };
                 });
+                console.log({ usersWithFriendStatus });
                 return usersWithFriendStatus;
             }
             catch (error) {
@@ -117,9 +120,12 @@ const userResolver = {
             }
         },
         // Resolver for the 'suggestedFriends' query
-        // This resolver fetches all active friendship records related to the user (excluding "cancelled" status),
-        // and then finds users who are not part of the active friendships, including the user themselves.
-        // The resulting list represents the suggested friends for the logged-in user.
+        // This resolver fetches all active friendship records related to the user.
+        // It then creates a set of user IDs to exclude from the suggested friends list.
+        // The excludedUserIdsSet contains the user IDs of all the people in the friendship records,
+        // except for those where the logged-in user sent a friend request and then cancelled it.
+        // After excluding these users, the resolver finds users who are not part of the excluded set, including the user themselves.
+        // The resulting list represents the suggested friends for the logged-in user, including friendStatus and friendId if applicable.
         suggestedFriends: async (_, __, { user }) => {
             try {
                 //this users will be excluded from the suggested friends list
@@ -131,7 +137,6 @@ const userResolver = {
                         },
                     ],
                 });
-                console.log({ activeFriendshipRecords });
                 // Create a Set to store the user IDs of all the people in the friendship record except for those people whom the loggedIn user has sent friend request and it was cancelled by the logged In user
                 const excludedUserIdsSet = new Set();
                 activeFriendshipRecords.forEach((friendRecord) => {
@@ -145,7 +150,6 @@ const userResolver = {
                         }
                     }
                 });
-                console.log({ excludedUserIdsSet });
                 // Find all users who are not in the friendIdsSet (excluding the user themselves)
                 const suggestedFriends = await UserModel.find({
                     _id: { $nin: Array.from(excludedUserIdsSet).concat([user._id]) },
@@ -163,7 +167,6 @@ const userResolver = {
                     });
                     // Set the friendId if the status is cancelled and the sender is the logged In user
                     if (friendshipRecord && friendshipRecord.status === "cancelled") {
-                        console.log(`updating friendId value for ${friend._id}`);
                         friendId = friendshipRecord._id;
                     }
                     return {
