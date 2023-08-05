@@ -22,10 +22,13 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   const location = useLocation();
 
   const isProfileOpened = location.pathname.includes(`/profile/${profileId}`);
-  console.log({ friendStatus }); //values of friendStatus "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
-  console.log({friendId})
+  // console.log({ friendStatus }); //values of friendStatus "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
+  // console.log({ friendId });
   return (
-    <div className="w-full flex flex-col gap-base bg-primary-foreground p-4 rounded-lg">
+    <div
+      key={profileId}
+      className="w-full flex flex-col gap-base bg-primary-foreground p-4 rounded-lg"
+    >
       <div
         className={`flex ${
           displayType === "short" ? "flex-row" : "flex-col"
@@ -60,7 +63,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               <Button
                 variant="default"
                 className="w-24 md:w-44 text-xs md:text-sm"
-                onClick={onSendFriendRequest}
+                onClick={() => onSendFriendRequest?.(profileId)}
               >
                 <BsPersonFillAdd className="mr-2 h-4 w-4" />
                 <>

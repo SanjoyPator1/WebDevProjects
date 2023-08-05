@@ -1,27 +1,17 @@
-import { useQuery } from "@apollo/client";
-// import ManyUserCard from "../../components/ManyUserScrollAreaModel/ManyUserScrollAreaModel";
-import { PENDING_FRIEND_REQUEST } from "../../graphql/queries/userQueries";
+import PendingFriendRequest from "../pendingFriendRequest/PendingFriendRequest";
+import SuggestedFriends from "../suggestedFriends/SuggestedFriends";
 
 const Friends = () => {
-  const {
-    loading: loadingPendingFriendRequest,
-    data: dataPendingFriendRequest,
-  } = useQuery(PENDING_FRIEND_REQUEST);
-
-  if (loadingPendingFriendRequest) {
-    return <div>Loading...</div>;
-  }
-  
-  !loadingPendingFriendRequest && console.log(dataPendingFriendRequest)
-
   return (
-    <div className="h-full">
+    <div className="flex flex-col h-full gap-sm overflow-y-auto">
       {/* display pending friend requests */}
-      <div className="h-[30%]">
-        {/* <ManyUserCard dataProp={} /> */}
+      <div className="h-72 border">
+        <PendingFriendRequest />
       </div>
       {/* display suggested friends */}
-      <div className="h-[70%]">{/* <ManyUserCard dataProp={} /> */}</div>
+      <div className="h-fit">
+        <SuggestedFriends/>
+      </div>
     </div>
   );
 };

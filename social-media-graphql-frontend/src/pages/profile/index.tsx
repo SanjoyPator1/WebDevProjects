@@ -94,7 +94,8 @@ const Profile = () => {
   };
 
   // Function to handle sending a friend request
-  const handleSendFriendRequest = async () => {
+  const handleSendFriendRequest = async (receiverId: string) => {
+    console.log({receiverId}) //TODO: remove later or use below
     try {
       const { data } = await sendFriendRequest({
         variables: { receiverId: id },

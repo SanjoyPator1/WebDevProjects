@@ -79,7 +79,7 @@ export function NavigationMenuBar() {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link to={`/friends/${userData._id}`}>
+            <Link to={`/friends`}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Friends
               </NavigationMenuLink>
@@ -119,7 +119,7 @@ export function NavigationMenuBar() {
                     </Link>
                   </NavigationMenuLink>
                 </li>
-                <ListItem linkTo={`/friends/${userData._id}`} title="Friends">
+                <ListItem linkTo={`/friends`} title="Friends">
                   See all your friends
                 </ListItem>
                 <ListItem linkTo={`/settings/${userData._id}`} title="Settings">

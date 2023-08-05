@@ -16,6 +16,7 @@ export interface UserModel {
   avatar?: string;
   bio?: string;
   friendStatus : "self" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
+  friendId : string;
   posts? : PostModel[]
 }
 
@@ -85,7 +86,7 @@ export interface CommentCardComponentModel {
     friendStatus: "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend";
     friendId: string | null;
     displayType?: "short" | "full";
-    onSendFriendRequest?: () => void;
+    onSendFriendRequest?: (receiverId: string) => void;
     onRespondToFriendRequest?: (status: "accepted" | "cancelled", friendRequestId: string) => void;
   }
   

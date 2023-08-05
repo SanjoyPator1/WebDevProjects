@@ -51,3 +51,16 @@ export const PENDING_FRIEND_REQUEST = gql`
     }
   }
 `;
+
+export const SUGGESTED_FRIENDS = gql`
+  query SUGGESTED_FRIENDS {
+    suggestedFriends {
+      _id
+      avatar
+      name
+      bio
+      friendStatus
+      friendId
+    }
+  }
+`;
