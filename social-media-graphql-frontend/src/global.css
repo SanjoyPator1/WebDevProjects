@@ -190,7 +190,13 @@
   }
 
   .px-2xl {
-    @apply px-20;
+    @apply px-12;
+  }
+  .py-2xl {
+    @apply py-8;
+  }
+  .p-2xl-container {
+    @apply py-2xl px-2xl;
   }
 
   /* margin design system */

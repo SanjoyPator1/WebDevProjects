@@ -60,7 +60,7 @@ const WithNav = () => {
       </div>
       <div className="flex-1 overflow-hidden">
         <div className="h-full flex flex-wrap">
-          <div className="h-full border-r-2 w-full md:w-9/12 p-lg-container">
+          <div className="h-full border-r-2 w-full md:w-9/12 p-lg-container md:p-2xl-container">
             <Outlet />
           </div>
           <div className="h-full hidden md:block md:w-3/12 p-lg-container">
