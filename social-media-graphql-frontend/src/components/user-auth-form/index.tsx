@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Icons } from "../ui/icons";
 import { useNavigate } from "react-router-dom";
 import { uploadFileToCloudinary } from "../../lib/helperFunction";
-import {useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { SIGNIN, SIGNUP } from "../../graphql/mutations/userMutations";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -38,10 +38,8 @@ export function UserAuthForm({
 }: UserAuthFormProps) {
   const { toast } = useToast();
   const [formValues, setFormValues] = useState<FormValues>(initialFormState);
-  const [signup, { loading: signupLoading }] =
-    useMutation(SIGNUP);
-  const [signin, { loading: signinLoading }] =
-    useMutation(SIGNIN);
+  const [signup, { loading: signupLoading }] = useMutation(SIGNUP);
+  const [signin, { loading: signinLoading }] = useMutation(SIGNIN);
 
   const navigate = useNavigate();
 
@@ -111,7 +109,7 @@ export function UserAuthForm({
           // Save the userJwtToken to localStorage or a state management system (e.g., Redux)
           const userJwtToken = data.signin.userJwtToken;
           localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
-          console.log("jwt token updated in local storage")
+          console.log("jwt token updated in local storage");
           toast({
             variant: "default",
             title: "Sign in successful",
@@ -130,7 +128,6 @@ export function UserAuthForm({
           variant: "destructive",
           title: `Error in ${authType}`,
           description: errorMessage,
-          
         });
       } finally {
         setFormValues({ ...initialFormState });
@@ -155,6 +152,7 @@ export function UserAuthForm({
               Email
             </Label>
             <Input
+              className="text-base"
               id="email"
               name="email"
               value={formValues.email}
@@ -178,6 +176,7 @@ export function UserAuthForm({
               Password
             </Label>
             <Input
+              className="text-base"
               id="password"
               name="password"
               value={formValues.password}
@@ -202,6 +201,7 @@ export function UserAuthForm({
                   Name
                 </Label>
                 <Input
+                  className="text-base"
                   id="name"
                   name="name"
                   value={formValues.name}
@@ -226,6 +226,7 @@ export function UserAuthForm({
                     Avatar
                   </Label>
                   <Input
+                    className="text-base"
                     id="avatar"
                     name="avatar"
                     type="file"
