@@ -122,7 +122,7 @@ const SuggestedFriends = () => {
 
   !loadingSuggestedFriends && console.log(dataSuggestedFriends);
   return (
-    <div className="h-full  flex flex-col gap-md p-5 border">
+    <div className="h-full  flex flex-col gap-md">
       <h3>Suggested Friends</h3>
       {!loadingSuggestedFriends &&
         dataSuggestedFriends.suggestedFriends.map((profiles: UserModel) => {

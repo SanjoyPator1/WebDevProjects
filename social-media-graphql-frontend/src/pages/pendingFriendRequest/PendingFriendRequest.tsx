@@ -123,7 +123,7 @@ const PendingFriendRequest = () => {
 
   !loadingPendingFriendRequest && console.log(dataPendingFriendRequest);
   return (
-    <div className="h-full flex flex-col gap-md p-5 border">
+    <div className="h-full flex flex-col gap-md">
       <h3>Pending friend request</h3>
       <ScrollArea className="h-full">
         {!loadingPendingFriendRequest &&

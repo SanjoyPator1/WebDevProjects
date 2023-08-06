@@ -62,28 +62,27 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
             {friendStatus === "notFriend" && (
               <Button
                 variant="default"
-                className="w-24 md:w-44 text-xs md:text-sm"
+                className="w-28 md:w-44"
                 onClick={() => onSendFriendRequest?.(profileId)}
               >
                 <BsPersonFillAdd className="mr-2 h-4 w-4" />
-                <>
+                <div className="flex gap-1 items-center text-xs md:text-sm">
                   Add <p className="hidden md:block">Friend</p>
-                </>
+                </div>
               </Button>
             )}
             {friendStatus === "pendingByLoggedInUser" && (
               <Button
                 variant="default"
-                className="w-24 md:w-44 text-xs md:text-sm"
+                className="w-28 md:w-44"
                 onClick={() =>
                   onRespondToFriendRequest?.("accepted", friendId!)
                 }
               >
                 <BsFillPersonCheckFill className="mr-2 h-4 w-4" />
-
-                <>
+                <div className="flex gap-1 items-center text-xs md:text-sm">
                   Confirm <p className="hidden md:block">Request</p>
-                </>
+                </div>
               </Button>
             )}
             {(friendStatus === "friend" ||
@@ -91,35 +90,35 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               friendStatus === "pendingByUser") && (
               <Button
                 variant="destructive"
-                className="w-24 md:w-44 text-xs md:text-sm"
+                className="w-28 md:w-44"
                 onClick={() =>
                   onRespondToFriendRequest?.("cancelled", friendId!)
                 }
               >
-                <BiSolidUserX className="mr-2 h-4 w-4" />
+                <BiSolidUserX className="mr-2 h-5 w-5" />
                 {friendStatus === "friend" ? (
-                  <>
-                    Unfriend <p className="hidden md:block">Request</p>
-                  </>
+                  <div className="flex gap-1 items-center text-xs md:text-sm">
+                    Unfriend <p className="hidden md:block"> Request</p>
+                  </div>
                 ) : friendStatus === "pendingByLoggedInUser" ? (
-                  <>
+                  <div className="flex gap-1 items-center text-xs md:text-sm">
                     Delete <p className="hidden md:block">Request</p>
-                  </>
+                  </div>
                 ) : (
-                  <>
+                  <div className="flex gap-1 items-center text-xs md:text-sm">
                     Cancel <p className="hidden md:block">Request</p>
-                  </>
+                  </div>
                 )}
               </Button>
             )}
 
             {/* Message Button */}
             <Button
-              className="w-28 md:w-44 text-xs md:text-sm"
+              className="w-28 md:w-44 "
               variant={friendStatus !== "friend" ? "outline" : "ghost"}
             >
               <AiFillMessage className="mr-2 h-4 w-4" />
-              Message
+              <div className="text-xs md:text-sm">Message</div>
             </Button>
           </div>
         )}
