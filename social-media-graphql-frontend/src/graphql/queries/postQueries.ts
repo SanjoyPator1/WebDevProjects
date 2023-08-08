@@ -85,3 +85,21 @@ export const GET_NOTIFICATIONS = gql`
     }
   }
 `;
+
+export const NEW_NOTIFICATION = gql`
+  subscription NewNotification($userId: ID!) {
+    newNotification(userId: $userId) {
+      _id
+      creatorUser {
+        _id
+        name
+        avatar
+      }
+      module
+      action
+      linkId
+      createdAt
+      seen
+    }
+  }
+`;

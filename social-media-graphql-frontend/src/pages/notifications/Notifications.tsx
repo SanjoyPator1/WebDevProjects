@@ -2,27 +2,53 @@ import React from "react";
 import { MdNotifications } from "react-icons/md";
 import { useRecoilValue } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
-import { NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger } from "../../components/ui/navigation-menu";
+import {
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+} from "../../components/ui/navigation-menu";
 import NotificationSheet from "./NotificationSheet";
-import { useQuery } from "@apollo/client";
-import { GET_NOTIFICATIONS } from "../../graphql/queries/postQueries";
+import { useQuery, useSubscription } from "@apollo/client";
+import {
+  GET_NOTIFICATIONS,
+  NEW_NOTIFICATION,
+} from "../../graphql/queries/postQueries";
 
 const NotificationsDropdown: React.FC = () => {
+  const userData = useRecoilValue(userDataState);
 
-    const userData = useRecoilValue(userDataState);
-
-    const { data, loading, error } = useQuery(GET_NOTIFICATIONS, {
-        variables: { targetId: userData._id },
-    });
-
-    if(loading){
-        <p>Loading...</p>
+  const { subscribeToMore, data, loading, error } = useQuery(
+    GET_NOTIFICATIONS,
+    {
+      variables: { targetId: userData._id },
     }
+  );
 
-    if(error){
-        console.log({error})
-    }
-    
+  const { data: newNotificationData } = useSubscription(NEW_NOTIFICATION, {
+    variables: { userId: userData._id },
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log({ subscriptionData });
+      if (subscriptionData.data) {
+        const newNotification = subscriptionData.data.newNotification;
+        console.log({ newNotification });
+        subscribeToMore({
+          document: GET_NOTIFICATIONS,
+          variables: { targetId: userData._id },
+          updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data) return prev;
+            return {
+              ...prev,
+              notifications: [newNotification, ...prev.notifications],
+            };
+          },
+        });
+      }
+    },
+  });
+
+  if (error) {
+    console.log({ error });
+  }
 
   return (
     <NavigationMenuItem>
@@ -30,10 +56,13 @@ const NotificationsDropdown: React.FC = () => {
         <MdNotifications />
       </NavigationMenuTrigger>
       <NavigationMenuContent>
-        {/* Notification sheet*/}
-        {!loading && data?.notifications &&
-          <NotificationSheet notificationData={data.notifications} />
-        }
+        {!loading && (
+          <NotificationSheet
+            notificationData={
+              newNotificationData?.notifications || data?.notifications || []
+            }
+          />
+        )}
       </NavigationMenuContent>
     </NavigationMenuItem>
   );
