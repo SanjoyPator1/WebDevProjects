@@ -3,6 +3,11 @@ import PostModel from "../db/post.model";
 import UserModel from "../db/user.model";
 import CommentModel from "../db/comment.model";
 import LikeModel from "../db/like.model";
+import { withFilter } from "graphql-subscriptions";
+import { createAndPublishNotification } from "../utils/notificationUtils";
+import pubsub, { NEW_NOTIFICATION } from "../pubsub";
+import NotificationModel from "../db/notification.model";
+import userResolver from "./user.resolver";
 
 const postResolvers = {
   Query: {
@@ -35,9 +40,58 @@ const postResolvers = {
     feed: async () => {
       try {
         const feedData = PostModel.find().sort({ createdAt: -1 });
-        return feedData
+        return feedData;
       } catch (error) {
         throw new Error("Failed to fetch the feed");
+      }
+    },
+    notifications: async (_, { targetId }, { user }) => {
+      try {
+        // Fetch all notifications associated with the target user ID
+        const notifications = await NotificationModel.find({
+          targetUserId: targetId,
+        });
+
+        // Fetch the associated creator and target users using userResolver
+        const notificationPayloads = await Promise.all(
+          notifications.map(async (notification) => {
+            const [creatorUser, targetUser] = await Promise.all([
+              userResolver.Query.findUser(
+                null,
+                {
+                  userId: notification.creatorUserId,
+                },
+                { user }
+              ),
+              userResolver.Query.findUser(
+                null,
+                {
+                  userId: notification.targetUserId,
+                },
+                { user }
+              ),
+            ]);
+
+            // Construct the notification payload with necessary data
+            const notificationPayload = {
+              _id: notification._id,
+              creatorUser,
+              targetUser,
+              module: notification.module,
+              action: notification.action,
+              linkId: notification.linkId,
+              createdAt: notification.createdAt.toISOString(),
+              updatedAt: notification.updatedAt.toISOString(),
+              seen: notification.seen,
+            };
+
+            return notificationPayload;
+          })
+        );
+
+        return notificationPayloads;
+      } catch (error) {
+        throw new Error(`Failed to fetch notifications: ${error.message}`);
       }
     },
   },
@@ -178,6 +232,15 @@ const postResolvers = {
           postId,
         });
 
+        // Use the utility function to create and publish the notification
+        await createAndPublishNotification(
+          user._id,
+          post.ownerId,
+          "POST",
+          "LIKE",
+          postId
+        );
+
         // Return the post with updated likes
         return newLike;
       } catch (error) {
@@ -204,7 +267,10 @@ const postResolvers = {
         });
 
         if (!deletedLike) {
-          throwCustomError("You have not liked this post", ErrorTypes.BAD_USER_INPUT);
+          throwCustomError(
+            "You have not liked this post",
+            ErrorTypes.BAD_USER_INPUT
+          );
         }
 
         // Return the postId
@@ -217,6 +283,15 @@ const postResolvers = {
       const { postId, comment } = input;
 
       try {
+        // Check if the post exists
+        const post = await PostModel.findById(postId);
+        if (!post) {
+          throwCustomError(
+            `Post with ID ${postId} not found`,
+            ErrorTypes.NOT_FOUND
+          );
+        }
+
         // Create the comment in the database with the provided input
         const newComment = await CommentModel.create({
           userId: user._id,
@@ -225,10 +300,84 @@ const postResolvers = {
           date: new Date().toISOString(),
         });
 
+        // Use the utility function to create and publish the notification
+        await createAndPublishNotification(
+          user._id,
+          post.ownerId,
+          "POST",
+          "COMMENT",
+          postId
+        );
+
         return newComment;
       } catch (error) {
         throw new Error("Failed to add the comment");
       }
+    },
+    markNotificationAsSeen: async (_, { notificationId }) => {
+      try {
+        // Find the notification by ID
+        const notification = await NotificationModel.findById(notificationId);
+
+        //check if the notification exist
+        if (!notification) {
+          throwCustomError(
+            `Notification with ID ${notification._id} not found`,
+            ErrorTypes.NOT_FOUND
+          );
+        }
+
+        // If the notification is already marked as seen, throw an error
+        if (notification.seen) {
+          throwCustomError(
+            "Notification is already marked as seen",
+            ErrorTypes.ALREADY_EXISTS
+          );
+        }
+
+        // Update the 'seen' field to true
+        notification.seen = true;
+        await notification.save();
+
+        // Fetch the associated creator and target users
+        // const [creatorUser, targetUser] = await Promise.all([
+        //   UserModel.findById(notification.creatorUserId),
+        //   UserModel.findById(notification.targetUserId),
+        // ]);
+
+        // Construct the notification payload with necessary data
+        const notificationPayload = {
+          _id: notification._id,
+          // creatorUser,
+          // targetUser,
+          // module: notification.module,
+          // action: notification.action,
+          // linkId: notification.linkId,
+          // createdAt: notification.createdAt.toISOString(),
+          // updatedAt: notification.updatedAt.toISOString(),
+          seen: notification.seen,
+        };
+
+        return notificationPayload;
+      } catch (error) {
+        throw new Error(
+          `Failed to mark notification as seen: ${error.message}`
+        );
+      }
+    },
+  },
+  Subscription: {
+    newNotification: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(NEW_NOTIFICATION),
+        (payload, variables) => {
+          const targetUserId =
+            payload.newNotification.targetUser._id.toString();
+          const subscriberUserId = variables.userId.toString();
+          const shouldNotify = targetUserId === subscriberUserId;
+          return shouldNotify;
+        }
+      ),
     },
   },
 };

@@ -31,6 +31,39 @@ const postTypeDefs = gql`
     comments: [Comment!]!
   }
 
+  enum NotificationType {
+        POST
+        FRIEND_REQUEST
+    }
+
+  enum NotificationAction {
+        LIKE
+        COMMENT
+        SEND_FRIEND_REQUEST
+        ACCEPTED_FRIEND_REQUEST
+    }
+
+  type NotificationPayload {
+    _id: ID!
+    creatorUser: User!
+    targetUser: User!
+    module: NotificationType!
+    action: NotificationAction!
+    linkId: ID
+    createdAt: String!
+    updatedAt: String!
+    seen: Boolean!
+  }
+
+  type NotificationSeen {
+    _id: ID!
+    seen: Boolean!
+  }
+
+  type Subscription {
+    newNotification(userId: ID!): NotificationPayload
+  }
+
   input NewCommentInput {
     postId: ID!
     comment: String!
@@ -40,7 +73,7 @@ const postTypeDefs = gql`
     message: String!
   }
 
-  input reactionPostInput{
+  input reactionPostInput {
     postId: String!
   }
 
@@ -48,13 +81,15 @@ const postTypeDefs = gql`
     posts(ownerId: ID!): [Post]! #all the posts of a userId
     post(id: ID!): Post! #post of a particular post id
     feed: [Post]! #all the posts of the social-network
+    notifications(targetId: ID!): [NotificationPayload]! #all the notifications 
   }
 
   type Mutation {
     createPost(input: NewPostInput!): Post!
-    likePost(input : reactionPostInput): Like!
+    likePost(input: reactionPostInput): Like!
     unlikePost(input: reactionPostInput!): ID! # Return the postId
     addComment(input: NewCommentInput!): Comment!
+    markNotificationAsSeen(notificationId: ID!): NotificationSeen!
   }
 `;
 

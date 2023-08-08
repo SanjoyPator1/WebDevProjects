@@ -5,6 +5,7 @@ import { Role } from "../typescript-models";
 import FriendshipModel from "../db/friendRequest.model";
 import throwCustomError, { ErrorTypes } from "../utils/error-handler";
 import postResolvers from "./post.resolver";
+import { createAndPublishNotification } from "../utils/notificationUtils";
 
 const userResolver = {
   Query: {
@@ -100,14 +101,14 @@ const userResolver = {
           status: "pending",
         });
 
-        console.log({ pendingFriendRequests})
+        console.log({ pendingFriendRequests });
 
         // Fetch the sender details for each friend request
         const users = await UserModel.find({
           _id: { $in: pendingFriendRequests.map((req) => req.userA) },
         });
 
-        console.log({users})
+        console.log({ users });
 
         // Map each user and set the friendStatus as "pendingByLoggedInUser" and add the friendId
         const usersWithFriendStatus = users.map((userItem) => {
@@ -122,7 +123,7 @@ const userResolver = {
           };
         });
 
-        console.log({usersWithFriendStatus})
+        console.log({ usersWithFriendStatus });
 
         return usersWithFriendStatus;
       } catch (error) {
@@ -354,13 +355,13 @@ const userResolver = {
     sendFriendRequest: async (_, { input }, { user }) => {
       try {
         const { receiverId } = input;
-    
+
         // Check if the receiver exists
         const receiver = await UserModel.findById(receiverId);
         if (!receiver) {
           throwCustomError("Receiver not found", ErrorTypes.NOT_FOUND);
         }
-    
+
         // Check if a friend request already exists between the sender and receiver
         const existingRequest = await FriendshipModel.findOne({
           $or: [
@@ -368,7 +369,7 @@ const userResolver = {
             { userA: receiverId, userB: user._id },
           ],
         });
-    
+
         if (existingRequest) {
           // If an existing request is found, check if it has a status of "cancelled"
           if (existingRequest.status === "cancelled") {
@@ -377,7 +378,7 @@ const userResolver = {
             existingRequest.userA = user._id;
             existingRequest.userB = receiverId;
             await existingRequest.save();
-    
+
             const friendRequest = {
               id: existingRequest._id,
               senderId: existingRequest.userA,
@@ -385,7 +386,16 @@ const userResolver = {
               status: existingRequest.status,
               createdAt: existingRequest.createdAt,
             };
-    
+
+            // Call the utility function to create and publish the notification
+            await createAndPublishNotification(
+              user._id,
+              receiverId,
+              "FRIEND_REQUEST",
+              "SEND_FRIEND_REQUEST",
+              receiverId // Use receiverId as linkId for the notification
+            );
+
             return friendRequest;
           } else {
             // Throw an error if a request already exists with any other status
@@ -401,7 +411,7 @@ const userResolver = {
             userB: receiverId,
             status: "pending",
           });
-    
+
           const friendRequest = {
             id: newFriendship._id,
             senderId: newFriendship.userA,
@@ -409,14 +419,22 @@ const userResolver = {
             status: newFriendship.status,
             createdAt: newFriendship.createdAt,
           };
-    
+
+          // Call the utility function to create and publish the notification
+          await createAndPublishNotification(
+            user._id,
+            receiverId,
+            "FRIEND_REQUEST",
+            "SEND_FRIEND_REQUEST",
+            receiverId // Use receiverId as linkId for the notification
+          );
+
           return friendRequest;
         }
       } catch (error) {
         throw new Error(`Failed to send friend request : ${error.message}`);
       }
     },
-    
 
     // Respond to a friend request
     respondToFriendRequest: async (_, { input }, { user }) => {
@@ -445,6 +463,18 @@ const userResolver = {
         // Update the friendship request status
         friendshipRequest.status = status;
         await friendshipRequest.save();
+
+        // If the status is 'accepted', notify the sender
+        if (status === "accepted") {
+          // Call the utility function to create and publish the notification for sender
+          await createAndPublishNotification(
+            friendshipRequest.userB, //notification creatorUserId
+            friendshipRequest.userA, //notification targetUserId
+            "FRIEND_REQUEST",
+            "ACCEPTED_FRIEND_REQUEST",
+            friendshipRequest.userB.toString()// link of the accepted user ID
+          );
+        }
 
         return {
           id: friendshipRequest._id,

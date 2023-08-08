@@ -5,6 +5,7 @@ import { Role } from "../typescript-models";
 import FriendshipModel from "../db/friendRequest.model";
 import throwCustomError, { ErrorTypes } from "../utils/error-handler";
 import postResolvers from "./post.resolver";
+import { createAndPublishNotification } from "../utils/notificationUtils";
 const userResolver = {
     Query: {
         health: () => {
@@ -327,38 +328,50 @@ const userResolver = {
                         { userA: receiverId, userB: user._id },
                     ],
                 });
-                // If an existing request with a status = "cancelled" is found, update its status to "pending" else throw error for other status that request already exists
-                if (existingRequest.status == "cancelled") {
-                    existingRequest.status = "pending";
-                    existingRequest.userA = user._id;
-                    existingRequest.userB = receiverId;
-                    await existingRequest.save();
-                    const friendRequest = {
-                        id: existingRequest._id,
-                        senderId: existingRequest.userA,
-                        receiverId: existingRequest.userB,
-                        status: existingRequest.status,
-                        createdAt: existingRequest.createdAt,
-                    };
-                    return friendRequest;
+                if (existingRequest) {
+                    // If an existing request is found, check if it has a status of "cancelled"
+                    if (existingRequest.status === "cancelled") {
+                        // Update the existing request status to "pending"
+                        existingRequest.status = "pending";
+                        existingRequest.userA = user._id;
+                        existingRequest.userB = receiverId;
+                        await existingRequest.save();
+                        const friendRequest = {
+                            id: existingRequest._id,
+                            senderId: existingRequest.userA,
+                            receiverId: existingRequest.userB,
+                            status: existingRequest.status,
+                            createdAt: existingRequest.createdAt,
+                        };
+                        // Call the utility function to create and publish the notification
+                        await createAndPublishNotification(user._id, receiverId, "FRIEND_REQUEST", "SEND_FRIEND_REQUEST", receiverId // Use receiverId as linkId for the notification
+                        );
+                        return friendRequest;
+                    }
+                    else {
+                        // Throw an error if a request already exists with any other status
+                        throwCustomError("Friend request already sent or received", ErrorTypes.BAD_REQUEST);
+                    }
                 }
                 else {
-                    throwCustomError("Friend request already sent or received", ErrorTypes.BAD_REQUEST);
+                    // If no friend record is found, create a new friendship record with status 'pending'
+                    const newFriendship = await FriendshipModel.create({
+                        userA: user._id,
+                        userB: receiverId,
+                        status: "pending",
+                    });
+                    const friendRequest = {
+                        id: newFriendship._id,
+                        senderId: newFriendship.userA,
+                        receiverId: newFriendship.userB,
+                        status: newFriendship.status,
+                        createdAt: newFriendship.createdAt,
+                    };
+                    // Call the utility function to create and publish the notification
+                    await createAndPublishNotification(user._id, receiverId, "FRIEND_REQUEST", "SEND_FRIEND_REQUEST", receiverId // Use receiverId as linkId for the notification
+                    );
+                    return friendRequest;
                 }
-                //If no friend record is found create a new friendship record with status 'pending'
-                const newFriendship = await FriendshipModel.create({
-                    userA: user._id,
-                    userB: receiverId,
-                    status: "pending",
-                });
-                const friendRequest = {
-                    id: newFriendship._id,
-                    senderId: newFriendship.userA,
-                    receiverId: newFriendship.userB,
-                    status: newFriendship.status,
-                    createdAt: newFriendship.createdAt,
-                };
-                return friendRequest;
             }
             catch (error) {
                 throw new Error(`Failed to send friend request : ${error.message}`);
@@ -380,6 +393,14 @@ const userResolver = {
                 // Update the friendship request status
                 friendshipRequest.status = status;
                 await friendshipRequest.save();
+                // If the status is 'accepted', notify the sender
+                if (status === "accepted") {
+                    // Call the utility function to create and publish the notification for sender
+                    await createAndPublishNotification(friendshipRequest.userB, //notification creatorUserId
+                    friendshipRequest.userA, //notification targetUserId
+                    "FRIEND_REQUEST", "ACCEPTED_FRIEND_REQUEST", friendshipRequest.userB.toString() // link of the accepted user ID
+                    );
+                }
                 return {
                     id: friendshipRequest._id,
                     senderId: friendshipRequest.userA,
