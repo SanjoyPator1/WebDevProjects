@@ -50,7 +50,7 @@ const postResolvers = {
         // Fetch all notifications associated with the target user ID
         const notifications = await NotificationModel.find({
           targetUserId: targetId,
-        });
+        }).sort({ createdAt: -1 });
 
         // Fetch the associated creator and target users using userResolver
         const notificationPayloads = await Promise.all(
