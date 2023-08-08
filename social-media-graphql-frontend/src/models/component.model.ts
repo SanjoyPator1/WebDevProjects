@@ -15,9 +15,13 @@ export interface UserModel {
   name: string;
   avatar?: string;
   bio?: string;
-  friendStatus : "self" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
-  friendId : string;
-  posts? : PostModel[]
+  friendStatus:
+    | "self"
+    | "pendingByUser"
+    | "pendingByLoggedInUser"
+    | "notFriend";
+  friendId: string;
+  posts?: PostModel[];
 }
 
 export interface PostModel {
@@ -28,7 +32,7 @@ export interface PostModel {
   commentsCount: string;
   isLikedByMe: boolean;
   owner: UserModel;
-  comments: CommentModel[]
+  comments: CommentModel[];
 }
 
 export interface FeedData {
@@ -37,60 +41,87 @@ export interface FeedData {
 
 //nav bar model
 export interface navBarObjModel {
-    name : string;
-    link : string;
+  name: string;
+  link: string;
 }
 
 export interface navBarModel {
-    navBarData : navBarObjModel[];
-    backgroundColor?: string;
-    textColor? : string;
-    onFocusTextColor? : string;
-    activeTabBackgroundColor? : string;
-    activeTabTextColor? : string;
+  navBarData: navBarObjModel[];
+  backgroundColor?: string;
+  textColor?: string;
+  onFocusTextColor?: string;
+  activeTabBackgroundColor?: string;
+  activeTabTextColor?: string;
 }
 
 //post model
 export interface PostCardContent {
-    postId: string;
-    ownerAvatar: string;
-    ownerName: string;
-    ownerId: string;
-    createdAt: string;
-    postText: string;
-    likesCount: string;
-    commentsCount: string;
-    isLikedByMe: boolean;
-  }
-  
-  export interface PostCardComponentModel {
-    data: PostCardContent;
-  }
+  postId: string;
+  ownerAvatar: string;
+  ownerName: string;
+  ownerId: string;
+  createdAt: string;
+  postText: string;
+  likesCount: string;
+  commentsCount: string;
+  isLikedByMe: boolean;
+}
+
+export interface PostCardComponentModel {
+  data: PostCardContent;
+}
 
 export interface CommentCardComponentModel {
-    data: {
-      commentId: string;
-      ownerId: string;
-      ownerAvatar: string;
-      ownerName: string;
-      createdAt: string;
-      commentText: string;
-    };
-  }
+  data: {
+    commentId: string;
+    ownerId: string;
+    ownerAvatar: string;
+    ownerName: string;
+    createdAt: string;
+    commentText: string;
+  };
+}
 
-  export interface ProfileInfoCardProps {
-    profileId: string;
-    avatar?: string;
-    name: string;
-    bio?: string;
-    friendStatus: "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend";
-    friendId: string | null;
-    displayType?: "short" | "full";
-    onSendFriendRequest?: (receiverId: string) => void;
-    onRespondToFriendRequest?: (status: "accepted" | "cancelled", friendRequestId: string) => void;
-  }
-  
-  
-export  interface ManyUserScrollAreaModel {
-    dataProp : ProfileInfoCardProps[]
-  }
+export interface ProfileInfoCardProps {
+  profileId: string;
+  avatar?: string;
+  name: string;
+  bio?: string;
+  friendStatus:
+    | "self"
+    | "friend"
+    | "pendingByUser"
+    | "pendingByLoggedInUser"
+    | "notFriend";
+  friendId: string | null;
+  displayType?: "short" | "full";
+  onSendFriendRequest?: (receiverId: string) => void;
+  onRespondToFriendRequest?: (
+    status: "accepted" | "cancelled",
+    friendRequestId: string
+  ) => void;
+}
+
+export interface ManyUserScrollAreaModel {
+  dataProp: ProfileInfoCardProps[];
+}
+
+export interface CreatorUserModel {
+  _id: string;
+  name: string;
+  avatar: string;
+}
+
+export interface NotificationModel {
+  _id: string;
+  creatorUser: CreatorUserModel;
+  module: "POST" | "FRIEND_REQUEST";
+  action:
+    | "LIKE"
+    | "COMMENT"
+    | "SEND_FRIEND_REQUEST"
+    | "ACCEPTED_FRIEND_REQUEST";
+  linkId: string;
+  createdAt: string;
+  seen: boolean;
+}

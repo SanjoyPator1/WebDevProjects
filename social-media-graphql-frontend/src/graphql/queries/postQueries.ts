@@ -67,3 +67,21 @@ export const GET_FEED = gql`
     }
   }
 `;
+
+export const GET_NOTIFICATIONS = gql`
+  query GET_NOTIFICATIONS($targetId: ID!) {
+    notifications(targetId: $targetId) {
+      _id
+      creatorUser {
+        _id
+        name
+        avatar
+      }
+      module
+      action
+      linkId
+      createdAt
+      seen
+    }
+  }
+`;

@@ -15,7 +15,7 @@ import { userDataState } from "../../lib/recoil/atom";
 import ThemeSelector from "../ThemeSelector";
 import { ChatSheet } from "../ChatSheet";
 import BrandLogo from "../BrandLogo";
-
+import NotificationsDropdown from "../../pages/notifications/Notifications";
 
 // const components: { title: string; href: string; description: string }[] = [
 //   {
@@ -66,7 +66,7 @@ export function NavigationMenuBar() {
           {/* logo */}
           <NavigationMenuItem>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-             <BrandLogo/>
+              <BrandLogo />
             </NavigationMenuLink>
           </NavigationMenuItem>
         </div>
@@ -91,7 +91,7 @@ export function NavigationMenuBar() {
           <NavigationMenuItem className="block md:hidden">
             <ChatSheet />
           </NavigationMenuItem>
-          {/* drop down menu */}
+          {/* drop down menu for profile*/}
           <NavigationMenuItem>
             <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -131,6 +131,10 @@ export function NavigationMenuBar() {
                 </ListItem>
               </ul>
             </NavigationMenuContent>
+          </NavigationMenuItem>
+          {/* drop down menu for notification TODO: make a separate component Notifications*/}
+          <NavigationMenuItem>
+            <NotificationsDropdown />
           </NavigationMenuItem>
         </div>
         {/* <NavigationMenuItem>

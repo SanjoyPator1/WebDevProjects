@@ -10,7 +10,6 @@ import {
   UNLIKE_POST,
 } from "../../graphql/mutations/postMutations";
 import { handleCreatePost, handleLikePost, handleUnlikePost } from "../../services/postActions";
-
 const Feed = () => {
   const { data: feedData, loading: loadingFeed } = useQuery(GET_FEED);
   const [createPost] = useMutation(CREATE_POST);
