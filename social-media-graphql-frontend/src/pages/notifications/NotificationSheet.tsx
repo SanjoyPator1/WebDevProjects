@@ -9,7 +9,7 @@ interface Props {
 
 const NotificationSheet: FC<Props> = ({ notificationData }) => {
   return (
-    <div className="flex flex-col p-3 md:w-[350px] lg:w-[450px h-[90vh] overflow-y-scroll]">
+    <div className={`flex flex-col items-start p-3 md:w-[350px] lg:w-[450px] ${notificationData.length === 0 ? "h-[20vh]" : "h-[90vh]"}`}>
       <h3 className="mb-3 text-base">Notifications</h3>
       <ScrollArea className="flex-1">
         {notificationData.map((notificationCardData: NotificationModel) => (
