@@ -12,12 +12,18 @@ const NotificationSheet:FC<Props> = ({notificationData}) => {
     console.log({notificationData})
 
   return (
-    <div className=' gap-3 p-3 md:w-[350px] lg:w-[450px] lg:grid-cols-[.75fr_1fr]'>
+    <div className=' p-3 md:w-[350px] lg:w-[450px]'>
+        <h3 className='mb-3 text-base'>Notifications</h3>
         {notificationData.map((notificationCardData : NotificationModel)=>{
-            return <div className='mb-2 md:mb-3'>
+            return <div className='mb-1 md:mb-2'>
                 <NotificationCard {...notificationCardData} />
             </div>
         })}
+        {notificationData.length===0 &&
+        <div>
+            <p className='italic'>No Notifications!</p>
+        </div>
+        }
     </div>
   )
 }
