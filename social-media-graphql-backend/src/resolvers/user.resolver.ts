@@ -393,7 +393,7 @@ const userResolver = {
               receiverId,
               "FRIEND_REQUEST",
               "SEND_FRIEND_REQUEST",
-              receiverId // Use receiverId as linkId for the notification
+              user._id // Use senderId as linkId for the notification because he send a friend request
             );
 
             return friendRequest;
@@ -426,7 +426,7 @@ const userResolver = {
             receiverId,
             "FRIEND_REQUEST",
             "SEND_FRIEND_REQUEST",
-            receiverId // Use receiverId as linkId for the notification
+            user._id // Use senderId as linkId for the notification because he send a friend request
           );
 
           return friendRequest;
@@ -472,7 +472,7 @@ const userResolver = {
             friendshipRequest.userA, //notification targetUserId
             "FRIEND_REQUEST",
             "ACCEPTED_FRIEND_REQUEST",
-            friendshipRequest.userB.toString()// link of the accepted user ID
+            friendshipRequest.userB.toString()// link of the accepted user ID i.e. receiverId
           );
         }
 
