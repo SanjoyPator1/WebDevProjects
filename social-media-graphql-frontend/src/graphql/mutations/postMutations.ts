@@ -61,3 +61,13 @@ export const ADD_COMMENT = gql`
     }
   }
 `;
+
+export const MARK_NOTIFICATIONS_SEEN = gql`
+  mutation MarkNotificationsAsSeen($notificationIds: [ID!]!) {
+    markNotificationsAsSeen(notificationIds: $notificationIds) {
+      _id
+      seen
+    }
+  }
+`;
+

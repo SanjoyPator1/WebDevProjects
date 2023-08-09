@@ -47,7 +47,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
   return (
     <Link
       to={linkPath}
-      className={`flex items-center gap-base p-base-container rounded-md ${
+      className={`w-full flex items-center gap-base p-base-container rounded-md ${
         !seen ? "bg-secondary" : "bg-primary-foreground"
       }`}
     >

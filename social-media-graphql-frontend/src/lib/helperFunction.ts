@@ -71,3 +71,12 @@ export function getInitials(name: string): string {
 
   return initials;
 }
+
+export const createSignal = <T>(initialValue: T) => {
+  let value:T = initialValue;
+
+  return {
+    getValue: () => value,
+    setValue: (val: T) => value = val,
+  }
+}
