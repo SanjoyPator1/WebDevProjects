@@ -8,6 +8,7 @@ import { createAndPublishNotification } from "../utils/notificationUtils";
 import pubsub, { NEW_NOTIFICATION } from "../pubsub";
 import NotificationModel from "../db/notification.model";
 import userResolver from "./user.resolver";
+import { UpdateWriteOpResult } from "mongoose";
 
 const postResolvers = {
   Query: {
@@ -314,57 +315,38 @@ const postResolvers = {
         throw new Error("Failed to add the comment");
       }
     },
-    markNotificationAsSeen: async (_, { notificationId }) => {
+    markNotificationsAsSeen: async (_, { notificationIds }) => {
       try {
-        // Find the notification by ID
-        const notification = await NotificationModel.findById(notificationId);
+        // Update all notifications with the provided IDs to mark them as seen
+        const result = await NotificationModel.updateMany(
+          {
+            _id: { $in: notificationIds },
+            seen: false, // Only mark unseen notifications
+          },
+          { $set: { seen: true } }
+        );
+    
+        const nModified = (result as UpdateWriteOpResult).modifiedCount;
 
-        //check if the notification exist
-        if (!notification) {
+        if (nModified === 0) {
           throwCustomError(
-            `Notification with ID ${notification._id} not found`,
+            "No unseen notifications found with the provided IDs",
             ErrorTypes.NOT_FOUND
           );
         }
-
-        // If the notification is already marked as seen, throw an error
-        if (notification.seen) {
-          throwCustomError(
-            "Notification is already marked as seen",
-            ErrorTypes.ALREADY_EXISTS
-          );
-        }
-
-        // Update the 'seen' field to true
-        notification.seen = true;
-        await notification.save();
-
-        // Fetch the associated creator and target users
-        // const [creatorUser, targetUser] = await Promise.all([
-        //   UserModel.findById(notification.creatorUserId),
-        //   UserModel.findById(notification.targetUserId),
-        // ]);
-
-        // Construct the notification payload with necessary data
-        const notificationPayload = {
-          _id: notification._id,
-          // creatorUser,
-          // targetUser,
-          // module: notification.module,
-          // action: notification.action,
-          // linkId: notification.linkId,
-          // createdAt: notification.createdAt.toISOString(),
-          // updatedAt: notification.updatedAt.toISOString(),
-          seen: notification.seen,
-        };
-
-        return notificationPayload;
+    
+        // Return the input notification IDs after marking them as seen
+        return notificationIds.map((notificationId) => ({
+          _id: notificationId,
+          seen: true,
+        }));
       } catch (error) {
         throw new Error(
-          `Failed to mark notification as seen: ${error.message}`
+          `Failed to mark notifications as seen: ${error.message}`
         );
       }
     },
+    
   },
   Subscription: {
     newNotification: {

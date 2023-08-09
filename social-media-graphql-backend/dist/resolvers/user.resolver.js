@@ -344,7 +344,7 @@ const userResolver = {
                             createdAt: existingRequest.createdAt,
                         };
                         // Call the utility function to create and publish the notification
-                        await createAndPublishNotification(user._id, receiverId, "FRIEND_REQUEST", "SEND_FRIEND_REQUEST", receiverId // Use receiverId as linkId for the notification
+                        await createAndPublishNotification(user._id, receiverId, "FRIEND_REQUEST", "SEND_FRIEND_REQUEST", user._id // Use senderId as linkId for the notification because he send a friend request
                         );
                         return friendRequest;
                     }
@@ -368,7 +368,7 @@ const userResolver = {
                         createdAt: newFriendship.createdAt,
                     };
                     // Call the utility function to create and publish the notification
-                    await createAndPublishNotification(user._id, receiverId, "FRIEND_REQUEST", "SEND_FRIEND_REQUEST", receiverId // Use receiverId as linkId for the notification
+                    await createAndPublishNotification(user._id, receiverId, "FRIEND_REQUEST", "SEND_FRIEND_REQUEST", user._id // Use senderId as linkId for the notification because he send a friend request
                     );
                     return friendRequest;
                 }
@@ -398,7 +398,7 @@ const userResolver = {
                     // Call the utility function to create and publish the notification for sender
                     await createAndPublishNotification(friendshipRequest.userB, //notification creatorUserId
                     friendshipRequest.userA, //notification targetUserId
-                    "FRIEND_REQUEST", "ACCEPTED_FRIEND_REQUEST", friendshipRequest.userB.toString() // link of the accepted user ID
+                    "FRIEND_REQUEST", "ACCEPTED_FRIEND_REQUEST", friendshipRequest.userB.toString() // link of the accepted user ID i.e. receiverId
                     );
                 }
                 return {

@@ -45,7 +45,7 @@ const postResolvers = {
                 // Fetch all notifications associated with the target user ID
                 const notifications = await NotificationModel.find({
                     targetUserId: targetId,
-                });
+                }).sort({ createdAt: -1 });
                 // Fetch the associated creator and target users using userResolver
                 const notificationPayloads = await Promise.all(notifications.map(async (notification) => {
                     const [creatorUser, targetUser] = await Promise.all([
@@ -264,42 +264,25 @@ const postResolvers = {
                 throw new Error("Failed to add the comment");
             }
         },
-        markNotificationAsSeen: async (_, { notificationId }) => {
+        markNotificationsAsSeen: async (_, { notificationIds }) => {
             try {
-                // Find the notification by ID
-                const notification = await NotificationModel.findById(notificationId);
-                //check if the notification exist
-                if (!notification) {
-                    throwCustomError(`Notification with ID ${notification._id} not found`, ErrorTypes.NOT_FOUND);
+                // Update all notifications with the provided IDs to mark them as seen
+                const result = await NotificationModel.updateMany({
+                    _id: { $in: notificationIds },
+                    seen: false, // Only mark unseen notifications
+                }, { $set: { seen: true } });
+                const nModified = result.modifiedCount;
+                if (nModified === 0) {
+                    throwCustomError("No unseen notifications found with the provided IDs", ErrorTypes.NOT_FOUND);
                 }
-                // If the notification is already marked as seen, throw an error
-                if (notification.seen) {
-                    throwCustomError("Notification is already marked as seen", ErrorTypes.ALREADY_EXISTS);
-                }
-                // Update the 'seen' field to true
-                notification.seen = true;
-                await notification.save();
-                // Fetch the associated creator and target users
-                // const [creatorUser, targetUser] = await Promise.all([
-                //   UserModel.findById(notification.creatorUserId),
-                //   UserModel.findById(notification.targetUserId),
-                // ]);
-                // Construct the notification payload with necessary data
-                const notificationPayload = {
-                    _id: notification._id,
-                    // creatorUser,
-                    // targetUser,
-                    // module: notification.module,
-                    // action: notification.action,
-                    // linkId: notification.linkId,
-                    // createdAt: notification.createdAt.toISOString(),
-                    // updatedAt: notification.updatedAt.toISOString(),
-                    seen: notification.seen,
-                };
-                return notificationPayload;
+                // Return the input notification IDs after marking them as seen
+                return notificationIds.map((notificationId) => ({
+                    _id: notificationId,
+                    seen: true,
+                }));
             }
             catch (error) {
-                throw new Error(`Failed to mark notification as seen: ${error.message}`);
+                throw new Error(`Failed to mark notifications as seen: ${error.message}`);
             }
         },
     },

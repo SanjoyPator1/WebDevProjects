@@ -21,7 +21,7 @@ export const createAndPublishNotification = async (creatorUserId, targetUserId, 
         module,
         action,
         linkId,
-        createdAt: notificationDbData.createdAt,
+        createdAt: notificationDbData.createdAt.toISOString(),
         updatedAt: notificationDbData.updatedAt,
         seen: notificationDbData.seen, // Use the seen value from the created notification
     };

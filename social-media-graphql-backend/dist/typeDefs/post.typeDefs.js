@@ -88,7 +88,7 @@ const postTypeDefs = gql `
     likePost(input: reactionPostInput): Like!
     unlikePost(input: reactionPostInput!): ID! # Return the postId
     addComment(input: NewCommentInput!): Comment!
-    markNotificationAsSeen(notificationId: ID!): NotificationSeen!
+    markNotificationsAsSeen(notificationIds: [ID!]!): [NotificationSeen!]!
   }
 `;
 export default postTypeDefs;
