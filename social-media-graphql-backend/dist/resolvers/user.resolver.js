@@ -182,6 +182,40 @@ const userResolver = {
                 throw new Error(`Failed to fetch suggested friends: ${error.message}`);
             }
         },
+        findFriends: async (_, { userId }) => {
+            try {
+                // Find the user based on the provided userId
+                const user = await UserModel.findById(userId);
+                if (!user) {
+                    throw new Error(`User not found with ID: ${userId}`);
+                }
+                // Find all friendship records where the user is either userA or userB, and the status is 'accepted'
+                const friendRecords = await FriendshipModel.find({
+                    $and: [
+                        { $or: [{ userA: userId }, { userB: userId }] },
+                        { status: "accepted" },
+                    ],
+                });
+                // Create an array to store the user IDs of the friends
+                const friendIds = friendRecords.map((friendRecord) => {
+                    // Determine the friend's ID based on the sender and receiver
+                    if (friendRecord.userA.toString() === userId) {
+                        return friendRecord.userB;
+                    }
+                    else {
+                        return friendRecord.userA;
+                    }
+                });
+                console.log({ friendIds });
+                // Fetch the details of the friends using their IDs from the UserModel
+                const friends = await UserModel.find({ _id: { $in: friendIds } });
+                console.log({ friends });
+                return friends;
+            }
+            catch (error) {
+                throw new Error(`Failed to fetch friends: ${error.message}`);
+            }
+        },
     },
     User: {
         // Field-level resolver for the 'friends' field of the 'User' type

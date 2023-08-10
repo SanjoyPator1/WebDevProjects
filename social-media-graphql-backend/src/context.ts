@@ -21,7 +21,6 @@ const context = async ({ req }) => {
    // Allowing introspection query
    //Allowing health query
   // Allowing the 'signUp' and 'signIn' queries to pass without giving the token
-  console.log("operation name: " + req.body.operationName)
   if (
     req.body.operationName === "IntrospectionQuery" ||
     req.body.operationName === "health" ||
@@ -31,16 +30,11 @@ const context = async ({ req }) => {
     return { user: guestUser };
   }
 
-
-  console.log("headers received", )
-  console.log(JSON.stringify(req.headers));
-
   // Get the user token from the headers
   const token = req.headers.authorization;
 
   // If no token, throw an error
   if (!token) {
-    console.log("no token")
     throwCustomError(
       'Invalid authorization',
       ErrorTypes.UNAUTHENTICATED
@@ -50,7 +44,6 @@ const context = async ({ req }) => {
   const decodedToken = verifyToken(token);
 
   if(!decodedToken){
-    console.log("token is not valid")
     throwCustomError(
       'Invalid token',
       ErrorTypes.UNAUTHENTICATED
@@ -64,7 +57,6 @@ const context = async ({ req }) => {
 
   // If user is not found, throw an error
   if (!user) {
-    console.log(`User not found`)
     throwCustomError(
       'User not found',
       ErrorTypes.NOT_FOUND

@@ -78,6 +78,7 @@ input RespondToFriendRequestInput {
     findUser(userId: ID): User
     pendingFriendRequests: [User]
     suggestedFriends: [User]
+    findFriends(userId: ID!): [User]
   }
 
   type Mutation {
