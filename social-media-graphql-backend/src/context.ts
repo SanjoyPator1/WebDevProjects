@@ -21,6 +21,7 @@ const context = async ({ req }) => {
    // Allowing introspection query
    //Allowing health query
   // Allowing the 'signUp' and 'signIn' queries to pass without giving the token
+  console.log("operation name: " + req.body.operationName)
   if (
     req.body.operationName === "IntrospectionQuery" ||
     req.body.operationName === "health" ||
@@ -30,7 +31,6 @@ const context = async ({ req }) => {
     return { user: guestUser };
   }
 
-  console.log("operation name: " + req.body.operationName)
 
   console.log("headers received", )
   console.log(JSON.stringify(req.headers));
