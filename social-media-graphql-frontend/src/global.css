@@ -178,7 +178,7 @@
   }
 
   .py-xl {
-    @apply py-7;
+    @apply py-5;
   }
 
   .px-xl {

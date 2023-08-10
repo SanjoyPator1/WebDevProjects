@@ -64,3 +64,14 @@ export const SUGGESTED_FRIENDS = gql`
     }
   }
 `;
+
+export const FIND_FRIENDS = gql`
+  query FindFriends($userId: ID!) {
+    findFriends(userId: $userId) {
+      _id
+      name
+      avatar
+    }
+  }
+`;
+
