@@ -38,6 +38,7 @@ const context = async ({ req }) => {
 
   // If no token, throw an error
   if (!token) {
+    console.log("no token")
     throwCustomError(
       'Invalid authorization',
       ErrorTypes.UNAUTHENTICATED
@@ -47,6 +48,7 @@ const context = async ({ req }) => {
   const decodedToken = verifyToken(token);
 
   if(!decodedToken){
+    console.log("token is not valid")
     throwCustomError(
       'Invalid token',
       ErrorTypes.UNAUTHENTICATED
@@ -60,6 +62,7 @@ const context = async ({ req }) => {
 
   // If user is not found, throw an error
   if (!user) {
+    console.log(`User not found`)
     throwCustomError(
       'User not found',
       ErrorTypes.NOT_FOUND
