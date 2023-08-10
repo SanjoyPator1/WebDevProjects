@@ -30,6 +30,8 @@ const context = async ({ req }) => {
     return { user: guestUser };
   }
 
+  console.log("operation name: " + req.body.operationName)
+
   console.log("headers received", )
   console.log(JSON.stringify(req.headers));
 
