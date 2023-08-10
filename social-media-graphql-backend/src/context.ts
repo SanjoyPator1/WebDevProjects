@@ -30,6 +30,9 @@ const context = async ({ req }) => {
     return { user: guestUser };
   }
 
+  console.log("headers received", )
+  console.log(JSON.stringify(req.headers));
+
   // Get the user token from the headers
   const token = req.headers.authorization;
 
