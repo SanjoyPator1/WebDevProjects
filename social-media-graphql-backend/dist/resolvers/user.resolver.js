@@ -206,10 +206,8 @@ const userResolver = {
                         return friendRecord.userA;
                     }
                 });
-                console.log({ friendIds });
                 // Fetch the details of the friends using their IDs from the UserModel
                 const friends = await UserModel.find({ _id: { $in: friendIds } });
-                console.log({ friends });
                 return friends;
             }
             catch (error) {
