@@ -32,9 +32,6 @@ const PendingFriendRequest = () => {
         const friendStatus = "pendingByUser"; // Friend status after sending the request
         const friendId = data.sendFriendRequest.id; // Get the friendId from the mutation response
 
-        console.log({friendStatus})
-        console.log({friendId})
-
         client.writeQuery({
           query: PENDING_FRIEND_REQUEST,
           data: {
