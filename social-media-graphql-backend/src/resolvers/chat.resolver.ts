@@ -61,7 +61,7 @@ const chatResolvers = {
           sender: populatedChat.senderId,
           receiver: populatedChat.receiverId,
           message: populatedChat.message,
-          createdAt: populatedChat.createdAt,
+          createdAt: populatedChat.createdAt.toISOString(),
           seen: populatedChat.seen,
         };
 
@@ -94,7 +94,7 @@ const chatResolvers = {
           sender: message.senderId,
           receiver: message.receiverId,
           message: message.message,
-          createdAt: message.createdAt,
+          createdAt: message.createdAt.toISOString(),
           seen: message.seen,
         };
 
