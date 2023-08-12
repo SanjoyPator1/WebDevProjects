@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 const chatTypeDefs = gql `
-  type Chat {
+  interface ChatNode {
     _id: ID!
     senderId: ID
     receiverId: ID
@@ -9,6 +9,34 @@ const chatTypeDefs = gql `
     message: String!
     createdAt: String!
     seen: Boolean!
+  }
+
+  enum MessageType {
+    NEW_MESSAGE
+    SEEN_MESSAGE
+  }
+
+  type Chat implements ChatNode {
+    _id: ID!
+    senderId: ID
+    receiverId: ID
+    sender: User
+    receiver: User
+    message: String!
+    createdAt: String!
+    seen: Boolean!
+  }
+
+  type ChatSubscriptionPayload implements ChatNode {
+    _id: ID!
+    senderId: ID
+    receiverId: ID
+    sender: User
+    receiver: User
+    message: String!
+    createdAt: String!
+    seen: Boolean!
+    type: MessageType!
   }
 
   input SendMessageInput {
@@ -26,7 +54,7 @@ const chatTypeDefs = gql `
   }
 
   type Subscription {
-    newMessage(receiverId: ID!): Chat
+    chatSubscription(receiverId: ID!): ChatSubscriptionPayload
   }
 `;
 export default chatTypeDefs;

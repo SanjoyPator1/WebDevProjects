@@ -16,8 +16,9 @@ const chatSchema = new Schema({
     required: true,
   },
   createdAt: {
-    type: String,
+    type: Date,
     required: true,
+    default: Date
   },
   seen: {
     type: Boolean,

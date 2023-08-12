@@ -10,13 +10,13 @@ const chatResolvers = {
                     $or: [{ senderId: userId }, { receiverId: userId }],
                 })
                     .populate("senderId receiverId")
-                    .sort({ createdAt: 1 });
+                    .sort({ createdAt: -1 });
                 return messages.map((chat) => ({
                     _id: chat._id,
                     sender: chat.senderId,
                     receiver: chat.receiverId,
                     message: chat.message,
-                    createdAt: chat.createdAt,
+                    createdAt: chat.createdAt.toISOString(),
                     seen: chat.seen,
                 }));
             }
@@ -41,7 +41,6 @@ const chatResolvers = {
                     senderId: user._id,
                     receiverId,
                     message,
-                    createdAt: new Date().toISOString(),
                 });
                 // Retrieve the created chat with populated sender and receiver data
                 const populatedChat = await ChatModel.findById(chat._id).populate("senderId receiverId");
@@ -56,7 +55,12 @@ const chatResolvers = {
                     createdAt: populatedChat.createdAt,
                     seen: populatedChat.seen,
                 };
-                pubsub.publish(NEW_MESSAGE, { newMessage: finalPopulatedMessage });
+                pubsub.publish(NEW_MESSAGE, {
+                    chatSubscription: {
+                        type: "NEW_MESSAGE",
+                        ...finalPopulatedMessage,
+                    },
+                });
                 return finalPopulatedMessage;
             }
             catch (error) {
@@ -69,7 +73,7 @@ const chatResolvers = {
                 if (!message) {
                     throw new Error("Failed to mark message as seen");
                 }
-                return {
+                const finalPopulatedMessage = {
                     _id: message._id,
                     sender: message.senderId,
                     receiver: message.receiverId,
@@ -77,6 +81,13 @@ const chatResolvers = {
                     createdAt: message.createdAt,
                     seen: message.seen,
                 };
+                pubsub.publish(NEW_MESSAGE, {
+                    chatSubscription: {
+                        type: "SEEN_MESSAGE",
+                        ...finalPopulatedMessage,
+                    },
+                });
+                return finalPopulatedMessage;
             }
             catch (error) {
                 throw new Error("Failed to mark message as seen");
@@ -84,9 +95,12 @@ const chatResolvers = {
         },
     },
     Subscription: {
-        newMessage: {
+        chatSubscription: {
             subscribe: withFilter(() => pubsub.asyncIterator(NEW_MESSAGE), (payload, variables) => {
-                const targetUserId = payload.newMessage.receiver._id.toString();
+                const messageType = payload.chatSubscription.type;
+                const targetUserId = messageType === "NEW_MESSAGE"
+                    ? payload.chatSubscription.receiver._id.toString()
+                    : payload.chatSubscription.sender._id.toString();
                 const subscriberUserId = variables.receiverId;
                 const shouldNotify = targetUserId === subscriberUserId;
                 return shouldNotify;
