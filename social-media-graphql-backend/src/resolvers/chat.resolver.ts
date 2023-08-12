@@ -18,7 +18,7 @@ const chatResolvers = {
           sender: chat.senderId,
           receiver: chat.receiverId,
           message: chat.message,
-          createdAt: chat.createdAt,
+          createdAt: chat.createdAt.toISOString(),
           seen: chat.seen,
         }));
       } catch (error) {
