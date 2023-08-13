@@ -55,6 +55,7 @@ const chatResolvers = {
                     createdAt: populatedChat.createdAt.toISOString(),
                     seen: populatedChat.seen,
                 };
+                console.log("sending new message in subscription", finalPopulatedMessage);
                 pubsub.publish(NEW_MESSAGE, {
                     chatSubscription: {
                         type: "NEW_MESSAGE",
@@ -97,12 +98,15 @@ const chatResolvers = {
     Subscription: {
         chatSubscription: {
             subscribe: withFilter(() => pubsub.asyncIterator(NEW_MESSAGE), (payload, variables) => {
+                console.log("chat subscription ");
                 const messageType = payload.chatSubscription.type;
                 const targetUserId = messageType === "NEW_MESSAGE"
                     ? payload.chatSubscription.receiver._id.toString()
                     : payload.chatSubscription.sender._id.toString();
                 const subscriberUserId = variables.receiverId;
                 const shouldNotify = targetUserId === subscriberUserId;
+                console.log({ payloadData: payload.chatSubscription });
+                console.log({ subscriberUserId });
                 return shouldNotify;
             }),
         },
