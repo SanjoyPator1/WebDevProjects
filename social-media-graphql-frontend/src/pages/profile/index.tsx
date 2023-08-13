@@ -205,7 +205,7 @@ const Profile = () => {
         <TextInputWithButton
           buttonText="Post"
           placeholder="Write your post here..."
-          onPost={(text) => handleCreatePostWrapper(text)}
+          onClick={(text) => handleCreatePostWrapper(text)}
         />
       </div>
       {/* all the posts of this user profile*/}

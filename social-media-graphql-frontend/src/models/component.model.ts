@@ -125,3 +125,18 @@ export interface NotificationModel {
   createdAt: string;
   seen: boolean;
 }
+
+export interface ChatMessageModel {
+  _id: string;
+  sender: UserModel;
+  receiver: UserModel;
+  message: string;
+  createdAt: string;
+  seen: boolean;
+}
+
+export type MessageType = 'NEW_MESSAGE' | 'SEEN_MESSAGE';
+
+export interface ChatMessageWithNotificationTypeModel extends ChatMessageModel {
+  type?: MessageType;
+}

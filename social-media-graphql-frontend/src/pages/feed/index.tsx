@@ -62,7 +62,7 @@ const Feed = () => {
         <TextInputWithButton
           buttonText="Post"
           placeholder="Write your post here..."
-          onPost={(text) => handleCreatePostWrapper(text)}
+          onClick={(text) => handleCreatePostWrapper(text)}
           size="medium"
         />
       </div>

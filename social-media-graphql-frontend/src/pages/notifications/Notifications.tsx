@@ -14,38 +14,18 @@ import client from "../../graphql/apolloClient";
 
 const NotificationsDropdown: React.FC = () => {
   const userData = useRecoilValue(userDataState);
+  const userId = userData?._id?.toString();
   const [showNotifications, setShowNotifications] = useState(false);
   const [numberOfNewNotifications, setNumberOfNewNotifications] = useState(0);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
   const { data, loading, error } = useQuery(GET_NOTIFICATIONS, {
-    variables: { targetId: userData._id },
+    variables: { targetId: userData._id.toString() },
+    skip: !userId, // Skip the query if userId is not available
   });
 
   const [markNotificationsAsSeen] = useMutation(MARK_NOTIFICATIONS_SEEN);
-
-  // const { data: newNotificationData } = useSubscription(NEW_NOTIFICATION, {
-  //   variables: { userId: userData._id },
-  //   onSubscriptionData: ({ subscriptionData }) => {
-  //     console.log({ subscriptionData });
-  //     if (subscriptionData.data) {
-  //       const newNotification = subscriptionData.data.newNotification;
-  //       console.log({ newNotification });
-  //       subscribeToMore({
-  //         document: GET_NOTIFICATIONS,
-  //         variables: { targetId: userData._id },
-  //         updateQuery: (prev, { subscriptionData }) => {
-  //           if (!subscriptionData.data) return prev;
-  //           return {
-  //             ...prev,
-  //             notifications: [newNotification, ...prev.notifications],
-  //           };
-  //         },
-  //       });
-  //     }
-  //   },
-  // });
 
   const { data: newNotificationData } = useSubscription(NEW_NOTIFICATION, {
     variables: { userId: userData._id },

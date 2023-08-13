@@ -10,14 +10,14 @@ import { IoMdSend } from "react-icons/io";
 interface TextInputWithButtonProps {
   placeholder: string;
   buttonText?: string;
-  onPost: (text: string) => void;
+  onClick: (text: string) => void;
   size?: "small" | "medium";
 }
 
 const TextInputWithButton: React.FC<TextInputWithButtonProps> = ({
   placeholder,
   buttonText,
-  onPost,
+  onClick: onPost,
   size = "small",
 }) => {
   const [userData] = useRecoilState(userDataState);

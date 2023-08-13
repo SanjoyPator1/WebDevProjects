@@ -3,8 +3,6 @@ import { Button } from "../ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
 
@@ -14,13 +12,7 @@ export function ChatSheet() {
       <SheetTrigger asChild>
         <Button variant="ghost">Chat</Button>
       </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle className="text-left mb-2">Chat</SheetTitle>
-          {/* <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
-          </SheetDescription> */}
-        </SheetHeader>
+      <SheetContent className="h-full flex flex-col gap-0">
         <Chat />
       </SheetContent>
     </Sheet>

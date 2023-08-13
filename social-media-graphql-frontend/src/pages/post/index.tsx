@@ -102,7 +102,7 @@ const Post = () => {
       {/* comment input */}
       <TextInputWithButton
         placeholder="Write your comment here..."
-        onPost={(text) => {
+        onClick={(text) => {
           handleAddCommentWrapper(text);
         }}
       />
