@@ -116,17 +116,20 @@ const chatResolvers = {
       subscribe: withFilter(
         () => pubsub.asyncIterator(NEW_MESSAGE),
         (payload, variables) => {
+          console.log("chat subscription ")
           const messageType = payload.chatSubscription.type;
           const targetUserId =
-            messageType === "NEW_MESSAGE"
-              ? payload.chatSubscription.receiver._id.toString()
-              : payload.chatSubscription.sender._id.toString();
+          messageType === "NEW_MESSAGE"
+          ? payload.chatSubscription.receiver._id.toString()
+          : payload.chatSubscription.sender._id.toString();
           const subscriberUserId = variables.receiverId;
           const shouldNotify = targetUserId === subscriberUserId;
-
+          
+          console.log({payloadData:payload.chatSubscription})
+          console.log({subscriberUserId})
           return shouldNotify;
         }
-      ),
+        ),
     },
   },
 };
