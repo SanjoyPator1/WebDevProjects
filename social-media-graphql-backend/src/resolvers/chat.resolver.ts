@@ -65,6 +65,8 @@ const chatResolvers = {
           seen: populatedChat.seen,
         };
 
+        console.log("sending new message in subscription", finalPopulatedMessage);
+
         pubsub.publish(NEW_MESSAGE, {
           chatSubscription: {
             type: "NEW_MESSAGE",
