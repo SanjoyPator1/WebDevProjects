@@ -2,111 +2,125 @@ import { withFilter } from "graphql-subscriptions";
 import ChatModel from "../db/chat.model";
 import UserModel from "../db/user.model";
 import pubsub, { NEW_MESSAGE } from "../pubsub";
+import throwCustomError, { ErrorTypes } from "../utils/error-handler";
 const chatResolvers = {
     Query: {
-        getMessages: async (_, { userId }) => {
-            try {
-                const messages = await ChatModel.find({
-                    $or: [{ senderId: userId }, { receiverId: userId }],
-                })
-                    .populate("senderId receiverId")
-                    .sort({ createdAt: -1 });
-                return messages.map((chat) => ({
-                    _id: chat._id,
-                    sender: chat.senderId,
-                    receiver: chat.receiverId,
-                    message: chat.message,
-                    createdAt: chat.createdAt.toISOString(),
-                    seen: chat.seen,
-                }));
+        getMessages: async (_, { userId }, { user }) => {
+            const loggedInUserId = user._id;
+            if (!userId) {
+                throwCustomError("Receiver ID is required to get messages", ErrorTypes.BAD_USER_INPUT);
             }
-            catch (error) {
-                throw new Error("Failed to fetch messages");
+            const chatUserId = await UserModel.findById(userId);
+            if (!chatUserId) {
+                throwCustomError(`User not found`, ErrorTypes.NOT_FOUND);
             }
+            const messages = await ChatModel.find({
+                $or: [
+                    { senderId: userId, receiverId: loggedInUserId },
+                    { senderId: loggedInUserId, receiverId: userId },
+                ],
+            })
+                .populate("senderId receiverId")
+                .sort({ createdAt: -1 });
+            if (!messages) {
+                throwCustomError("Message not found", ErrorTypes.NOT_FOUND);
+            }
+            return messages.map((chat) => ({
+                _id: chat._id,
+                sender: chat.senderId,
+                receiver: chat.receiverId,
+                message: chat.message,
+                createdAt: chat.createdAt.toISOString(),
+                seen: chat.seen,
+            }));
         },
     },
     Mutation: {
         sendMessage: async (_, { input }, { user }) => {
             const { receiverId, message } = input;
             if (!receiverId) {
-                throw new Error("Receiver ID is required to send a message");
+                throwCustomError("Receiver ID is required to send a message", ErrorTypes.BAD_USER_INPUT);
             }
-            try {
-                // Check if the receiver exists
-                const receiver = await UserModel.findById(receiverId);
-                if (!receiver) {
-                    throw new Error("Receiver not found");
-                }
-                const chat = await ChatModel.create({
-                    senderId: user._id,
-                    receiverId,
-                    message,
-                });
-                // Retrieve the created chat with populated sender and receiver data
-                const populatedChat = await ChatModel.findById(chat._id).populate("senderId receiverId");
-                if (!populatedChat) {
-                    throw new Error("Failed to send message");
-                }
-                const finalPopulatedMessage = {
-                    _id: populatedChat._id,
-                    sender: populatedChat.senderId,
-                    receiver: populatedChat.receiverId,
-                    message: populatedChat.message,
-                    createdAt: populatedChat.createdAt.toISOString(),
-                    seen: populatedChat.seen,
-                };
-                console.log("sending new message in subscription", finalPopulatedMessage);
-                pubsub.publish(NEW_MESSAGE, {
-                    chatSubscription: {
-                        type: "NEW_MESSAGE",
-                        ...finalPopulatedMessage,
-                    },
-                });
-                return finalPopulatedMessage;
+            if (!message) {
+                throwCustomError("message is required to send a message", ErrorTypes.BAD_USER_INPUT);
             }
-            catch (error) {
-                throw new Error("Failed to send message");
+            // Check if the receiver exists
+            const receiver = await UserModel.findById(receiverId);
+            if (!receiver) {
+                throwCustomError("Receiver not found", ErrorTypes.NOT_FOUND);
             }
+            const chat = await ChatModel.create({
+                senderId: user._id,
+                receiverId,
+                message,
+            });
+            if (!chat) {
+                throwCustomError("failed to send message", ErrorTypes.BAD_REQUEST);
+            }
+            // Retrieve the created chat with populated sender and receiver data
+            const populatedChat = await ChatModel.findById(chat._id).populate("senderId receiverId");
+            if (!populatedChat) {
+                throwCustomError("failed to send message", ErrorTypes.NOT_FOUND);
+            }
+            const finalPopulatedMessage = {
+                _id: populatedChat._id,
+                sender: populatedChat.senderId,
+                receiver: populatedChat.receiverId,
+                message: populatedChat.message,
+                createdAt: populatedChat.createdAt.toISOString(),
+                seen: populatedChat.seen,
+            };
+            pubsub.publish(NEW_MESSAGE, {
+                chatSubscription: {
+                    type: "NEW_MESSAGE",
+                    ...finalPopulatedMessage,
+                },
+            });
+            return finalPopulatedMessage;
         },
-        markAsSeen: async (_, { messageId }) => {
-            try {
-                const message = await ChatModel.findByIdAndUpdate(messageId, { seen: true }, { new: true }).populate("senderId receiverId");
-                if (!message) {
-                    throw new Error("Failed to mark message as seen");
-                }
-                const finalPopulatedMessage = {
-                    _id: message._id,
-                    sender: message.senderId,
-                    receiver: message.receiverId,
-                    message: message.message,
-                    createdAt: message.createdAt.toISOString(),
-                    seen: message.seen,
-                };
-                pubsub.publish(NEW_MESSAGE, {
-                    chatSubscription: {
-                        type: "SEEN_MESSAGE",
-                        ...finalPopulatedMessage,
-                    },
-                });
-                return finalPopulatedMessage;
+        markAsSeen: async (_, { messageId }, { user }) => {
+            const loggedInUserId = user._id;
+            if (!messageId) {
+                throwCustomError("message ID is required to send a message", ErrorTypes.BAD_USER_INPUT);
             }
-            catch (error) {
-                throw new Error("Failed to mark message as seen");
+            const message = await ChatModel.findById(messageId).populate("senderId receiverId");
+            if (!message) {
+                throwCustomError("Message not found", ErrorTypes.NOT_FOUND);
             }
+            if (message.receiverId._id.toString() !== loggedInUserId.toString()) {
+                throwCustomError("You are not authorized to mark this message as seen", ErrorTypes.UNAUTHENTICATED);
+            }
+            if (message.seen === true) {
+                throwCustomError("Message already marked as seen true", ErrorTypes.BAD_REQUEST);
+            }
+            message.seen = true;
+            await message.save();
+            const finalPopulatedMessage = {
+                _id: message._id,
+                sender: message.senderId,
+                receiver: message.receiverId,
+                message: message.message,
+                createdAt: message.createdAt.toISOString(),
+                seen: message.seen,
+            };
+            pubsub.publish(NEW_MESSAGE, {
+                chatSubscription: {
+                    type: "SEEN_MESSAGE",
+                    ...finalPopulatedMessage,
+                },
+            });
+            return finalPopulatedMessage;
         },
     },
     Subscription: {
         chatSubscription: {
             subscribe: withFilter(() => pubsub.asyncIterator(NEW_MESSAGE), (payload, variables) => {
-                console.log("chat subscription ");
                 const messageType = payload.chatSubscription.type;
                 const targetUserId = messageType === "NEW_MESSAGE"
                     ? payload.chatSubscription.receiver._id.toString()
                     : payload.chatSubscription.sender._id.toString();
                 const subscriberUserId = variables.receiverId;
                 const shouldNotify = targetUserId === subscriberUserId;
-                console.log({ payloadData: payload.chatSubscription });
-                console.log({ subscriberUserId });
                 return shouldNotify;
             }),
         },
