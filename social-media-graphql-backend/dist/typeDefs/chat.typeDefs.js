@@ -11,11 +11,6 @@ const chatTypeDefs = gql `
     seen: Boolean!
   }
 
-  enum MessageType {
-    NEW_MESSAGE
-    SEEN_MESSAGE
-  }
-
   type Chat implements ChatNode {
     _id: ID!
     senderId: ID
@@ -27,7 +22,7 @@ const chatTypeDefs = gql `
     seen: Boolean!
   }
 
-  type ChatSubscriptionPayload implements ChatNode {
+  type NewMessageChatSubscriptionPayload implements ChatNode {
     _id: ID!
     senderId: ID
     receiverId: ID
@@ -36,12 +31,26 @@ const chatTypeDefs = gql `
     message: String!
     createdAt: String!
     seen: Boolean!
-    type: MessageType!
+  }
+
+  type SeenMessageChatSubscriptionPayload implements ChatNode {
+    _id: ID!
+    senderId: ID
+    receiverId: ID
+    sender: User
+    receiver: User
+    message: String!
+    createdAt: String!
+    seen: Boolean!
   }
 
   input SendMessageInput {
     receiverId: ID!
     message: String!
+  }
+
+  input MarkAsSeenInput {
+    messageIds: [ID!]!
   }
 
   type Query {
@@ -50,11 +59,12 @@ const chatTypeDefs = gql `
 
   type Mutation {
     sendMessage(input: SendMessageInput!): Chat!
-    markAsSeen(messageId: ID!): Chat!
+    markAsSeen(input: MarkAsSeenInput!): [Chat]!
   }
 
   type Subscription {
-    chatSubscription(receiverId: ID!): ChatSubscriptionPayload
+    newMessageChatSubscription(receiverId: ID!): NewMessageChatSubscriptionPayload
+    seenMessageChatSubscription(receiverId: ID!): [SeenMessageChatSubscriptionPayload]
   }
 `;
 export default chatTypeDefs;
