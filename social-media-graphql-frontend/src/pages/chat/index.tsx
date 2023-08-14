@@ -138,7 +138,7 @@ const Chat = () => {
 
       <div
         ref={scrollRef}
-        className="h-[12%] rounded-md p-base-container overflow-x-auto touch-pan-x flex gap-base"
+        className="h-[15%] md:h-[12%] rounded-md p-base-container overflow-x-auto touch-pan-x flex gap-base"
       >
         {friends.map((friend: FriendModel) => (
           <div
@@ -160,7 +160,7 @@ const Chat = () => {
           </div>
         ))}
       </div>
-      <div className="h-[78%] border rounded-md">
+      <div className="h-[75%] border rounded-md">
         {selectedChatUserId ? (
           <ChatMessages selectedChatUserId={selectedChatUserId._id} selectedChatUserName={selectedChatUserId.name} selectedChatUserAvatar={selectedChatUserId.avatar} loggedInUserId={loggedInUserId}/>
         ) : (
