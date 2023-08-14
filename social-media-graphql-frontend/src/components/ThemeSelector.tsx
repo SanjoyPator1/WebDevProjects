@@ -41,9 +41,9 @@ const ThemeSelector: React.FC = () => {
       className="flex items-center justify-center rounded-full  text-yellow-400 dark:text-blue-500"
     >
       {currentTheme === 'light' ? (
-        <BsFillSunFill className="text-2xl" />
+        <BsFillSunFill className="text-3xl" />
       ) : (
-        <BsFillMoonStarsFill className="text-2xl" />
+        <BsFillMoonStarsFill className="text-3xl" />
       )}
     </button>
   );

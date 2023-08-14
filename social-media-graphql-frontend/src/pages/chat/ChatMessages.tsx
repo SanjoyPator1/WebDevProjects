@@ -10,6 +10,7 @@ import MessageCard from "../../components/chat/MessageCard";
 import TextInputWithButton from "../../components/textInputWithButton/textInputWithButton";
 import client from "../../graphql/apolloClient";
 import AvatarLogo from "../../components/avatar/AvatarLogo";
+import { ScrollArea } from "../../components/ui/scroll-area";
 interface ChatMessagesProps {
   selectedChatUserId: string;
   selectedChatUserName: string;
@@ -137,7 +138,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({
         />
         <h3 className="ml-4">{selectedChatUserName}</h3>
       </div>
-      <div
+      <ScrollArea
         className="flex-1 flex flex-col-reverse overflow-y-scroll scroll-smooth"
         ref={messageContainerRef}
       >
@@ -156,7 +157,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({
             />
           )
         )}
-      </div>
+      </ScrollArea>
       <div className="pt-3">
         <TextInputWithButton
           placeholder="type new message here..."

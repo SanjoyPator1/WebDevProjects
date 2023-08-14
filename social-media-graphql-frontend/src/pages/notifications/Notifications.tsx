@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MdNotifications } from "react-icons/md";
+import { MdNotifications, MdOutlineNotificationsNone } from "react-icons/md";
 import { useRecoilValue } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
 import NotificationSheet from "./NotificationSheet";
@@ -154,12 +154,16 @@ const NotificationsDropdown: React.FC = () => {
   }, [handleBellClick, menuRef]);
 
   return (
-    <div className="px-4 py-2 relative notification-dropdown" ref={menuRef}>
+    <div className=" relative notification-dropdown" ref={menuRef}>
       <div
         onClick={() => handleBellClick(false)}
         className="relative cursor-pointer"
       >
-        <MdNotifications className="h-6 w-5 md:h-6 md:w-6" />
+        {showNotifications ? (
+          <MdNotifications className="h-6 w-6 md:h-6 md:w-6" />
+        ) : (
+          <MdOutlineNotificationsNone className="h-6 w-6 md:h-6 md:w-6" />
+        )}
         {numberOfNewNotifications > 0 && (
           <div className="bg-destructive rounded-full h-4 w-4 text-xs text-white text-center absolute -top-1 -right-1">
             {numberOfNewNotifications}

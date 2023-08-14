@@ -119,7 +119,7 @@ const Chat = () => {
 
   return (
     <div className="h-full flex flex-col gap-base overflow-hidden">
-      <div className="h-[4%] flex items-center gap-md w-full">
+      <div className="h-[6%] flex items-center gap-md w-full pt-3">
         <h3>Chat</h3>
         <div
           onClick={() => setOpenSearchFriends(true)}
@@ -160,7 +160,7 @@ const Chat = () => {
           </div>
         ))}
       </div>
-      <div className="h-[81%] border rounded-md flex-1">
+      <div className="h-[78%] border rounded-md">
         {selectedChatUserId ? (
           <ChatMessages selectedChatUserId={selectedChatUserId._id} selectedChatUserName={selectedChatUserId.name} selectedChatUserAvatar={selectedChatUserId.avatar} loggedInUserId={loggedInUserId}/>
         ) : (

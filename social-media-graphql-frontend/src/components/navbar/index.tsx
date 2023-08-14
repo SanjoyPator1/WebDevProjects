@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import { Link } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -7,7 +6,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "../ui/navigation-menu";
 import { cn } from "../../lib/utils";
 import { useRecoilValue } from "recoil";
@@ -16,84 +14,55 @@ import ThemeSelector from "../ThemeSelector";
 import { ChatSheet } from "../ChatSheet";
 import BrandLogo from "../BrandLogo";
 import NotificationsDropdown from "../../pages/notifications/Notifications";
-
-// const components: { title: string; href: string; description: string }[] = [
-//   {
-//     title: "Alert Dialog",
-//     href: "/docs/primitives/alert-dialog",
-//     description:
-//       "A modal dialog that interrupts the user with important content and expects a response.",
-//   },
-//   {
-//     title: "Hover Card",
-//     href: "/docs/primitives/hover-card",
-//     description:
-//       "For sighted users to preview content available behind a link.",
-//   },
-//   {
-//     title: "Progress",
-//     href: "/docs/primitives/progress",
-//     description:
-//       "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
-//   },
-//   {
-//     title: "Scroll-area",
-//     href: "/docs/primitives/scroll-area",
-//     description: "Visually or semantically separates content.",
-//   },
-//   {
-//     title: "Tabs",
-//     href: "/docs/primitives/tabs",
-//     description:
-//       "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-//   },
-//   {
-//     title: "Tooltip",
-//     href: "/docs/primitives/tooltip",
-//     description:
-//       "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-//   },
-// ];
+import { BiSolidHome,BiHome } from "react-icons/bi";
+import { BsFillPeopleFill, BsPeople } from "react-icons/bs";
+import { RiAccountPinCircleFill, RiAccountPinCircleLine } from "react-icons/ri";
+import { Link, useMatch } from "react-router-dom";
 
 export function NavigationMenuBar() {
   const userData = useRecoilValue(userDataState);
 
   return (
-    <NavigationMenu className="border-b-2">
-      <NavigationMenuList className="w-screen flex flex-row justify-between gap-x-2 md:gap-x-3">
+    <NavigationMenu className="border-b-2 h-16">
+      <NavigationMenuList className="w-screen flex flex-row justify-between gap-x-1 md:gap-x-2 lg:gap-x-3">
         {/* normal link */}
-        <div className="px-4 py-2">
+        <div className="p-2 lg:px-4 lg:py-2">
           {/* logo */}
-          <NavigationMenuItem>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+          <NavigationMenuItem className="flex items-center">
+            <NavigationMenuLink>
               <BrandLogo />
             </NavigationMenuLink>
           </NavigationMenuItem>
         </div>
-        <div className="flex flex-row flex-wrap justify-end gap-x-2 md:gap-x-3">
-          <NavigationMenuItem>
+        <div className="flex flex-row flex-wrap justify-end gap-x-2 md:gap-x-3 lg:gap-x-4 pr-2">
+          <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center">
             <Link to="/">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Home
+              <NavigationMenuLink>
+              {useMatch("/") ? <BiSolidHome className="md:hidden h-6 w-6" /> : <BiHome className="md:hidden h-6 w-6" />}
+                <p className="hidden md:block">Home</p>
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
-          <NavigationMenuItem>
+          <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center">
             <Link to={`/friends`}>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Friends
+              <NavigationMenuLink >
+              {useMatch("/friends") ? <BsFillPeopleFill className="md:hidden h-6 w-6" /> : <BsPeople className="md:hidden h-6 w-6" />}
+                <p className="hidden md:block">Friends</p>
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
-          <NavigationMenuItem className="px-4 py-2">
+          <NavigationMenuItem className="px-1 py-2 lg:px-4 md:py-2 hidden lg:flex items-center">
             <ThemeSelector />
           </NavigationMenuItem>
-          <NavigationMenuItem className="block md:hidden">
+          <NavigationMenuItem className="block md:hidden px-1 py-2 lg:px-4 lg:py-2">
             <ChatSheet />
           </NavigationMenuItem>
           {/* drop down menu for profile*/}
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>Profile</NavigationMenuTrigger>
+          <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center">
+            <NavigationMenuTrigger className="p-0">
+            {useMatch("/profile") ? <RiAccountPinCircleFill className="md:hidden h-6 w-6" /> : <RiAccountPinCircleLine className="md:hidden h-6 w-6" />}
+              <p className="hidden md:block">Profile</p>
+            </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-3">
@@ -125,6 +94,17 @@ export function NavigationMenuBar() {
                 <ListItem linkTo={`/settings/${userData._id}`} title="Settings">
                   Change settings here
                 </ListItem>
+                <div className="p-1 md:px-4 md:py-2 lg:hidden">
+                  <div className="text-sm font-medium leading-none">
+                    Theme selector
+                  </div>
+                  <div className="flex items-center justify-between gap-2 py-2">
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Light/Dark
+                    </p>
+                    <ThemeSelector />
+                  </div>
+                </div>
                 {/* reload , delete local storage jwt token */}
                 <ListItem linkTo={"/signin"} title="Log out">
                   Log out of your account{" "}
@@ -133,26 +113,10 @@ export function NavigationMenuBar() {
             </NavigationMenuContent>
           </NavigationMenuItem>
           {/* drop down menu for notification TODO: make a separate component Notifications*/}
-          <NavigationMenuItem>
+          <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center">
             <NotificationsDropdown />
           </NavigationMenuItem>
         </div>
-        {/* <NavigationMenuItem>
-            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                {components.map((component) => (
-                  <ListItem
-                    key={component.title}
-                    title={component.title}
-                    href={component.href}
-                  >
-                    {component.description}
-                  </ListItem>
-                ))}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );
@@ -177,7 +141,7 @@ const ListItem: React.FC<ListItemProps> = ({
         <Link to={linkTo}>
           <div
             className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              "block select-none space-y-1 rounded-md md:p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
               className
             )}
           >
