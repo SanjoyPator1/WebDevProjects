@@ -237,7 +237,20 @@ const userResolver = {
         throw new Error(`Failed to fetch friends: ${error.message}`);
       }
     },
+  // Resolver for finding users by name
+  findUsersByName: async (_, { name }) => {
+    try {
+      // Use a regular expression to perform a case-insensitive search for users with names containing the provided search string
+      const users = await UserModel.find({
+        name: { $regex: name, $options: "i" },
+      });
+
+      return users;
+    } catch (error) {
+      throw new Error(`Failed to find users by name: ${error.message}`);
+    }
   },
+},
   User: {
     // Field-level resolver for the 'friends' field of the 'User' type
     friends: async (user) => {

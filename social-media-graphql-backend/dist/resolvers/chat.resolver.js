@@ -120,7 +120,6 @@ const chatResolvers = {
                 const targetUserId = payload.newMessageChatSubscription.receiver._id.toString();
                 const subscriberUserId = variables.receiverId;
                 const shouldNotify = targetUserId === subscriberUserId;
-                console.log({ targetUserId, subscriberUserId, shouldNotify });
                 return shouldNotify;
             }),
         },
@@ -129,7 +128,6 @@ const chatResolvers = {
                 const targetUserId = payload.seenMessageChatSubscription[0].sender._id.toString();
                 const subscriberUserId = variables.receiverId;
                 const shouldNotify = targetUserId === subscriberUserId;
-                console.log({ targetUserId, subscriberUserId, shouldNotify });
                 return shouldNotify;
             }),
         },
