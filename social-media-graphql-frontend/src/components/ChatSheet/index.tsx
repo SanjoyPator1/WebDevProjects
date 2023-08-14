@@ -1,5 +1,4 @@
 import Chat from "../../pages/chat";
-import { Button } from "../ui/button";
 import {BsChatSquareDots } from "react-icons/bs";
 
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
