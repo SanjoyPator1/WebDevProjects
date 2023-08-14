@@ -30,7 +30,7 @@ const Chat = () => {
   );
 
   // Use the useQuery hook to fetch friends
-  const { loading, error, data } = useQuery(FIND_FRIENDS, {
+  const { loading,data } = useQuery(FIND_FRIENDS, {
     variables: { userId: loggedInUserId },
     skip: !loggedInUserId, // Skip the query if userId is not available
   });

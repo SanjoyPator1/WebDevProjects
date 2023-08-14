@@ -5,7 +5,6 @@ import {
   differenceInMonths,
   differenceInWeeks,
   differenceInYears,
-  format,
 } from "date-fns";
 
 const cloudinaryEndPoint: string = import.meta.env.VITE_CLOUDINARY_ENDPOINT;
