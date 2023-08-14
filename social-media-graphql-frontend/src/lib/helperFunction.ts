@@ -62,22 +62,22 @@ export const timeDifference = (givenTime: string) => {
 
   if (yearsDiff >= 1) {
     // If more than or equal to 1 year, show in years
-    return `${yearsDiff} ${yearsDiff === 1 ? "year" : "years"}`;
+    return `${yearsDiff} ${yearsDiff === 1 ? "year" : "years"} ago`;
   } else if (monthsDiff >= 1) {
     // If more than or equal to 1 month, show in months
-    return `${monthsDiff} ${monthsDiff === 1 ? "month" : "months"}`;
+    return `${monthsDiff} ${monthsDiff === 1 ? "month" : "months"} ago`;
   } else if (weeksDiff >= 1) {
     // If more than or equal to 1 week, show in weeks
-    return `${weeksDiff} ${weeksDiff === 1 ? "week" : "weeks"}`;
+    return `${weeksDiff} ${weeksDiff === 1 ? "week" : "weeks"} ago`;
   } else if (daysDiff >= 1) {
     // If more than or equal to 1 day, show in days
-    return `${daysDiff} ${daysDiff === 1 ? "day" : "days"}`;
+    return `${daysDiff} ${daysDiff === 1 ? "day" : "days"} ago`;
   } else if (hoursDiff >= 1) {
     // If less than 1 day but more than or equal to 1 hour, show in hours
-    return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"}`;
+    return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"} ago`;
   } else {
     // If less than 1 hour, show in minutes
-    return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"}`;
+    return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"} ago`;
   }
 };
 
