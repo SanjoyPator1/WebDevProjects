@@ -6,6 +6,8 @@ import { BsPersonFillAdd, BsFillPersonCheckFill } from "react-icons/bs";
 import { BiSolidUserX } from "react-icons/bi";
 import { AiFillMessage } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { selectedChatUserState } from "../../lib/recoil/atom";
 
 const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   profileId,
@@ -20,6 +22,8 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const setSelectedChatUser = useSetRecoilState(selectedChatUserState);
 
   const isProfileOpened = location.pathname.includes(`/profile/${profileId}`);
   // console.log({ friendStatus }); //values of friendStatus "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
@@ -81,7 +85,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               >
                 <BsFillPersonCheckFill className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                 <div className="flex gap-1 items-center text-xs md:text-sm">
-                  Confirm <p className="hidden md:block">Request</p>
+                  Confirm
                 </div>
               </Button>
             )}
@@ -98,15 +102,15 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 <BiSolidUserX className="mr-2 h-4 md:w-4" />
                 {friendStatus === "friend" ? (
                   <div className="flex gap-1 items-center text-xs md:text-sm">
-                    Unfriend <p className="hidden md:block"> Request</p>
+                    Unfriend
                   </div>
                 ) : friendStatus === "pendingByLoggedInUser" ? (
                   <div className="flex gap-1 items-center text-xs md:text-sm">
-                    Delete <p className="hidden md:block">Request</p>
+                    Delete
                   </div>
                 ) : (
                   <div className="flex gap-1 items-center text-xs md:text-sm">
-                    Cancel <p className="hidden md:block">Request</p>
+                    Cancel
                   </div>
                 )}
               </Button>
@@ -116,6 +120,13 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
             <Button
               className="w-26 md:w-28 lg:w-44 p-2"
               variant={friendStatus !== "friend" ? "outline" : "ghost"}
+              onClick={() => {
+                setSelectedChatUser({
+                  _id : profileId,
+                  avatar: avatar,
+                  name : name
+                })
+              }}
             >
               <AiFillMessage className="mr-2 h-4 w-4 md:h-5 md:w-5" />
               <div className="text-xs md:text-sm">Message</div>

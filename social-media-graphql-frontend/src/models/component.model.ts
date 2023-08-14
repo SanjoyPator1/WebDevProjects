@@ -140,3 +140,9 @@ export type MessageType = 'NEW_MESSAGE' | 'SEEN_MESSAGE';
 export interface ChatMessageWithNotificationTypeModel extends ChatMessageModel {
   type?: MessageType;
 }
+
+export interface FriendModel {
+  _id: string;
+  name: string;
+  avatar: string | undefined;
+}

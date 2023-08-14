@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { BiSearchAlt2 } from "react-icons/bi";
 import { useQuery, useSubscription } from "@apollo/client";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { FIND_FRIENDS } from "../../graphql/queries/userQueries";
-import { userDataState } from "../../lib/recoil/atom";
+import { selectedChatUserState, userDataState } from "../../lib/recoil/atom";
 import AvatarLogo from "../../components/avatar/AvatarLogo";
 import { useHorizontalScroll } from "../../lib/customHooks/HorizontalScroll";
 import { SearchFriendsCommand } from "../../components/SearchFriendsCommand/SearchFriendsCommand";
@@ -11,23 +11,18 @@ import ChatMessages from "./ChatMessages";
 import { NEW_MESSAGE_CHAT_SUBSCRIPTION, SEEN_MESSAGE_CHAT_SUBSCRIPTION } from "../../graphql/subscription/chatSubscription"; // Update with the correct import
 import client from "../../graphql/apolloClient";
 import { GET_MESSAGES_BY_RECEIVER_ID } from "../../graphql/queries/chatQueries";
-import { ChatMessageModel, ChatMessageWithNotificationTypeModel } from "../../models/component.model";
+import { ChatMessageModel, ChatMessageWithNotificationTypeModel, FriendModel } from "../../models/component.model";
 
-interface FriendModel {
-  _id: string;
-  name: string;
-  avatar: string;
-}
 
 const Chat = () => {
   const userData = useRecoilValue(userDataState);
   const loggedInUserId = userData?._id?.toString(); // Using optional chaining
+  
+  const [selectedChatUser, setSelectedChatUser] = useRecoilState(selectedChatUserState);
+  
   const scrollRef = useHorizontalScroll();
 
   const [openSearchFriends, setOpenSearchFriends] = useState(false);
-  const [selectedChatUserId, setSelectedChatUserId] = useState<FriendModel | null>(
-    null
-  );
 
   // Use the useQuery hook to fetch friends
   const { loading,data } = useQuery(FIND_FRIENDS, {
@@ -104,7 +99,7 @@ const Chat = () => {
 
   useEffect(() => {
     if (!loading && data && data.findFriends.length > 0) {
-      setSelectedChatUserId({
+      setSelectedChatUser({
         _id: data.findFriends[0]._id,
         name: data.findFriends[0].name,
         avatar: data.findFriends[0].avatar
@@ -130,7 +125,7 @@ const Chat = () => {
         open={openSearchFriends}
         setOpen={setOpenSearchFriends}
         friends={friends}
-        setSelectedChatUserId={setSelectedChatUserId}
+        setSelectedChatUser={setSelectedChatUser}
       />
 
       <div
@@ -141,7 +136,7 @@ const Chat = () => {
           <div
             key={friend._id}
             className="flex flex-col items-center p-base-container"
-            onClick={() => setSelectedChatUserId({
+            onClick={() => setSelectedChatUser({
               _id:friend._id,
               name: friend.name,
               avatar: friend.avatar
@@ -149,17 +144,17 @@ const Chat = () => {
           >
             <AvatarLogo
               size="xs"
-              image={friend.avatar}
+              image={friend.avatar!}
               text={friend.name}
-              selectedUser={selectedChatUserId?._id === friend._id}
+              selectedUser={selectedChatUser?._id === friend._id}
             />
             <p className="mt-1 text-xs text-center">{friend.name}</p>
           </div>
         ))}
       </div>
       <div className="h-[75%] border rounded-md">
-        {selectedChatUserId ? (
-          <ChatMessages selectedChatUserId={selectedChatUserId._id} selectedChatUserName={selectedChatUserId.name} selectedChatUserAvatar={selectedChatUserId.avatar} loggedInUserId={loggedInUserId}/>
+        {selectedChatUser ? (
+          <ChatMessages selectedChatUserId={selectedChatUser._id} selectedChatUserName={selectedChatUser.name} selectedChatUserAvatar={selectedChatUser.avatar!} loggedInUserId={loggedInUserId}/>
         ) : (
           <p>chat to be loaded!</p>
         )}

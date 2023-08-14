@@ -75,3 +75,13 @@ export const FIND_FRIENDS = gql`
   }
 `;
 
+export const FIND_USERS_BY_NAME = gql`
+  query FIND_USERS_BY_NAME($name: String!) {
+    findUsersByName(name: $name) {
+      _id
+      avatar
+      name
+    }
+  }
+`;
+

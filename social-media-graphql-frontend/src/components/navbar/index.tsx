@@ -14,19 +14,30 @@ import ThemeSelector from "../ThemeSelector";
 import { ChatSheet } from "../ChatSheet";
 import BrandLogo from "../BrandLogo";
 import NotificationsDropdown from "../../pages/notifications/Notifications";
-import { BiSolidHome,BiHome } from "react-icons/bi";
+import { BiSolidHome, BiHome } from "react-icons/bi";
 import { BsFillPeopleFill, BsPeople } from "react-icons/bs";
 import { RiAccountPinCircleFill, RiAccountPinCircleLine } from "react-icons/ri";
-import { Link, useMatch } from "react-router-dom";
+import { Link, useMatch, useNavigate } from "react-router-dom";
+import SearchUserDialog from "../SearchUserDialog/SearchUserDialog";
+import { FIND_USERS_BY_NAME } from "../../graphql/queries/userQueries";
+import { FriendModel } from "../../models/component.model";
 
 export function NavigationMenuBar() {
   const userData = useRecoilValue(userDataState);
+  const navigate = useNavigate();
+
+  const handleSearchUserClick = (user: FriendModel) => {
+    // Your logic to handle user click goes here
+    console.log("User clicked:", user.name);
+    // Navigate to the profile page with the user's _id
+    navigate(`/profile/${user._id}`);
+  };
 
   return (
     <NavigationMenu className="border-b-2 h-16">
       <NavigationMenuList className="w-screen flex flex-row justify-between gap-x-1 md:gap-x-2 lg:gap-x-3">
         {/* normal link */}
-        <div className="p-2 lg:px-4 lg:py-2">
+        <div className="pl-2 lg:px-4 lg:py-2">
           {/* logo */}
           <NavigationMenuItem className="flex items-center">
             <NavigationMenuLink>
@@ -34,19 +45,41 @@ export function NavigationMenuBar() {
             </NavigationMenuLink>
           </NavigationMenuItem>
         </div>
+        <div className="flex-1 hidden md:block">
+          <SearchUserDialog
+            query={FIND_USERS_BY_NAME}
+            textInputVariableName="name"
+            onUserClick={handleSearchUserClick}
+          />
+        </div>
         <div className="flex flex-row flex-wrap justify-end gap-x-2 md:gap-x-3 lg:gap-x-4 pr-2">
+          <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center md:hidden">
+            <SearchUserDialog
+              query={FIND_USERS_BY_NAME}
+              textInputVariableName="name"
+              onUserClick={handleSearchUserClick}
+            />
+          </NavigationMenuItem>
           <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center">
             <Link to="/">
               <NavigationMenuLink>
-              {useMatch("/") ? <BiSolidHome className="md:hidden h-6 w-6" /> : <BiHome className="md:hidden h-6 w-6" />}
+                {useMatch("/") ? (
+                  <BiSolidHome className="md:hidden h-6 w-6" />
+                ) : (
+                  <BiHome className="md:hidden h-6 w-6" />
+                )}
                 <p className="hidden md:block">Home</p>
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center">
             <Link to={`/friends`}>
-              <NavigationMenuLink >
-              {useMatch("/friends") ? <BsFillPeopleFill className="md:hidden h-6 w-6" /> : <BsPeople className="md:hidden h-6 w-6" />}
+              <NavigationMenuLink>
+                {useMatch("/friends") ? (
+                  <BsFillPeopleFill className="md:hidden h-6 w-6" />
+                ) : (
+                  <BsPeople className="md:hidden h-6 w-6" />
+                )}
                 <p className="hidden md:block">Friends</p>
               </NavigationMenuLink>
             </Link>
@@ -60,7 +93,11 @@ export function NavigationMenuBar() {
           {/* drop down menu for profile*/}
           <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center">
             <NavigationMenuTrigger className="p-0">
-            {useMatch("/profile") ? <RiAccountPinCircleFill className="md:hidden h-6 w-6" /> : <RiAccountPinCircleLine className="md:hidden h-6 w-6" />}
+              {useMatch("/profile") ? (
+                <RiAccountPinCircleFill className="md:hidden h-6 w-6" />
+              ) : (
+                <RiAccountPinCircleLine className="md:hidden h-6 w-6" />
+              )}
               <p className="hidden md:block">Profile</p>
             </NavigationMenuTrigger>
             <NavigationMenuContent>

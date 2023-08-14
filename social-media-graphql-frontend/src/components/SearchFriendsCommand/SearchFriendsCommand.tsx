@@ -8,25 +8,22 @@ import {
   CommandList,
 } from "../ui/command";
 import AvatarLogo from "../avatar/AvatarLogo";
+import { FriendModel } from "../../models/component.model";
+import { SetterOrUpdater } from "recoil";
 
 interface SearchFriendsCommandProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   friends: FriendModel[];
-  setSelectedChatUserId : React.Dispatch<React.SetStateAction<FriendModel | null>>;
+  setSelectedChatUser : SetterOrUpdater<FriendModel | null>;
 }
 
-interface FriendModel {
-  _id: string;
-  name: string;
-  avatar: string;
-}
 
 export function SearchFriendsCommand({
   open,
   setOpen,
   friends,
-  setSelectedChatUserId
+  setSelectedChatUser: setSelectedChatUserId
 }: SearchFriendsCommandProps) {
 
 
@@ -49,10 +46,10 @@ export function SearchFriendsCommand({
             friends.length > 0 &&
             friends.map((friend) => (
               <CommandItem key={friend._id}>
-                <div  onClick={()=>friendSelectHandler(friend._id, friend.name, friend.avatar)} className="flex flex-row items-center p-base-container gap-md">
+                <div  onClick={()=>friendSelectHandler(friend._id, friend.name, friend.avatar!)} className="flex flex-row items-center p-base-container gap-md">
                   <AvatarLogo
                     size="xs"
-                    image={friend.avatar}
+                    image={friend.avatar!}
                     text={friend.name}
                   />
                   <p>{friend.name}</p>

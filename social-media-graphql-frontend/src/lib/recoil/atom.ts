@@ -1,4 +1,5 @@
 import {atom} from "recoil"
+import { FriendModel } from "../../models/component.model";
 //create separate file atoms.ts in src
 export const userDataState = atom({
     key: 'userDataState',
@@ -9,4 +10,9 @@ export const userDataState = atom({
         avatar: '',
         role: '',
     },
+  });
+
+export const selectedChatUserState = atom<FriendModel | null>({
+    key: 'selectedChatUserState',
+    default: null,
   });
