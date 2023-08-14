@@ -3,10 +3,11 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
-import { useLazyQuery } from "@apollo/client"; 
+import { useLazyQuery } from "@apollo/client";
 import { FC, useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import AvatarLogo from "../avatar/AvatarLogo";
+import NoResultFoundLottie from "../lottie/NoResultFoundLottie";
 
 interface SearchUserDialogProps {
   onUserClick: (user: any) => void; // Adjust the type according to your FriendModel
@@ -15,7 +16,12 @@ interface SearchUserDialogProps {
   textInputVariableName: string; // The variable name for the text input
 }
 
-const SearchUserDialog: FC<SearchUserDialogProps> = ({ onUserClick, query, queryVariables, textInputVariableName }) => {
+const SearchUserDialog: FC<SearchUserDialogProps> = ({
+  onUserClick,
+  query,
+  queryVariables,
+  textInputVariableName,
+}) => {
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearchInput, setDebouncedSearchInput] = useState("");
 
@@ -35,10 +41,18 @@ const SearchUserDialog: FC<SearchUserDialogProps> = ({ onUserClick, query, query
   useEffect(() => {
     if (debouncedSearchInput !== "") {
       searchUsers({
-        variables: { ...queryVariables, [textInputVariableName]: debouncedSearchInput },
+        variables: {
+          ...queryVariables,
+          [textInputVariableName]: debouncedSearchInput,
+        },
       });
     }
-  }, [debouncedSearchInput, searchUsers, queryVariables, textInputVariableName]);
+  }, [
+    debouncedSearchInput,
+    searchUsers,
+    queryVariables,
+    textInputVariableName,
+  ]);
 
   return (
     <Dialog>
@@ -68,28 +82,41 @@ const SearchUserDialog: FC<SearchUserDialogProps> = ({ onUserClick, query, query
         <ScrollArea className="flex-1">
           {loading && <p>Loading...</p>}
           {error && <p>Error: {error.message}</p>}
+          {data && data.findUsersByName.length === 0 && (
+            <div>
+              <NoResultFoundLottie />
+            </div>
+          )}{" "}
           {data &&
-            data.findUsersByName.map((user: any) => ( // Adjust the type according to your FriendModel
-              <DialogTrigger key={user._id} asChild className="mb-2 md:mb-3">
-                <div
-                  onClick={() => {
-                    onUserClick({
+            data.findUsersByName.map(
+              (
+                user: any // Adjust the type according to your FriendModel
+              ) => (
+                <DialogTrigger key={user._id} asChild className="mb-2 md:mb-3">
+                  <div
+                    onClick={() => {
+                      onUserClick({
                         _id: user._id,
                         name: user.name,
-                        avatar: user.avatar
-                    });
-                  }}
-                  className="flex flex-row items-center p-base-container gap-md"
-                >
-                  <AvatarLogo size="xs" image={user.avatar!} text={user.name} />
-                  <p>{user.name}</p>
-                </div>
-              </DialogTrigger>
-            ))}
+                        avatar: user.avatar,
+                      });
+                    }}
+                    className="flex flex-row items-center p-base-container gap-md"
+                  >
+                    <AvatarLogo
+                      size="xs"
+                      image={user.avatar!}
+                      text={user.name}
+                    />
+                    <p>{user.name}</p>
+                  </div>
+                </DialogTrigger>
+              )
+            )}
         </ScrollArea>
       </DialogContent>
     </Dialog>
   );
-}
+};
 
 export default SearchUserDialog;
