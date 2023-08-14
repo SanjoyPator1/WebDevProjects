@@ -72,7 +72,7 @@ const SearchUserDialog: FC<SearchUserDialogProps> = ({
           <Input
             type="text"
             placeholder="Search users..."
-            className="flex-1 h-fit p-1 border-0 cursor-pointer text-left font-normal"
+            className="flex-1 h-fit p-1 border-0 cursor-pointer text-left font-normal text-base"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)} // Update the search input state
           />
