@@ -27,7 +27,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   return (
     <div
       key={profileId}
-      className="w-full flex flex-col gap-base bg-primary-foreground p-4 rounded-lg"
+      className="w-full flex flex-col gap-base bg-primary-foreground p-2 md:p-3 lg:p-4 rounded-lg"
     >
       <div
         className={`flex ${
@@ -55,17 +55,17 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
         {/* Friend Request or Friend Status */}
         {friendStatus !== "self" && (
           <div
-            className={`flex flex-wrap gap-base  ${
+            className={`flex flex-1 gap-base  ${
               displayType === "short" && "justify-end"
             } items-center`}
           >
             {friendStatus === "notFriend" && (
               <Button
                 variant="default"
-                className="w-28 md:w-44"
+                className="w-26 md:w-28 lg:w-44 p-2"
                 onClick={() => onSendFriendRequest?.(profileId)}
               >
-                <BsPersonFillAdd className="mr-2 h-4 w-4" />
+                <BsPersonFillAdd className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                 <div className="flex gap-1 items-center text-xs md:text-sm">
                   Add <p className="hidden md:block">Friend</p>
                 </div>
@@ -74,12 +74,12 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
             {friendStatus === "pendingByLoggedInUser" && (
               <Button
                 variant="default"
-                className="w-28 md:w-44"
+                className="w-26 md:w-28 lg:w-44 p-2"
                 onClick={() =>
                   onRespondToFriendRequest?.("accepted", friendId!)
                 }
               >
-                <BsFillPersonCheckFill className="mr-2 h-4 w-4" />
+                <BsFillPersonCheckFill className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                 <div className="flex gap-1 items-center text-xs md:text-sm">
                   Confirm <p className="hidden md:block">Request</p>
                 </div>
@@ -90,12 +90,12 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               friendStatus === "pendingByUser") && (
               <Button
                 variant="destructive"
-                className="w-28 md:w-44"
+                className="w-27 md:w-28 lg:w-44 p-2"
                 onClick={() =>
                   onRespondToFriendRequest?.("cancelled", friendId!)
                 }
               >
-                <BiSolidUserX className="mr-2 h-5 w-5" />
+                <BiSolidUserX className="mr-2 h-4 md:w-4" />
                 {friendStatus === "friend" ? (
                   <div className="flex gap-1 items-center text-xs md:text-sm">
                     Unfriend <p className="hidden md:block"> Request</p>
@@ -114,10 +114,10 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 
             {/* Message Button */}
             <Button
-              className="w-28 md:w-44 "
+              className="w-26 md:w-28 lg:w-44 p-2"
               variant={friendStatus !== "friend" ? "outline" : "ghost"}
             >
-              <AiFillMessage className="mr-2 h-4 w-4" />
+              <AiFillMessage className="mr-2 h-4 w-4 md:h-5 md:w-5" />
               <div className="text-xs md:text-sm">Message</div>
             </Button>
           </div>

@@ -15,11 +15,7 @@ const PendingFriendRequest = () => {
   } = useQuery(PENDING_FRIEND_REQUEST);
   const [sendFriendRequest] = useMutation(SEND_FRIEND_REQUEST);
   const [respondToFriendRequest] = useMutation(RESPOND_TO_FRIEND_REQUEST);
-
-  if (loadingPendingFriendRequest) {
-    return <div>Loading...</div>;
-  }
-
+  
   // Function to handle sending a friend request
   const handleSendFriendRequest = async (receiverId: string) => {
     console.log("sendFriendRequest to "+ receiverId)

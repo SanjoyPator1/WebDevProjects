@@ -17,10 +17,6 @@ const SuggestedFriends = () => {
   const [sendFriendRequest] = useMutation(SEND_FRIEND_REQUEST);
   const [respondToFriendRequest] = useMutation(RESPOND_TO_FRIEND_REQUEST);
 
-  if (loadingSuggestedFriends) {
-    return <div>Loading...</div>;
-  }
-
   // Function to handle sending a friend request
   const handleSendFriendRequest = async (receiverId: string) => {
     console.log("sendFriendRequest to " + receiverId);
@@ -122,12 +118,12 @@ const SuggestedFriends = () => {
 
   !loadingSuggestedFriends && console.log(dataSuggestedFriends);
   return (
-    <div className="h-full  flex flex-col gap-md">
+    <div className="h-full  flex flex-col gap-base">
       <h3>Suggested Friends</h3>
       {!loadingSuggestedFriends &&
         dataSuggestedFriends.suggestedFriends.map((profiles: UserModel) => {
           return (
-            <div key={profiles._id} className="mb-md md:mb-lg">
+            <div key={profiles._id} className="">
               <ProfileInfoCard
                 profileId={profiles._id}
                 avatar={profiles.avatar}

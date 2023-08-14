@@ -1,4 +1,12 @@
-import { differenceInHours, differenceInMinutes, format } from "date-fns";
+import {
+  differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
+  differenceInMonths,
+  differenceInWeeks,
+  differenceInYears,
+  format,
+} from "date-fns";
 
 const cloudinaryEndPoint: string = import.meta.env.VITE_CLOUDINARY_ENDPOINT;
 
@@ -8,7 +16,9 @@ interface CloudinaryResponse {
   secure_url: string;
 }
 
-export async function uploadFileToCloudinary(file: File): Promise<CloudinaryResponse> {
+export async function uploadFileToCloudinary(
+  file: File
+): Promise<CloudinaryResponse> {
   if (!file) {
     throw new Error("No file provided for upload.");
   }
@@ -40,28 +50,41 @@ export async function uploadFileToCloudinary(file: File): Promise<CloudinaryResp
 }
 
 // Calculate the time difference between now and the given time
-export  const timeDifference = (givenTime: string) => {
+export const timeDifference = (givenTime: string) => {
   const currentTime = new Date();
   const postTime = new Date(givenTime);
 
   const minutesDiff = differenceInMinutes(currentTime, postTime);
   const hoursDiff = differenceInHours(currentTime, postTime);
+  const daysDiff = differenceInDays(currentTime, postTime);
+  const weeksDiff = differenceInWeeks(currentTime, postTime);
+  const monthsDiff = differenceInMonths(currentTime, postTime);
+  const yearsDiff = differenceInYears(currentTime, postTime);
 
-  if (hoursDiff >= 24) {
-    // If more than or equal to 24 hours, show the date in "14 March 2023" format
-    return format(postTime, "dd MMMM yyyy");
+  if (yearsDiff >= 1) {
+    // If more than or equal to 1 year, show in years
+    return `${yearsDiff} ${yearsDiff === 1 ? "year" : "years"}`;
+  } else if (monthsDiff >= 1) {
+    // If more than or equal to 1 month, show in months
+    return `${monthsDiff} ${monthsDiff === 1 ? "month" : "months"}`;
+  } else if (weeksDiff >= 1) {
+    // If more than or equal to 1 week, show in weeks
+    return `${weeksDiff} ${weeksDiff === 1 ? "week" : "weeks"}`;
+  } else if (daysDiff >= 1) {
+    // If more than or equal to 1 day, show in days
+    return `${daysDiff} ${daysDiff === 1 ? "day" : "days"}`;
   } else if (hoursDiff >= 1) {
-    // If less than 24 hours but more than or equal to 1 hour, show hours ago
-    return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"} ago`;
+    // If less than 1 day but more than or equal to 1 hour, show in hours
+    return `${hoursDiff} ${hoursDiff === 1 ? "hour" : "hours"}`;
   } else {
-    // If less than 1 hour, show minutes ago
-    return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"} ago`;
+    // If less than 1 hour, show in minutes
+    return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"}`;
   }
 };
 
 export function getInitials(name: string): string {
-  const words = name.split(' ');
-  let initials = '';
+  const words = name.split(" ");
+  let initials = "";
 
   for (const word of words) {
     if (word.length > 0) {
@@ -73,10 +96,10 @@ export function getInitials(name: string): string {
 }
 
 export const createSignal = <T>(initialValue: T) => {
-  let value:T = initialValue;
+  let value: T = initialValue;
 
   return {
     getValue: () => value,
-    setValue: (val: T) => value = val,
-  }
-}
+    setValue: (val: T) => (value = val),
+  };
+};
