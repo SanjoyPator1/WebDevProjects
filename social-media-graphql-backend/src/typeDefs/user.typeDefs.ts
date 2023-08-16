@@ -33,6 +33,7 @@ const userTypeDefs = gql`
     role: Role!
     friends: [User]
     friendRequests: [FriendRequest]
+    numberOfUnseenMessages: Int
   }
 
   type UserWithToken {

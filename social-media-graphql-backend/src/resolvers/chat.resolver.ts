@@ -39,6 +39,74 @@ const chatResolvers = {
         seen: chat.seen,
       }));
     },
+    getUsersWithChats: async (_, __, { user }) => {
+      const loggedInUserId = user._id;
+
+      // Find all distinct users that the logged-in user chatted with
+      const distinctChatUsers = await ChatModel.aggregate([
+        {
+          $match: {
+            $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $cond: [
+                {
+                  $eq: ["$senderId", loggedInUserId],
+                },
+                "$receiverId",
+                "$senderId",
+              ],
+            },
+            lastChatTime: { $max: "$createdAt" },
+          },
+        },
+        { $sort: { lastChatTime: -1 } },
+      ]);
+
+      // Fetch user details for each distinct chat user
+      const usersWithChats = await UserModel.find({
+        _id: { $in: distinctChatUsers.map((user) => user._id) },
+      });
+
+      // Calculate the number of unseen messages for each user
+      const messages = await ChatModel.find({
+        $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
+      });
+
+      const usersWithChatsAndUnseenMessages = usersWithChats.map((user) => {
+        const userUnseenMessages = messages.filter(
+          (message) =>
+            message.receiverId.toString() === loggedInUserId.toString() &&
+            message.senderId.toString() === user._id.toString() &&
+            !message.seen
+        );
+
+        const finalUsersWithChats = {
+          ...user.toObject(),
+          numberOfUnseenMessages: userUnseenMessages.length,
+        };
+
+        return finalUsersWithChats;
+      });
+
+      // Sort users based on the lastChatTime from distinctChatUsers
+      const sortedUsersWithChats = usersWithChatsAndUnseenMessages.sort(
+        (userA, userB) => {
+          const userAChatTime = distinctChatUsers.find(
+            (item) => item._id.toString() === userA._id.toString()
+          ).lastChatTime;
+          const userBChatTime = distinctChatUsers.find(
+            (item) => item._id.toString() === userB._id.toString()
+          ).lastChatTime;
+          return userBChatTime - userAChatTime;
+        }
+      );
+
+      return sortedUsersWithChats;
+    },
   },
 
   Mutation: {

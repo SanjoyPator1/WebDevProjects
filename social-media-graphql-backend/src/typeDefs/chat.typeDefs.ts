@@ -56,6 +56,7 @@ const chatTypeDefs = gql`
 
   type Query {
     getMessages(userId: ID!): [Chat]!
+    getUsersWithChats: [User]!
   }
 
   type Mutation {
