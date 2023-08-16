@@ -26,9 +26,8 @@ export function NavigationMenuBar() {
   const userData = useRecoilValue(userDataState);
   const navigate = useNavigate();
 
+  // Your logic to handle user click goes here
   const handleSearchUserClick = (user: FriendModel) => {
-    // Your logic to handle user click goes here
-    console.log("User clicked:", user.name);
     // Navigate to the profile page with the user's _id
     navigate(`/profile/${user._id}`);
   };

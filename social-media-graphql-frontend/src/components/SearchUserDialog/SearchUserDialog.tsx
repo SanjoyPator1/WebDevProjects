@@ -104,9 +104,10 @@ const SearchUserDialog: FC<SearchUserDialogProps> = ({
                     className="flex flex-row items-center p-base-container gap-md"
                   >
                     <AvatarLogo
-                      size="xs"
+                      size="small"
                       image={user.avatar!}
                       text={user.name}
+                      
                     />
                     <p>{user.name}</p>
                   </div>

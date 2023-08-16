@@ -1,6 +1,6 @@
 import { FC, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { ChatMessageWithNotificationTypeModel } from "../../models/component.model";
+import { ChatMessageWithNotificationTypeModel, FriendModel } from "../../models/component.model";
 import { GET_MESSAGES_BY_RECEIVER_ID } from "../../graphql/queries/chatQueries";
 import {
   MARK_MESSAGES_AS_SEEN,
@@ -10,7 +10,8 @@ import MessageCard from "../../components/chat/MessageCard";
 import TextInputWithButton from "../../components/textInputWithButton/textInputWithButton";
 import client from "../../graphql/apolloClient";
 import AvatarLogo from "../../components/avatar/AvatarLogo";
-import { ScrollArea } from "../../components/ui/scroll-area";
+import { GET_USERS_WITH_CHATS } from "../../graphql/queries/userQueries";
+
 interface ChatMessagesProps {
   selectedChatUserId: string;
   selectedChatUserName: string;
@@ -33,6 +34,32 @@ const ChatMessages: FC<ChatMessagesProps> = ({
   const [markMessagesAsSeenMutation] = useMutation(MARK_MESSAGES_AS_SEEN);
 
   const messageContainerRef = useRef<HTMLDivElement>(null);
+
+  // Function to update the cache with numberOfUnseenMessages set to 0 for the selected user
+  const updateCacheForSelectedUser = () => {
+    const cachedData = client.readQuery({
+      query: GET_USERS_WITH_CHATS,
+    });
+
+    if (cachedData && cachedData.getUsersWithChats) {
+      const updatedUsersWithChats = cachedData.getUsersWithChats.map((user: FriendModel) => {
+        if (user._id === selectedChatUserId) {
+          return {
+            ...user,
+            numberOfUnseenMessages: 0,
+          };
+        }
+        return user;
+      });
+
+      client.writeQuery({
+        query: GET_USERS_WITH_CHATS,
+        data: {
+          getUsersWithChats: updatedUsersWithChats,
+        },
+      });
+    }
+  };
 
   const scrollToBottom = () => {
     if (messageContainerRef.current) {
@@ -123,6 +150,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({
   useEffect(() => {
     scrollToBottom();
     markMessagesAsSeen();
+    updateCacheForSelectedUser();
   }, [data]);
 
   if (loading) return <div>Loading...</div>;
@@ -134,18 +162,18 @@ const ChatMessages: FC<ChatMessagesProps> = ({
         <AvatarLogo
           image={selectedChatUserAvatar}
           text={selectedChatUserName}
-          size="xs"
+          size="small"
         />
         <h3 className="ml-4">{selectedChatUserName}</h3>
       </div>
-      <ScrollArea
+      <div
         className="flex-1 flex flex-col-reverse overflow-y-scroll scroll-smooth"
         ref={messageContainerRef}
       >
         {data?.getMessages.length === 0 && (
           // If there are no messages, show a message indicating no conversation
           <div className="w-full p-md-container flex justify-center items-center">
-          <p className="opacity-50">No conversation till now</p>
+            <p className="opacity-50">No conversation till now</p>
           </div>
         )}
         {data.getMessages.map(
@@ -157,7 +185,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({
             />
           )
         )}
-      </ScrollArea>
+      </div>
       <div className="pt-3">
         <TextInputWithButton
           placeholder="type new message here..."

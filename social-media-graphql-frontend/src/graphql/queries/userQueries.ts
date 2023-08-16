@@ -85,3 +85,14 @@ export const FIND_USERS_BY_NAME = gql`
   }
 `;
 
+export const GET_USERS_WITH_CHATS = gql`
+  query GetUsersWithChats {
+    getUsersWithChats {
+      _id
+      name
+      avatar
+      numberOfUnseenMessages
+    }
+  }
+`;
+

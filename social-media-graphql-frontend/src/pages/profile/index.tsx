@@ -193,6 +193,7 @@ const Profile = () => {
             onSendFriendRequest={handleSendFriendRequest}
             onRespondToFriendRequest={handleRespondToFriendRequest}
             displayType="full"
+            avatarSize="medium"
           />
         </div>
       )}

@@ -17,6 +17,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   friendId,
   bio,
   displayType = "short",
+  avatarSize = "xs",
   onSendFriendRequest,
   onRespondToFriendRequest,
 }) => {
@@ -40,7 +41,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
       >
         <div className="flex items-center justify-start gap-base">
           {/* Avatar */}
-          <AvatarLogo image={avatar!} text={name} />
+          <AvatarLogo image={avatar!} text={name} size={avatarSize} />
           {/* Profile Name */}
           <Button
             variant="ghost"

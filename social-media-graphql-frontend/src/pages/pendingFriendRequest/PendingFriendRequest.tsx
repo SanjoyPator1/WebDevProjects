@@ -133,6 +133,7 @@ const PendingFriendRequest = () => {
                   onSendFriendRequest={handleSendFriendRequest}
                   onRespondToFriendRequest={handleRespondToFriendRequest}
                   displayType="short"
+                  avatarSize="small"
                 />
               </div>
             ))

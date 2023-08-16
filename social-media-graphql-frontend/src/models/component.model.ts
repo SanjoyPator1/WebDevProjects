@@ -95,6 +95,7 @@ export interface ProfileInfoCardProps {
     | "notFriend";
   friendId: string | null;
   displayType?: "short" | "full";
+  avatarSize?: "xs" | "small" | "medium"
   onSendFriendRequest?: (receiverId: string) => void;
   onRespondToFriendRequest?: (
     status: "accepted" | "cancelled",
@@ -145,4 +146,5 @@ export interface FriendModel {
   _id: string;
   name: string;
   avatar: string | undefined;
+  numberOfUnseenMessages?: number;
 }

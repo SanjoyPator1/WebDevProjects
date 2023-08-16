@@ -134,6 +134,7 @@ const SuggestedFriends = () => {
                 onSendFriendRequest={handleSendFriendRequest}
                 onRespondToFriendRequest={handleRespondToFriendRequest}
                 displayType="short"
+                avatarSize="small"
               />
             </div>
           );
