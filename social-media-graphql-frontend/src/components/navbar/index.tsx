@@ -14,9 +14,9 @@ import ThemeSelector from "../ThemeSelector";
 import { ChatSheet } from "../ChatSheet";
 import BrandLogo from "../BrandLogo";
 import NotificationsDropdown from "../../pages/notifications/Notifications";
-import { BiSolidHome, BiHome } from "react-icons/bi";
+import { GoHome, GoHomeFill } from "react-icons/go";
 import { BsFillPeopleFill, BsPeople } from "react-icons/bs";
-import { RiAccountPinCircleFill, RiAccountPinCircleLine } from "react-icons/ri";
+import { VscAccount } from "react-icons/vsc";
 import { Link, useMatch, useNavigate } from "react-router-dom";
 import SearchUserDialog from "../SearchUserDialog/SearchUserDialog";
 import { FIND_USERS_BY_NAME } from "../../graphql/queries/userQueries";
@@ -63,9 +63,9 @@ export function NavigationMenuBar() {
             <Link to="/">
               <NavigationMenuLink>
                 {useMatch("/") ? (
-                  <BiSolidHome className="md:hidden h-6 w-6" />
+                  <GoHomeFill className="md:hidden h-6 w-6" />
                 ) : (
-                  <BiHome className="md:hidden h-6 w-6" />
+                  <GoHome className="md:hidden h-6 w-6" />
                 )}
                 <p className="hidden md:block">Home</p>
               </NavigationMenuLink>
@@ -93,9 +93,9 @@ export function NavigationMenuBar() {
           <NavigationMenuItem className="px-1 py-2 lg:px-4 lg:py-2 flex items-center">
             <NavigationMenuTrigger className="p-0">
               {useMatch("/profile") ? (
-                <RiAccountPinCircleFill className="md:hidden h-6 w-6" />
+                <VscAccount className="md:hidden h-6 w-6" />
               ) : (
-                <RiAccountPinCircleLine className="md:hidden h-6 w-6" />
+                <VscAccount className="md:hidden h-6 w-6" />
               )}
               <p className="hidden md:block">Profile</p>
             </NavigationMenuTrigger>

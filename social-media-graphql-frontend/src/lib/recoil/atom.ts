@@ -8,6 +8,7 @@ export const userDataState = atom({
         name: '',
         email: '',
         avatar: '',
+        bio:'',
         role: '',
     },
   });

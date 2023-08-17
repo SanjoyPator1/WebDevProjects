@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import AvatarLogo from "../avatar/AvatarLogo";
 import { ProfileInfoCardProps } from "../../models/component.model";
@@ -6,8 +6,13 @@ import { BsPersonFillAdd, BsFillPersonCheckFill } from "react-icons/bs";
 import { BiSolidUserX } from "react-icons/bi";
 import { AiFillMessage } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { selectedChatUserState } from "../../lib/recoil/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { selectedChatUserState, userDataState } from "../../lib/recoil/atom";
+import EditDialog from "../EditDialog/EditDialog";
+import { profileFormModelData } from "../../lib/constants";
+import { useMutation } from "@apollo/client";
+import { UPDATE_USER } from "../../graphql/queries/userQueries";
+import { useToast } from "../ui/use-toast";
 
 const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   profileId,
@@ -23,12 +28,76 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
 
   const setSelectedChatUser = useSetRecoilState(selectedChatUserState);
+  const [loggedInUserData] = useRecoilState(userDataState);
+
+  const [updateUserMutation] = useMutation(UPDATE_USER);
 
   const isProfileOpened = location.pathname.includes(`/profile/${profileId}`);
   // console.log({ friendStatus }); //values of friendStatus "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
   // console.log({ friendId });
+
+  const [formData, setFormData] = useState<Record<string, string>>(
+    profileFormModelData.initialValues
+  );
+
+  const handleFormDataChange = (newFormData: Record<string, string>) => {
+    setFormData(newFormData);
+  };
+
+  const handleSubmitFunction = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission
+    // Handle form submission with formData
+    console.log(formData);
+    try {
+      const { data } = await updateUserMutation({
+        variables: {
+          input: {
+            email: formData.email,
+            name: formData.name,
+            avatar: formData.avatar,
+            bio: formData.bio,
+          },
+        },
+      });
+
+      // Handle success, update any relevant UI state
+      console.log("Updated user data:", data.updateMe);
+      toast({
+        variant: "default",
+        title: "Profile update successful",
+        description: "You have successfully updated your profile",
+      });
+    } catch (e: any) {
+      // Handle error
+      console.error("Error updating user:", e);
+      const errorMessage =
+        e?.networkError?.result?.errors?.[0]?.message ??
+        "An unknown error occurred.";
+      toast({
+        variant: "destructive",
+        title: `Error while updating`,
+        description: errorMessage,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!loggedInUserData) {
+      return;
+    }
+    setFormData({
+      name: loggedInUserData.name.toString(),
+      email: loggedInUserData.email.toString(),
+      avatar: loggedInUserData?.avatar
+        ? loggedInUserData.avatar.toString()
+        : "",
+      bio: loggedInUserData?.bio ? loggedInUserData.bio.toString() : "",
+    });
+  }, [loggedInUserData]);
+
   return (
     <div
       key={profileId}
@@ -39,23 +108,40 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           displayType === "short" ? "flex-row" : "flex-col"
         } justify-between gap-base`}
       >
-        <div className="flex items-center justify-start gap-base">
-          {/* Avatar */}
-          <AvatarLogo image={avatar!} text={name} size={avatarSize} />
-          {/* Profile Name */}
-          <Button
-            variant="ghost"
-            className={`px-0 ${isProfileOpened ? "disabled:opacity-100" : ""}`}
-            onClick={() => navigate(`/profile/${profileId}`)}
-            disabled={isProfileOpened}
-          >
-            {name}
-          </Button>
-          <h2
-            className={`${
-              displayType !== "short" ? "text-xl font-bold" : "text-base"
-            }`}
-          ></h2>
+        <div className="w-full flex justify-between">
+          <div className="flex items-center justify-start gap-base">
+            {/* Avatar */}
+            <AvatarLogo image={avatar!} text={name} size={avatarSize} />
+            {/* Profile Name */}
+            <Button
+              variant="ghost"
+              className={`px-0 ${
+                isProfileOpened ? "disabled:opacity-100" : ""
+              }`}
+              onClick={() => navigate(`/profile/${profileId}`)}
+              disabled={isProfileOpened}
+            >
+              {name}
+            </Button>
+            <h2
+              className={`${
+                displayType !== "short" ? "text-xl font-bold" : "text-base"
+              }`}
+            ></h2>
+          </div>
+          {friendStatus === "self" && (
+            <div className="justify-self-end">
+              <EditDialog
+                buttonName={profileFormModelData.buttonName}
+                dialogTitle={profileFormModelData.dialogTitle}
+                dialogDescription={profileFormModelData.dialogDescription!}
+                formFieldsModelData={profileFormModelData.formFieldsModelData}
+                initialValues={formData}
+                onFormDataChange={handleFormDataChange}
+                handleSubmit={handleSubmitFunction}
+              />
+            </div>
+          )}
         </div>
         {/* Friend Request or Friend Status */}
         {friendStatus !== "self" && (
@@ -123,10 +209,10 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               variant={friendStatus !== "friend" ? "outline" : "ghost"}
               onClick={() => {
                 setSelectedChatUser({
-                  _id : profileId,
+                  _id: profileId,
                   avatar: avatar,
-                  name : name
-                })
+                  name: name,
+                });
               }}
             >
               <AiFillMessage className="mr-2 h-4 w-4 md:h-5 md:w-5" />

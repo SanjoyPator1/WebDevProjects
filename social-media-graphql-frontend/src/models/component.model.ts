@@ -148,3 +148,19 @@ export interface FriendModel {
   avatar: string | undefined;
   numberOfUnseenMessages?: number;
 }
+
+export type FormFieldModel = {
+  label: string;
+  inputType: "text" | "email" | "password";
+  inputId: string;
+  isRequired?: boolean; 
+};
+
+export type ProfileFormModelData = {
+  buttonName: string;
+  dialogTitle: string;
+  dialogDescription: string;
+  formFieldsModelData: FormFieldModel[];
+  initialValues: Record<string, string>;
+};
+

@@ -8,6 +8,7 @@ export const LOGGEDIN_USER = gql`
       name
       email
       avatar
+      bio
       role
     }
   }
@@ -92,6 +93,17 @@ export const GET_USERS_WITH_CHATS = gql`
       name
       avatar
       numberOfUnseenMessages
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($input: UpdateUserInput!) {
+    updateMe(input: $input) {
+      email
+      name
+      avatar
+      bio
     }
   }
 `;

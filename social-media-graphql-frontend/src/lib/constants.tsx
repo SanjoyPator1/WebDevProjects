@@ -1,4 +1,4 @@
-import { navBarModel } from "../models/component.model";
+import { ProfileFormModelData, navBarModel } from "../models/component.model";
 
 export const navBarWebsiteDummyData: navBarModel = {
     navBarData: [
@@ -30,3 +30,25 @@ export const navBarWebsiteDummyData: navBarModel = {
   };
 
 export const JWT_TOKEN_NAME = "jwt-token-social-media";
+
+export const profileFormModelData: ProfileFormModelData = {
+  buttonName: "Edit Profile",
+  dialogTitle:"Edit your profile ",
+  dialogDescription:"Make changes to your profile here. Click save when you're done.",
+  formFieldsModelData: [
+    { label: "Name", inputType: "text", inputId: "name", isRequired: true },
+    { label: "Email", inputType: "email", inputId: "email" , isRequired: true},
+    { label: "Avatar", inputType: "text", inputId: "avatar" , isRequired: true},
+    { label: "Bio", inputType: "text", inputId: "bio" , isRequired: true},
+  ],
+  initialValues: {
+    name: "", // Provide initial value for Name
+    email: "", // Provide initial value for Email
+    avatar: "", // Provide initial value for Avatar
+    bio: "", // Provide initial value for Bio
+  },
+};
+
+export default profileFormModelData;
+
+
