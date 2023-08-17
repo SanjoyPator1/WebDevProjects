@@ -1,4 +1,4 @@
-import { ProfileFormModelData, navBarModel } from "../models/component.model";
+import { DialogFormModelData, navBarModel } from "../models/component.model";
 
 export const navBarWebsiteDummyData: navBarModel = {
     navBarData: [
@@ -31,7 +31,7 @@ export const navBarWebsiteDummyData: navBarModel = {
 
 export const JWT_TOKEN_NAME = "jwt-token-social-media";
 
-export const profileFormModelData: ProfileFormModelData = {
+export const profileFormModelData: DialogFormModelData = {
   buttonName: "Edit Profile",
   dialogTitle:"Edit your profile ",
   dialogDescription:"Make changes to your profile here. Click save when you're done.",
@@ -48,7 +48,5 @@ export const profileFormModelData: ProfileFormModelData = {
     bio: "", // Provide initial value for Bio
   },
 };
-
-export default profileFormModelData;
 
 

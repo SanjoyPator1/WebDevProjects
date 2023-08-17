@@ -31,13 +31,11 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   const { toast } = useToast();
 
   const setSelectedChatUser = useSetRecoilState(selectedChatUserState);
-  const [loggedInUserData] = useRecoilState(userDataState);
+  const [loggedInUserData, setLoggedInUserData] = useRecoilState(userDataState);
 
   const [updateUserMutation] = useMutation(UPDATE_USER);
 
   const isProfileOpened = location.pathname.includes(`/profile/${profileId}`);
-  // console.log({ friendStatus }); //values of friendStatus "self" | "friend" | "pendingByUser" | "pendingByLoggedInUser" | "notFriend"
-  // console.log({ friendId });
 
   const [formData, setFormData] = useState<Record<string, string>>(
     profileFormModelData.initialValues
@@ -50,7 +48,6 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   const handleSubmitFunction = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission
     // Handle form submission with formData
-    console.log(formData);
     try {
       const { data } = await updateUserMutation({
         variables: {
@@ -63,8 +60,16 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
         },
       });
 
+      // Update the new data in the Recoil state
+      setLoggedInUserData((prevUserData) => ({
+        ...prevUserData,
+        name: data.updateMe.name,
+        email: data.updateMe.email,
+        avatar: data.updateMe.avatar,
+        bio: data.updateMe.bio,
+      }));
+
       // Handle success, update any relevant UI state
-      console.log("Updated user data:", data.updateMe);
       toast({
         variant: "default",
         title: "Profile update successful",
@@ -72,7 +77,6 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
       });
     } catch (e: any) {
       // Handle error
-      console.error("Error updating user:", e);
       const errorMessage =
         e?.networkError?.result?.errors?.[0]?.message ??
         "An unknown error occurred.";
@@ -111,7 +115,11 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
         <div className="w-full flex justify-between">
           <div className="flex items-center justify-start gap-base">
             {/* Avatar */}
-            <AvatarLogo image={avatar!} text={name} size={avatarSize} />
+            <AvatarLogo
+              image={friendStatus === "self" ? formData.avatar! : avatar!}
+              text={friendStatus === "self" ? formData.name : name}
+              size={avatarSize}
+            />
             {/* Profile Name */}
             <Button
               variant="ghost"
@@ -121,7 +129,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               onClick={() => navigate(`/profile/${profileId}`)}
               disabled={isProfileOpened}
             >
-              {name}
+              {friendStatus === "self" ? formData.name : name}
             </Button>
             <h2
               className={`${
@@ -222,9 +230,14 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
         )}
       </div>
       {/* Bio */}
-      {displayType !== "short" && (
-        <p className="text-gray-600">{bio ? bio : "no bio to show"}</p>
-      )}
+      {displayType !== "short" &&
+        (friendStatus === "self" ? (
+          <p className="text-gray-600">
+            {formData.bio !== "" ? formData.bio : "no bio to show"}
+          </p>
+        ) : (
+          <p className="text-gray-600">{bio ? bio : "no bio to show"}</p>
+        ))}
     </div>
   );
 };

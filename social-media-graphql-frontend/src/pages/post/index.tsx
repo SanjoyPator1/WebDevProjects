@@ -11,9 +11,13 @@ import {
   UNLIKE_POST,
 } from "../../graphql/mutations/postMutations";
 import { handleAddComment, handleLikePost, handleUnlikePost } from "../../services/postActions";
+import { useRecoilValue } from "recoil";
+import { userDataState } from "../../lib/recoil/atom";
 
 const Post = () => {
   const { id } = useParams<{ id: string }>();
+  const loggedInUserData = useRecoilValue(userDataState)
+  let isMyPost = false
 
   //QUERY
   // Fetch the post data and comments by its ID
@@ -84,6 +88,10 @@ const Post = () => {
     );
   };
 
+  if(!loadingPost && loggedInUserData){
+    isMyPost = loggedInUserData._id ===post.owner._id
+  }
+
   return (
     <div className="h-full flex flex-col gap-md">
       {/* scrollable div to hold post and comments */}
@@ -93,6 +101,8 @@ const Post = () => {
           data={post}
           onLikePost={handleLikePostWrapper}
           onUnlikePost={handleUnlikePostWrapper}
+          showEditOptions={true}
+          isMyPost={isMyPost}
         />
         {/* comments */}
         {post.comments.map((commentData) => (

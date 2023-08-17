@@ -22,10 +22,13 @@ import {
 } from "../../graphql/mutations/userMutations";
 import client from "../../graphql/apolloClient";
 import { useToast } from "../../components/ui/use-toast";
+import { userDataState } from "../../lib/recoil/atom";
+import { useRecoilValue } from "recoil";
 
 const Profile = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const loggedInUserData = useRecoilValue(userDataState)
 
   //graphql query
   const { loading: loadingUserDataGraphQl, data: userDataGraphQl } = useQuery(
@@ -53,6 +56,9 @@ const Profile = () => {
         text,
         GET_USER_BY_ID,
         "array",
+        loggedInUserData._id,
+        loggedInUserData.name,
+        loggedInUserData.avatar,
         { userId: id }
       );
     } catch (error) {

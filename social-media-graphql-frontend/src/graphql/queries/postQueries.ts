@@ -103,3 +103,13 @@ export const NEW_NOTIFICATION = gql`
     }
   }
 `;
+
+export const UPDATE_POST = gql`
+  mutation UpdatePost($input: UpdatePostInput!) {
+    updatePost(input: $input) {
+      _id
+      message
+      ownerId
+    }
+  }
+`;

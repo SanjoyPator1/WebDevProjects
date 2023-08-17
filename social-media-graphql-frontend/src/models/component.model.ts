@@ -156,7 +156,7 @@ export type FormFieldModel = {
   isRequired?: boolean; 
 };
 
-export type ProfileFormModelData = {
+export type DialogFormModelData = {
   buttonName: string;
   dialogTitle: string;
   dialogDescription: string;

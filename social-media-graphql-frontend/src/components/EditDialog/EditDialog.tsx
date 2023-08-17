@@ -46,7 +46,6 @@ const EditDialog: React.FC<ProfileFormModel> = ({
 
   const handleSubmitFunction = (e: React.FormEvent<HTMLFormElement>) => {
     handleSubmit(e);
-    console.log("form submit done. closing dialog");
     document.getElementById('dialog-trigger-close')?.click();
   };
 
@@ -55,7 +54,7 @@ const EditDialog: React.FC<ProfileFormModel> = ({
       <DialogTrigger asChild>
         <Button variant="outline">
           <MdEdit />
-          <p className="ml-2">{buttonName}</p>
+          <p className="ml-2 hidden md:block">{buttonName}</p>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

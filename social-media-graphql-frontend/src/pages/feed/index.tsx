@@ -10,7 +10,12 @@ import {
   UNLIKE_POST,
 } from "../../graphql/mutations/postMutations";
 import { handleCreatePost, handleLikePost, handleUnlikePost } from "../../services/postActions";
+import { useRecoilValue } from "recoil";
+import { userDataState } from "../../lib/recoil/atom";
 const Feed = () => {
+
+  const loggedInUserData = useRecoilValue(userDataState)
+
   const { data: feedData, loading: loadingFeed } = useQuery(GET_FEED);
   const [createPost] = useMutation(CREATE_POST);
   const [likePost] = useMutation(LIKE_POST);
@@ -22,7 +27,7 @@ const Feed = () => {
   //create a post using mutation
   const handleCreatePostWrapper = async (text: string) => {
     try {
-      await handleCreatePost(createPost, text, GET_FEED, "feed", "array" );
+      await handleCreatePost(createPost, text, GET_FEED, "feed", "array",loggedInUserData._id, loggedInUserData.name, loggedInUserData.avatar  );
     } catch (error) {
       // Handle the error here (e.g., show a toast message)
       console.error("Error creating post:", error);
