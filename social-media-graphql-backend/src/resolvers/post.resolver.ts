@@ -201,6 +201,46 @@ const postResolvers = {
         throw new Error("Failed to create the post");
       }
     },
+    updatePost: async (_, { input }, { user }) => {
+      const { postId, message } = input;
+
+      if (!postId) {
+        throwCustomError(
+          "Post ID is required to update a post",
+          ErrorTypes.BAD_USER_INPUT
+        );
+      }
+      if (!message) {
+        throwCustomError(
+          "new post content is required to update a post",
+          ErrorTypes.BAD_USER_INPUT
+        );
+      }
+
+        // Check if the post exists
+        const post = await PostModel.findById(postId);
+
+        if (!post) {
+          throwCustomError(
+            `Post with ID ${postId} not found`,
+            ErrorTypes.NOT_FOUND
+          );
+        }
+
+        // Check if the logged-in user is the owner of the post
+        if (post.ownerId.toString() !== user._id.toString()) {
+          throwCustomError(
+            "You don't have permission to update this post",
+            ErrorTypes.UNAUTHENTICATED
+          );
+        }
+
+        // Update the post message
+        post.message = message;
+        await post.save();
+
+        return post;
+    },
     likePost: async (_, { input }, { user }) => {
       const { postId } = input;
 

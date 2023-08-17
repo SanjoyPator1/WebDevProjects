@@ -76,6 +76,11 @@ const postTypeDefs = gql `
     postId: String!
   }
 
+  input UpdatePostInput {
+    postId: ID!
+    message: String!
+  }
+
   type Query {
     posts(ownerId: ID!): [Post]! #all the posts of a userId
     post(id: ID!): Post! #post of a particular post id
@@ -85,6 +90,7 @@ const postTypeDefs = gql `
 
   type Mutation {
     createPost(input: NewPostInput!): Post!
+    updatePost(input: UpdatePostInput!): Post!
     likePost(input: reactionPostInput): Like!
     unlikePost(input: reactionPostInput!): ID! # Return the postId
     addComment(input: NewCommentInput!): Comment!
