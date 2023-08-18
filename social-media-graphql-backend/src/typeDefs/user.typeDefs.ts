@@ -1,9 +1,8 @@
 import gql from "graphql-tag";
 
 const userTypeDefs = gql`
-
   type HealthCheck {
-    status : String!
+    status: String!
   }
 
   enum Role {
@@ -65,14 +64,24 @@ const userTypeDefs = gql`
     password: String!
   }
 
-  input SendFriendRequestInput {
-  receiverId: ID!
-}
+  enum GoogleAuthType {
+    LOG_IN
+    SIGN_UP
+  }
 
-input RespondToFriendRequestInput {
-  friendRequestId: ID!
-  status: String!
-}
+  input GoogleAuthInput {
+    token: String!
+    type: GoogleAuthType!
+  }
+
+  input SendFriendRequestInput {
+    receiverId: ID!
+  }
+
+  input RespondToFriendRequestInput {
+    friendRequestId: ID!
+    status: String!
+  }
 
   type Query {
     health: HealthCheck
@@ -88,6 +97,7 @@ input RespondToFriendRequestInput {
     updateMe(input: UpdateUserInput!): User
     signup(input: SignupInput!): UserWithToken!
     signin(input: SigninInput!): UserWithToken!
+    googleAuth(input: GoogleAuthInput!) : UserWithToken!
     sendFriendRequest(input: SendFriendRequestInput!): FriendRequest
     respondToFriendRequest(input: RespondToFriendRequestInput!): FriendRequest
   }

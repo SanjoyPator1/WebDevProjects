@@ -2,6 +2,12 @@ import { Schema, model } from "mongoose";
 
 const userSchema = new Schema(
   {
+    userAuthType: {
+      type: String,
+      enum: ["normal", "google"],
+      default: "normal",
+      required: true
+    },
     email: {
       type: String,
       required: true,
@@ -9,7 +15,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
     },
     name: {
       type: String,
@@ -22,8 +28,8 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    bio:{
-      type: String
+    bio: {
+      type: String,
     },
     role: {
       type: String,

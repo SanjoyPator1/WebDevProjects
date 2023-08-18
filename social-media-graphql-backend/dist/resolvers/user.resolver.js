@@ -6,6 +6,7 @@ import FriendshipModel from "../db/friendRequest.model";
 import throwCustomError, { ErrorTypes } from "../utils/error-handler";
 import postResolvers from "./post.resolver";
 import { createAndPublishNotification } from "../utils/notificationUtils";
+import axios from "axios";
 const userResolver = {
     Query: {
         health: () => {
@@ -299,7 +300,7 @@ const userResolver = {
     },
     Mutation: {
         signup: async (_, { input }) => {
-            const { name, email, password, avatar, bio } = input;
+            const { name, email, password, avatar } = input;
             // Check if the email is already registered
             const isUserExists = await UserModel.exists({ email });
             if (isUserExists) {
@@ -310,6 +311,7 @@ const userResolver = {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
             // Create the user in the database with the hashed password
             const userToCreate = {
+                type: 'normal',
                 email,
                 password: hashedPassword,
                 name,
@@ -339,6 +341,10 @@ const userResolver = {
             if (!user) {
                 throwCustomError(`User not found`, ErrorTypes.NOT_FOUND);
             }
+            //check is the user is google user
+            if (user.userAuthType === "google") {
+                throwCustomError(`Try signing with Google`, ErrorTypes.BAD_USER_INPUT);
+            }
             // Compare the hashed password from the database with the provided password using bcrypt
             const passwordMatches = await bcrypt.compare(password, user.password);
             if (!passwordMatches) {
@@ -357,6 +363,88 @@ const userResolver = {
                 userJwtToken: token,
             };
             return userWithToken;
+        },
+        //google auth resolver
+        googleAuth: async (_, { input }) => {
+            const { token, type } = input;
+            if (!token) {
+                throwCustomError("token is required for google authentication", ErrorTypes.BAD_USER_INPUT);
+            }
+            if (!type) {
+                throwCustomError("type is required for google authentication", ErrorTypes.BAD_USER_INPUT);
+            }
+            try {
+                //Verify the Google token without using any library (replace with your own verification logic)
+                console.log("token ", token);
+                const ticket = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`);
+                console.log("ticket ", ticket);
+                const { name, email, picture } = ticket.data;
+                console.log("name ", name, email, picture);
+                // Check if the user already exists
+                const existingUser = await UserModel.findOne({ email });
+                console.log("existingUser ", existingUser);
+                if (type === "LOG_IN") {
+                    if (existingUser) {
+                        // Generate a JWT token for the user
+                        const userJwtToken = generateToken(existingUser._id);
+                        return {
+                            _id: existingUser._id,
+                            email: existingUser.email,
+                            name: existingUser.name,
+                            avatar: existingUser.avatar,
+                            createdAt: existingUser.createdAt,
+                            role: existingUser.role,
+                            userJwtToken,
+                        };
+                    }
+                    else {
+                        throwCustomError("User not found", ErrorTypes.NOT_FOUND);
+                    }
+                }
+                else if (type === "SIGN_UP") {
+                    if (existingUser) {
+                        // Generate a JWT token for the existing user
+                        const userJwtToken = generateToken(existingUser._id);
+                        return {
+                            _id: existingUser._id,
+                            email: existingUser.email,
+                            name: existingUser.name,
+                            avatar: existingUser.avatar,
+                            createdAt: existingUser.createdAt,
+                            role: existingUser.role,
+                            userJwtToken,
+                        };
+                    }
+                    else {
+                        // Create a new user in the database
+                        const newUser = await UserModel.create({
+                            userAuthType: 'google',
+                            email,
+                            name,
+                            avatar: picture || "",
+                            createdAt: new Date().toISOString(),
+                            role: Role.MEMBER,
+                        });
+                        // Generate a JWT token for the newly created user
+                        const userJwtToken = generateToken(newUser._id);
+                        return {
+                            _id: newUser._id,
+                            email: newUser.email,
+                            name: newUser.name,
+                            avatar: newUser.avatar,
+                            createdAt: newUser.createdAt,
+                            role: newUser.role,
+                            userJwtToken,
+                        };
+                    }
+                }
+                else {
+                    throwCustomError("Invalid Google authentication type", ErrorTypes.BAD_USER_INPUT);
+                }
+            }
+            catch (error) {
+                throw new Error(`Failed to authenticate with Google: ${error.message}`);
+            }
         },
         sendFriendRequest: async (_, { input }, { user }) => {
             try {

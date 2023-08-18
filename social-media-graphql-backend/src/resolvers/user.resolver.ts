@@ -6,6 +6,7 @@ import FriendshipModel from "../db/friendRequest.model";
 import throwCustomError, { ErrorTypes } from "../utils/error-handler";
 import postResolvers from "./post.resolver";
 import { createAndPublishNotification } from "../utils/notificationUtils";
+import axios from "axios";
 
 const userResolver = {
   Query: {
@@ -101,14 +102,10 @@ const userResolver = {
           status: "pending",
         });
 
-        console.log({ pendingFriendRequests });
-
         // Fetch the sender details for each friend request
         const users = await UserModel.find({
           _id: { $in: pendingFriendRequests.map((req) => req.userA) },
         });
-
-        console.log({ users });
 
         // Map each user and set the friendStatus as "pendingByLoggedInUser" and add the friendId
         const usersWithFriendStatus = users.map((userItem) => {
@@ -122,8 +119,6 @@ const userResolver = {
             friendId: pendingRequest ? pendingRequest._id : null,
           };
         });
-
-        console.log({ usersWithFriendStatus });
 
         return usersWithFriendStatus;
       } catch (error) {
@@ -211,7 +206,7 @@ const userResolver = {
         if (!user) {
           throw new Error(`User not found with ID: ${userId}`);
         }
-  
+
         // Find all friendship records where the user is either userA or userB, and the status is 'accepted'
         const friendRecords = await FriendshipModel.find({
           $and: [
@@ -219,7 +214,7 @@ const userResolver = {
             { status: "accepted" },
           ],
         });
-  
+
         // Create an array to store the user IDs of the friends
         const friendIds = friendRecords.map((friendRecord) => {
           // Determine the friend's ID based on the sender and receiver
@@ -229,7 +224,7 @@ const userResolver = {
             return friendRecord.userA;
           }
         });
-  
+
         // Fetch the details of the friends using their IDs from the UserModel
         const friends = await UserModel.find({ _id: { $in: friendIds } });
         return friends;
@@ -237,20 +232,20 @@ const userResolver = {
         throw new Error(`Failed to fetch friends: ${error.message}`);
       }
     },
-  // Resolver for finding users by name
-  findUsersByName: async (_, { name }) => {
-    try {
-      // Use a regular expression to perform a case-insensitive search for users with names containing the provided search string
-      const users = await UserModel.find({
-        name: { $regex: name, $options: "i" },
-      });
+    // Resolver for finding users by name
+    findUsersByName: async (_, { name }) => {
+      try {
+        // Use a regular expression to perform a case-insensitive search for users with names containing the provided search string
+        const users = await UserModel.find({
+          name: { $regex: name, $options: "i" },
+        });
 
-      return users;
-    } catch (error) {
-      throw new Error(`Failed to find users by name: ${error.message}`);
-    }
+        return users;
+      } catch (error) {
+        throw new Error(`Failed to find users by name: ${error.message}`);
+      }
+    },
   },
-},
   User: {
     // Field-level resolver for the 'friends' field of the 'User' type
     friends: async (user) => {
@@ -324,7 +319,7 @@ const userResolver = {
 
   Mutation: {
     signup: async (_, { input }) => {
-      const { name, email, password, avatar, bio } = input;
+      const { name, email, password, avatar } = input;
 
       // Check if the email is already registered
       const isUserExists = await UserModel.exists({ email });
@@ -341,6 +336,7 @@ const userResolver = {
 
       // Create the user in the database with the hashed password
       const userToCreate = {
+        type:'normal',
         email,
         password: hashedPassword,
         name,
@@ -376,6 +372,11 @@ const userResolver = {
         throwCustomError(`User not found`, ErrorTypes.NOT_FOUND);
       }
 
+      //check is the user is google user
+      if(user.userAuthType === "google"){
+        throwCustomError(`Try signing with Google`, ErrorTypes.BAD_USER_INPUT);
+      }
+
       // Compare the hashed password from the database with the provided password using bcrypt
       const passwordMatches = await bcrypt.compare(password, user.password);
       if (!passwordMatches) {
@@ -398,6 +399,99 @@ const userResolver = {
 
       return userWithToken;
     },
+
+    //google auth resolver
+    googleAuth: async (_, { input }) => {
+      const { token, type } = input;
+
+      if (!token) {
+        throwCustomError(
+          "token is required for google authentication",
+          ErrorTypes.BAD_USER_INPUT
+        );
+      }
+      if (!type) {
+        throwCustomError(
+          "type is required for google authentication",
+          ErrorTypes.BAD_USER_INPUT
+        );
+      }
+
+      try {
+        //Verify the Google token without using any library (replace with your own verification logic)
+        const ticket : {data: {name: string, email: string, picture: string}} = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`)
+
+        const { name, email, picture } = ticket.data;
+
+        // Check if the user already exists
+        const existingUser = await UserModel.findOne({ email });
+
+        if (type === "LOG_IN") {
+          if (existingUser) {
+            // Generate a JWT token for the user
+            const userJwtToken = generateToken(existingUser._id);
+
+            return {
+              _id: existingUser._id,
+              email: existingUser.email,
+              name: existingUser.name,
+              avatar: existingUser.avatar,
+              createdAt: existingUser.createdAt,
+              role: existingUser.role,
+              userJwtToken,
+            };
+          } else {
+            throwCustomError("User not found", ErrorTypes.NOT_FOUND);
+          }
+        } else if (type === "SIGN_UP") {
+          if (existingUser) {
+            // Generate a JWT token for the existing user
+            const userJwtToken = generateToken(existingUser._id);
+
+            return {
+              _id: existingUser._id,
+              email: existingUser.email,
+              name: existingUser.name,
+              avatar: existingUser.avatar,
+              createdAt: existingUser.createdAt,
+              role: existingUser.role,
+              userJwtToken,
+            };
+          } else {
+            // Create a new user in the database
+            const newUser = await UserModel.create({
+              userAuthType:'google',
+              email,
+              name,
+              avatar: picture || "",
+              createdAt: new Date().toISOString(),
+              role: Role.MEMBER,
+            });
+
+            // Generate a JWT token for the newly created user
+            const userJwtToken = generateToken(newUser._id);
+
+            return {
+              _id: newUser._id,
+              email: newUser.email,
+              name: newUser.name,
+              avatar: newUser.avatar,
+              createdAt: newUser.createdAt,
+              role: newUser.role,
+              userJwtToken,
+            };
+          }
+        } else {
+          throwCustomError(
+            "Invalid Google authentication type",
+            ErrorTypes.BAD_USER_INPUT
+          );
+        }
+      } catch (error) {
+        throw new Error(`Failed to authenticate with Google: ${error.message}`);
+      }
+    },
+
     sendFriendRequest: async (_, { input }, { user }) => {
       try {
         const { receiverId } = input;
@@ -518,7 +612,7 @@ const userResolver = {
             friendshipRequest.userA, //notification targetUserId
             "FRIEND_REQUEST",
             "ACCEPTED_FRIEND_REQUEST",
-            friendshipRequest.userB.toString()// link of the accepted user ID i.e. receiverId
+            friendshipRequest.userB.toString() // link of the accepted user ID i.e. receiverId
           );
         }
 
