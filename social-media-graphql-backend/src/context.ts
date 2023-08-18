@@ -25,7 +25,8 @@ const context = async ({ req }) => {
     req.body.operationName === "IntrospectionQuery" ||
     req.body.operationName === "health" ||
     req.body.operationName === "signUp" ||
-    req.body.operationName === "signIn"
+    req.body.operationName === "signIn" ||
+    req.body.operationName === "googleAuth"
   ) {
     return { user: guestUser };
   }
