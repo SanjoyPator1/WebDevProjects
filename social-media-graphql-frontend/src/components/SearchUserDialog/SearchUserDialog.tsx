@@ -8,6 +8,7 @@ import { FC, useEffect, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import AvatarLogo from "../avatar/AvatarLogo";
 import NoResultFoundLottie from "../lottie/NoResultFoundLottie";
+import CodeLoading from "../lottie/CodeLoading";
 
 interface SearchUserDialogProps {
   onUserClick: (user: any) => void; // Adjust the type according to your FriendModel
@@ -36,7 +37,7 @@ const SearchUserDialog: FC<SearchUserDialogProps> = ({
   }, [searchInput]);
 
   // Use useLazyQuery to execute the query when debouncedSearchInput changes
-  const [searchUsers, { loading, error, data }] = useLazyQuery(query);
+  const [searchUsers, { loading, data }] = useLazyQuery(query);
 
   useEffect(() => {
     if (debouncedSearchInput !== "") {
@@ -80,8 +81,15 @@ const SearchUserDialog: FC<SearchUserDialogProps> = ({
         <Separator className="m-0" />
         {/* Display searched user result */}
         <ScrollArea className="flex-1">
-          {loading && <p>Loading...</p>}
-          {error && <p>Error: {error.message}</p>}
+          {loading && (
+            <div className="w-ful h-full flex flex-col justify-center items-center gap-2">
+              <div className="h-[60%]">
+                <CodeLoading />
+              </div>
+              <h1>Loading...</h1>
+            </div>
+          )}
+          {/* {error && <p>Error: {error.message}</p>} */}
           {data && data.findUsersByName.length === 0 && (
             <div>
               <NoResultFoundLottie />
@@ -107,7 +115,6 @@ const SearchUserDialog: FC<SearchUserDialogProps> = ({
                       size="small"
                       image={user.avatar!}
                       text={user.name}
-                      
                     />
                     <p>{user.name}</p>
                   </div>

@@ -24,11 +24,12 @@ import client from "../../graphql/apolloClient";
 import { useToast } from "../../components/ui/use-toast";
 import { userDataState } from "../../lib/recoil/atom";
 import { useRecoilValue } from "recoil";
+import CodeLoading from "../../components/lottie/CodeLoading";
 
 const Profile = () => {
   const { id } = useParams();
   const { toast } = useToast();
-  const loggedInUserData = useRecoilValue(userDataState)
+  const loggedInUserData = useRecoilValue(userDataState);
 
   //graphql query
   const { loading: loadingUserDataGraphQl, data: userDataGraphQl } = useQuery(
@@ -45,7 +46,14 @@ const Profile = () => {
   const [respondToFriendRequest] = useMutation(RESPOND_TO_FRIEND_REQUEST);
 
   if (loadingUserDataGraphQl) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-ful h-full flex flex-col justify-center items-center gap-2">
+        <div className="h-[60%]">
+          <CodeLoading />
+        </div>
+        <h1>Loading...</h1>
+      </div>
+    );
   }
 
   //create a post using mutation
@@ -101,7 +109,7 @@ const Profile = () => {
 
   // Function to handle sending a friend request
   const handleSendFriendRequest = async (receiverId: string) => {
-    console.log({receiverId}) //TODO: remove later or use below
+    console.log({ receiverId }); //TODO: remove later or use below
     try {
       const { data } = await sendFriendRequest({
         variables: { receiverId: id },

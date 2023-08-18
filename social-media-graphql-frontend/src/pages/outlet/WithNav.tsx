@@ -4,23 +4,22 @@ import { NavigationMenuBar } from "../../components/navbar";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
 import { useQuery } from "@apollo/client";
 import {
-  LOGGEDIN_USER as LOGGED_IN_USER,
+  LOGGEDIN_USER ,
 } from "../../graphql/queries/userQueries";
-import {  useSetRecoilState } from "recoil";
+import {  useRecoilValue, useSetRecoilState } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
 import { useToast } from "../../components/ui/use-toast";
 import Chat from "../chat";
 
 const WithNav = () => {
   const navigate = useNavigate();
+  const user = useRecoilValue(userDataState)
   const setUserData = useSetRecoilState(userDataState);
   const token = localStorage.getItem(JWT_TOKEN_NAME);
 
   const { toast } = useToast();
 
-  const { data, error } = useQuery(LOGGED_IN_USER, {
-    variables: { userId: localStorage.getItem(JWT_TOKEN_NAME) },
-  });
+  const { data, error } = useQuery(LOGGEDIN_USER, {fetchPolicy: user._id ? "cache-only" : "no-cache"});
 
   if (!token) {
     navigate("/signin");
@@ -29,11 +28,9 @@ const WithNav = () => {
 
   useEffect(() => {
     // Update the Recoil atom with the logged-in user data if it exists
-    console.log("inside useEffect to update recoil state")
     if (data && data.me) {
       const userDataReceived = data.me;
-      console.log({ userDataReceived });
-      setUserData(data.me);
+      setUserData(userDataReceived);
     }
   }, [data]);
 
@@ -43,7 +40,6 @@ const WithNav = () => {
       const errorMessage =
         e?.networkError?.result?.errors?.[0]?.message ??
         "An unknown error occurred.";
-      console.log({ errorMessage });
       toast({
         variant: "destructive",
         title: `Authentication error`,

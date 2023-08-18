@@ -7,10 +7,18 @@ import { Icons } from "../ui/icons";
 import { useNavigate } from "react-router-dom";
 import { uploadFileToCloudinary } from "../../lib/helperFunction";
 import { useMutation } from "@apollo/client";
-import { SIGNIN, SIGNUP } from "../../graphql/mutations/userMutations";
+import {
+  GOOGLE_AUTH,
+  SIGNIN,
+  SIGNUP,
+} from "../../graphql/mutations/userMutations";
 import { JWT_TOKEN_NAME } from "../../lib/constants";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useToast } from "../ui/use-toast";
+import { useGoogleLogin } from "@react-oauth/google";
+import client from "../../graphql/apolloClient";
+import { userDataState } from "../../lib/recoil/atom";
+import { useSetRecoilState } from "recoil";
 // import { ApolloError } from "@apollo/client";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -37,6 +45,7 @@ export function UserAuthForm({
   ...props
 }: UserAuthFormProps) {
   const { toast } = useToast();
+  const setUserData = useSetRecoilState(userDataState);
   const [formValues, setFormValues] = useState<FormValues>(initialFormState);
   const [signup, { loading: signupLoading }] = useMutation(SIGNUP);
   const [signin, { loading: signinLoading }] = useMutation(SIGNIN);
@@ -91,6 +100,16 @@ export function UserAuthForm({
           // Save the userJwtToken to localStorage or a state management system (e.g., Redux)
           const userJwtToken = data.signup.userJwtToken;
           localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
+          const userDataReceived = data.signup;
+
+          setUserData({
+            _id: userDataReceived._id,
+            avatar: userDataReceived.avatar,
+            name: userDataReceived.name,
+            email: userDataReceived.email,
+            bio: userDataReceived.bio,
+            role: userDataReceived.role,
+          });
           //show toast of successful signup
           toast({
             variant: "default",
@@ -109,7 +128,16 @@ export function UserAuthForm({
           // Save the userJwtToken to localStorage or a state management system (e.g., Redux)
           const userJwtToken = data.signin.userJwtToken;
           localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
-          console.log("jwt token updated in local storage");
+          const userDataReceived = data.signin;
+
+          setUserData({
+            _id: userDataReceived._id,
+            avatar: userDataReceived.avatar,
+            name: userDataReceived.name,
+            email: userDataReceived.email,
+            bio: userDataReceived.bio,
+            role: userDataReceived.role,
+          });
           toast({
             variant: "default",
             title: "Sign in successful",
@@ -122,8 +150,6 @@ export function UserAuthForm({
         const errorMessage =
           e?.networkError?.result?.errors?.[0]?.message ??
           "An unknown error occurred.";
-        // console.log({ errorMessage });
-        // console.log({signinError})
         toast({
           variant: "destructive",
           title: `Error in ${authType}`,
@@ -142,6 +168,64 @@ export function UserAuthForm({
       navigate,
     ]
   );
+
+  //google login handle failure
+  const handleFailure = () => {
+    alert("Login failed");
+  };
+
+  //google login
+  const handleLogin = async (googleData: { access_token: string }) => {
+    try {
+      const { data } = await client.mutate({
+        mutation: GOOGLE_AUTH,
+        variables: {
+          input: {
+            token: googleData.access_token,
+            type: authType === "signup" ? "SIGN_UP" : "LOG_IN",
+          },
+        },
+      });
+
+      // Save the userJwtToken to localStorage or a state management system (e.g., recoil)
+      const userJwtToken = data.googleAuth.userJwtToken;
+      localStorage.setItem(JWT_TOKEN_NAME, userJwtToken);
+
+      const userDataReceived = data.googleAuth;
+
+      setUserData({
+        _id: userDataReceived._id,
+        avatar: userDataReceived?.avatar,
+        name: userDataReceived.name,
+        email: userDataReceived.email,
+        bio: userDataReceived?.bio,
+        role: userDataReceived.role,
+      });
+
+      toast({
+        variant: "default",
+        title: "Sign in successful",
+        description: "You are successfully signed in",
+      });
+
+      // Navigate to the appropriate route
+      navigate("/");
+    } catch (e: any) {
+      const errorMessage =
+        e?.message ??
+        "An unknown error occurred.";
+      toast({
+        variant: "destructive",
+        title: `Error in ${authType}`,
+        description: errorMessage,
+      });
+    }
+  };
+
+  const login = useGoogleLogin({
+    onError: handleFailure,
+    onSuccess: handleLogin,
+  });
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
@@ -290,6 +374,7 @@ export function UserAuthForm({
         variant="outline"
         type="button"
         disabled={signupLoading || signinLoading}
+        onClick={() => login()}
       >
         {signupLoading || signinLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />

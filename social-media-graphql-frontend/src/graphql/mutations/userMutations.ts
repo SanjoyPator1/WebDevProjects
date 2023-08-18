@@ -20,6 +20,7 @@ export const SIGNUP = gql`
       name
       avatar
       createdAt
+      bio
       role
       userJwtToken
     }
@@ -34,7 +35,23 @@ export const SIGNIN = gql`
       name
       avatar
       createdAt
+      bio
       role
+      userJwtToken
+    }
+  }
+`;
+
+export const GOOGLE_AUTH = gql`
+  mutation googleAuth($input: GoogleAuthInput!) {
+    googleAuth(input: $input) {
+      _id
+      email
+      name
+      avatar
+      createdAt
+      role
+      bio
       userJwtToken
     }
   }

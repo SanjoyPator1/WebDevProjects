@@ -11,6 +11,7 @@ import TextInputWithButton from "../../components/textInputWithButton/textInputW
 import client from "../../graphql/apolloClient";
 import AvatarLogo from "../../components/avatar/AvatarLogo";
 import { GET_USERS_WITH_CHATS } from "../../graphql/queries/userQueries";
+import CodeLoading from "../../components/lottie/CodeLoading";
 
 interface ChatMessagesProps {
   selectedChatUserId: string;
@@ -25,7 +26,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({
   selectedChatUserAvatar,
   loggedInUserId,
 }) => {
-  const { loading, error, data } = useQuery(GET_MESSAGES_BY_RECEIVER_ID, {
+  const { loading, data } = useQuery(GET_MESSAGES_BY_RECEIVER_ID, {
     variables: { userId: selectedChatUserId },
     skip: !selectedChatUserId,
   });
@@ -153,8 +154,16 @@ const ChatMessages: FC<ChatMessagesProps> = ({
     updateCacheForSelectedUser();
   }, [data]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (loading) {
+    return (
+      <div className="w-ful h-full flex flex-col justify-center items-center gap-2">
+        <div className="h-[60%]">
+          <CodeLoading />
+        </div>
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">

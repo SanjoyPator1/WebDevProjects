@@ -5,8 +5,12 @@ import { ScrollArea } from "../../components/ui/scroll-area";
 import { UserModel } from "../../models/component.model";
 import ProfileInfoCard from "../../components/profileInfoCard/profileInfoCard";
 import { useToast } from "../../components/ui/use-toast";
-import { RESPOND_TO_FRIEND_REQUEST, SEND_FRIEND_REQUEST } from "../../graphql/mutations/userMutations";
+import {
+  RESPOND_TO_FRIEND_REQUEST,
+  SEND_FRIEND_REQUEST,
+} from "../../graphql/mutations/userMutations";
 import client from "../../graphql/apolloClient";
+import CodeLoading from "../../components/lottie/CodeLoading";
 const PendingFriendRequest = () => {
   const { toast } = useToast();
   const {
@@ -15,10 +19,10 @@ const PendingFriendRequest = () => {
   } = useQuery(PENDING_FRIEND_REQUEST);
   const [sendFriendRequest] = useMutation(SEND_FRIEND_REQUEST);
   const [respondToFriendRequest] = useMutation(RESPOND_TO_FRIEND_REQUEST);
-  
+
   // Function to handle sending a friend request
   const handleSendFriendRequest = async (receiverId: string) => {
-    console.log("sendFriendRequest to "+ receiverId)
+    console.log("sendFriendRequest to " + receiverId);
     try {
       const { data } = await sendFriendRequest({
         variables: { receiverId: receiverId },
@@ -31,18 +35,19 @@ const PendingFriendRequest = () => {
         client.writeQuery({
           query: PENDING_FRIEND_REQUEST,
           data: {
-            pendingFriendRequests: dataPendingFriendRequest.pendingFriendRequests.map(
-              (profile: UserModel) => {
-                if (profile._id === receiverId) {
-                  return {
-                    ...profile,
-                    friendStatus: friendStatus,
-                    friendId: friendId,
-                  };
+            pendingFriendRequests:
+              dataPendingFriendRequest.pendingFriendRequests.map(
+                (profile: UserModel) => {
+                  if (profile._id === receiverId) {
+                    return {
+                      ...profile,
+                      friendStatus: friendStatus,
+                      friendId: friendId,
+                    };
+                  }
+                  return profile;
                 }
-                return profile;
-              }
-            ),
+              ),
           },
         });
 
@@ -74,23 +79,27 @@ const PendingFriendRequest = () => {
       if (data && data.respondToFriendRequest) {
         // Update the cache after responding to the friend request
         const newFriendStatus = status === "accepted" ? "friend" : "notFriend";
-        console.log({newFriendStatus})
+        console.log({ newFriendStatus });
 
         client.writeQuery({
           query: PENDING_FRIEND_REQUEST,
           data: {
-            pendingFriendRequests:  dataPendingFriendRequest.pendingFriendRequests.map(
-              (profile: UserModel) => {
-                if (profile._id === data.respondToFriendRequest.senderId) {
-                  console.log("updating pending friend status for "+ data.respondToFriendRequest.senderId)
-                  return {
-                    ...profile,
-                    friendStatus: newFriendStatus,
-                  };
+            pendingFriendRequests:
+              dataPendingFriendRequest.pendingFriendRequests.map(
+                (profile: UserModel) => {
+                  if (profile._id === data.respondToFriendRequest.senderId) {
+                    console.log(
+                      "updating pending friend status for " +
+                        data.respondToFriendRequest.senderId
+                    );
+                    return {
+                      ...profile,
+                      friendStatus: newFriendStatus,
+                    };
+                  }
+                  return profile;
                 }
-                return profile;
-              }
-            ),
+              ),
           },
         });
 
@@ -114,14 +123,25 @@ const PendingFriendRequest = () => {
     }
   };
 
-  !loadingPendingFriendRequest && console.log(dataPendingFriendRequest);
+  if (loadingPendingFriendRequest) {
+    return (
+      <div className="w-ful h-full flex flex-col justify-center items-center gap-2">
+        <div className="h-[60%]">
+          <CodeLoading />
+        </div>
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
+  
   return (
     <div className="h-full flex flex-col gap-md">
       <h3>Pending friend request</h3>
       <ScrollArea className="h-full">
         {!loadingPendingFriendRequest &&
-          dataPendingFriendRequest.pendingFriendRequests.length > 0 ? (
-            dataPendingFriendRequest.pendingFriendRequests.map((profiles: UserModel) => (
+        dataPendingFriendRequest.pendingFriendRequests.length > 0 ? (
+          dataPendingFriendRequest.pendingFriendRequests.map(
+            (profiles: UserModel) => (
               <div key={profiles._id} className="mb-md md:mb-lg">
                 <ProfileInfoCard
                   profileId={profiles._id}
@@ -136,10 +156,11 @@ const PendingFriendRequest = () => {
                   avatarSize="small"
                 />
               </div>
-            ))
-          ) : (
-            <div>No pending friend requests</div>
-          )}
+            )
+          )
+        ) : (
+          <div>No pending friend requests</div>
+        )}
       </ScrollArea>
     </div>
   );

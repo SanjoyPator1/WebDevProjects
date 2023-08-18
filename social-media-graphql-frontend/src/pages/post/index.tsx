@@ -10,14 +10,19 @@ import {
   LIKE_POST,
   UNLIKE_POST,
 } from "../../graphql/mutations/postMutations";
-import { handleAddComment, handleLikePost, handleUnlikePost } from "../../services/postActions";
+import {
+  handleAddComment,
+  handleLikePost,
+  handleUnlikePost,
+} from "../../services/postActions";
 import { useRecoilValue } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
+import CodeLoading from "../../components/lottie/CodeLoading";
 
 const Post = () => {
   const { id } = useParams<{ id: string }>();
-  const loggedInUserData = useRecoilValue(userDataState)
-  let isMyPost = false
+  const loggedInUserData = useRecoilValue(userDataState);
+  let isMyPost = false;
 
   //QUERY
   // Fetch the post data and comments by its ID
@@ -33,7 +38,14 @@ const Post = () => {
   const [addComment] = useMutation(ADD_COMMENT);
 
   if (loadingPost) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-ful h-full flex flex-col justify-center items-center gap-2">
+        <div className="h-[60%]">
+          <CodeLoading />
+        </div>
+        <h1>Loading...</h1>
+      </div>
+    );
   }
 
   const post: PostModel = postData.post;
@@ -88,8 +100,8 @@ const Post = () => {
     );
   };
 
-  if(!loadingPost && loggedInUserData){
-    isMyPost = loggedInUserData._id ===post.owner._id
+  if (!loadingPost && loggedInUserData) {
+    isMyPost = loggedInUserData._id === post.owner._id;
   }
 
   return (

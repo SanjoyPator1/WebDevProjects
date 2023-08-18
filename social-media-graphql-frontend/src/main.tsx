@@ -6,13 +6,20 @@ import "./global.css";
 import { ApolloProvider } from "@apollo/client";
 import client from "./graphql/apolloClient.ts";
 import { RecoilRoot } from "recoil";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <RecoilRoot>
         <ApolloProvider client={client}>
-          <App />
+          <GoogleOAuthProvider
+            clientId={
+              import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID
+            }
+          >
+            <App />
+          </GoogleOAuthProvider>
         </ApolloProvider>
       </RecoilRoot>
     </BrowserRouter>

@@ -9,25 +9,35 @@ import {
   LIKE_POST,
   UNLIKE_POST,
 } from "../../graphql/mutations/postMutations";
-import { handleCreatePost, handleLikePost, handleUnlikePost } from "../../services/postActions";
+import {
+  handleCreatePost,
+  handleLikePost,
+  handleUnlikePost,
+} from "../../services/postActions";
 import { useRecoilValue } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
+import CodeLoading from "../../components/lottie/CodeLoading";
 const Feed = () => {
-
-  const loggedInUserData = useRecoilValue(userDataState)
+  const loggedInUserData = useRecoilValue(userDataState);
 
   const { data: feedData, loading: loadingFeed } = useQuery(GET_FEED);
   const [createPost] = useMutation(CREATE_POST);
   const [likePost] = useMutation(LIKE_POST);
   const [unlikePost] = useMutation(UNLIKE_POST);
 
-  // console.log({ feedData });
-  // console.log({ loadingFeed });
-
   //create a post using mutation
   const handleCreatePostWrapper = async (text: string) => {
     try {
-      await handleCreatePost(createPost, text, GET_FEED, "feed", "array",loggedInUserData._id, loggedInUserData.name, loggedInUserData.avatar  );
+      await handleCreatePost(
+        createPost,
+        text,
+        GET_FEED,
+        "feed",
+        "array",
+        loggedInUserData._id,
+        loggedInUserData.name,
+        loggedInUserData.avatar
+      );
     } catch (error) {
       // Handle the error here (e.g., show a toast message)
       console.error("Error creating post:", error);
@@ -37,7 +47,7 @@ const Feed = () => {
   // Function to handle liking a post
   const handleLikePostWrapper = async (postId: string) => {
     try {
-      await handleLikePost(likePost, postId, GET_FEED, "feed", "array" );
+      await handleLikePost(likePost, postId, GET_FEED, "feed", "array");
     } catch (error) {
       // Handle the error here (e.g., show a toast message)
       console.error("Error liking post:", error);
@@ -55,10 +65,15 @@ const Feed = () => {
   };
 
   if (loadingFeed) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-ful h-full flex flex-col justify-center items-center gap-2">
+        <div className="h-[60%]">
+          <CodeLoading />
+        </div>
+        <h1>Loading...</h1>
+      </div>
+    );
   }
-
-
 
   return (
     <ScrollArea className="h-full relative">

@@ -9,6 +9,7 @@ import {
   SEND_FRIEND_REQUEST,
 } from "../../graphql/mutations/userMutations";
 import client from "../../graphql/apolloClient";
+import CodeLoading from "../../components/lottie/CodeLoading";
 
 const SuggestedFriends = () => {
   const { toast } = useToast();
@@ -116,7 +117,18 @@ const SuggestedFriends = () => {
     }
   };
 
-  !loadingSuggestedFriends && console.log(dataSuggestedFriends);
+  if (loadingSuggestedFriends) {
+    return (
+      <div className="w-ful h-full flex flex-col justify-center items-center gap-2">
+        <div className="h-[60%]">
+          <CodeLoading />
+        </div>
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
+
+
   return (
     <div className="h-full  flex flex-col gap-base">
       <h3>Suggested Friends</h3>

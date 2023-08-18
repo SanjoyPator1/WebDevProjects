@@ -8,7 +8,7 @@ import {
   NavigationMenuTrigger,
 } from "../ui/navigation-menu";
 import { cn } from "../../lib/utils";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { userDataState } from "../../lib/recoil/atom";
 import ThemeSelector from "../ThemeSelector";
 import { ChatSheet } from "../ChatSheet";
@@ -21,9 +21,10 @@ import { Link, useMatch, useNavigate } from "react-router-dom";
 import SearchUserDialog from "../SearchUserDialog/SearchUserDialog";
 import { FIND_USERS_BY_NAME } from "../../graphql/queries/userQueries";
 import { FriendModel } from "../../models/component.model";
+import { JWT_TOKEN_NAME } from "../../lib/constants";
 
 export function NavigationMenuBar() {
-  const userData = useRecoilValue(userDataState);
+  const [userData, setUserData] = useRecoilState(userDataState);
   const navigate = useNavigate();
 
   // Your logic to handle user click goes here
@@ -32,13 +33,32 @@ export function NavigationMenuBar() {
     navigate(`/profile/${user._id}`);
   };
 
+  //function to handle log out
+  const handleLogout = () => {
+    localStorage.removeItem(JWT_TOKEN_NAME);
+    setUserData({
+      _id: "",
+      name: "",
+      email: "",
+      avatar: "",
+      bio: "",
+      role: "",
+    });
+
+    // Perform a hard reload of the browser
+    window.location.reload();
+  };
+
   return (
     <NavigationMenu className="border-b-2 h-16">
       <NavigationMenuList className="w-screen flex flex-row justify-between gap-x-1 md:gap-x-2 lg:gap-x-3">
         {/* normal link */}
         <div className="pl-2 lg:px-4 lg:py-2">
           {/* logo */}
-          <NavigationMenuItem className="flex items-center">
+          <NavigationMenuItem
+            className="flex items-center hover:cursor-pointer"
+            onClick={() => navigate("/")}
+          >
             <NavigationMenuLink>
               <BrandLogo />
             </NavigationMenuLink>
@@ -127,7 +147,7 @@ export function NavigationMenuBar() {
                 <ListItem linkTo={`/friends`} title="Friends">
                   See all your friends
                 </ListItem>
-                <ListItem linkTo={`/settings/${userData._id}`} title="Settings">
+                <ListItem linkTo={`/profile/${userData._id}`} title="Settings">
                   Change settings here
                 </ListItem>
                 <div className="p-1 md:px-4 md:py-2 lg:hidden">
@@ -142,9 +162,19 @@ export function NavigationMenuBar() {
                   </div>
                 </div>
                 {/* reload , delete local storage jwt token */}
-                <ListItem linkTo={"/signin"} title="Log out">
-                  Log out of your account{" "}
-                </ListItem>
+                <div
+                  className="p-1 md:px-4 md:py-2 hover:bg-secondary"
+                  onClick={handleLogout}
+                >
+                  <div className="text-sm font-medium leading-none">
+                    Log out
+                  </div>
+                  <div className="flex items-center justify-between gap-2 py-2">
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Log out of your account
+                    </p>
+                  </div>
+                </div>
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>

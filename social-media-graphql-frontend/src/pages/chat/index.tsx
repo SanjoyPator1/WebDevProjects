@@ -34,7 +34,7 @@ const Chat = () => {
   const [openSearchFriends, setOpenSearchFriends] = useState(false);
 
   // Use the useQuery hook to fetch friends
-  const { loading, data } = useQuery(GET_USERS_WITH_CHATS, {
+  const { data } = useQuery(GET_USERS_WITH_CHATS, {
     skip: !loggedInUserId, // Skip the query if userId is not available
   });
 
@@ -166,26 +166,6 @@ const Chat = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if (!loading && data && data.getUsersWithChats.length > 0) {
-  //     setSelectedChatUser({
-  //       _id: data.getUsersWithChats[0]._id,
-  //       name: data.getUsersWithChats[0].name,
-  //       avatar: data.getUsersWithChats[0].avatar,
-  //     });
-  //   }
-  // }, [loading, data]);
-
-
-  if (!loading) {
-    // Read the existing message data from the cache
-    const chatUserCacheData = client.readQuery({
-      query: GET_USERS_WITH_CHATS,
-    });
-
-    console.log({ chatUserCacheData });
-  }
-
   return (
     <div className="h-full flex flex-col gap-base overflow-hidden">
       <div className="h-[6%] flex items-center gap-md w-full pt-3">
@@ -206,7 +186,7 @@ const Chat = () => {
       />
       <div
         ref={scrollRef}
-        className="h-[15%] md:h-[12%] rounded-md p-base-container overflow-x-auto touch-pan-x flex gap-base"
+        className="h-[15%] md:h-[16%] rounded-md p-base-container overflow-x-auto touch-pan-x flex gap-base"
       >
         {data?.getUsersWithChats.length>0 &&  data?.getUsersWithChats.map((friend: FriendModel) => (
           <div
@@ -232,7 +212,7 @@ const Chat = () => {
           </div>
         ))}
       </div>
-      <div className="h-[75%] border rounded-md">
+      <div className="h-[72%] border rounded-md">
         {selectedChatUser ? (
           <ChatMessages
             selectedChatUserId={selectedChatUser._id}
