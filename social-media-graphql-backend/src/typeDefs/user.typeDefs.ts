@@ -42,6 +42,7 @@ const userTypeDefs = gql`
     avatar: String!
     createdAt: String!
     role: Role!
+    bio: String
     userJwtToken: String!
   }
 
