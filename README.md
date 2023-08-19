@@ -28,7 +28,7 @@ The repository is organized into two main sections:
 
 ## Installation
 
-1. Clone the repository: [[https://developea.vercel.app](https://github.com/SanjoyPator1/WebDevProjects/tree/social-media)](https://github.com/SanjoyPator1/WebDevProjects/tree/social-media)
+1. Clone the repository: [https://github.com/SanjoyPator1/WebDevProjects/tree/social-media](https://github.com/SanjoyPator1/WebDevProjects/tree/social-media)
 2. Navigate to the respective folders (`backend` and `frontend`) for backend and frontend installation details.
 
 ## Live Demo
