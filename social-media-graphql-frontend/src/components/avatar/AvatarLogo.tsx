@@ -51,7 +51,7 @@ const AvatarLogo: FC<AvatarLogoModel> = ({
 
   return (
     <div className={avatarClassName}>
-      <Avatar className="h-full w-full">
+      <Avatar className="h-full w-full aspect-square">
         <AvatarImage className="object-cover" src={image} />
         <AvatarFallback className="bg-primary text-input">
           {text ? getInitials(text) : "U"}
