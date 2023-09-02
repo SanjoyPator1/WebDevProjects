@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { format } from "date-fns";
 import { ChatMessageWithNotificationTypeModel } from "../../models/component.model";
 import AvatarLogo from "../avatar/AvatarLogo";
 import { BiCheckDouble,BiCheck } from "react-icons/bi";
+import { formatMessageDateForDisplay } from "../../lib/helperFunction";
 
 interface MessageCardProps {
   message: ChatMessageWithNotificationTypeModel;
@@ -19,7 +19,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, selectedChatUserId }) => {
   }`;
 
   // Format createdAt timestamp using date-fns
-  const formattedTime = format(new Date(message.createdAt), "h:mm a");
+  const formattedDateTime = formatMessageDateForDisplay(new Date(message.createdAt));
 
   return (
     <div
@@ -38,7 +38,7 @@ const MessageCard: FC<MessageCardProps> = ({ message, selectedChatUserId }) => {
       <div className={cardStyles}>
         <p className="text-sm">{message.message}</p>
         <div className="w-full flex gap-1 justify-end">
-          <p className="text-xs">{formattedTime}</p>{" "}
+          <p className="text-xs opacity-60 pl-6">{formattedDateTime}</p>{" "}
           {isMyMessage && message.seen ? (
               <BiCheckDouble className={`h-4 w-4 md:h-5 md:w-5 opacity-100`} />
             ) : isMyMessage && !message.seen ? (

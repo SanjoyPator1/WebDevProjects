@@ -5,6 +5,9 @@ import {
   differenceInMonths,
   differenceInWeeks,
   differenceInYears,
+  format,
+  isToday,
+  isYesterday,
 } from "date-fns";
 
 const cloudinaryEndPoint: string = import.meta.env.VITE_CLOUDINARY_ENDPOINT;
@@ -48,7 +51,7 @@ export async function uploadFileToCloudinary(
   }
 }
 
-// Calculate the time difference between now and the given time
+// Calculate the time difference between now and the given time - for items like posts
 export const timeDifference = (givenTime: string) => {
   const currentTime = new Date();
   const postTime = new Date(givenTime);
@@ -80,6 +83,22 @@ export const timeDifference = (givenTime: string) => {
     return `${minutesDiff} ${minutesDiff === 1 ? "minute" : "minutes"} ago`;
   }
 };
+
+/**
+ * Format a message date based on whether it's today, yesterday, or before yesterday.
+ *
+ * @param date - The date to format.
+ * @returns A formatted date string.
+ */
+export function formatMessageDateForDisplay(date: Date): string {
+  if (isToday(date)) {
+    return `Today at ${format(date, "h:mm a")}`;
+  } else if (isYesterday(date)) {
+    return `Yesterday at ${format(date, "h:mm a")}`;
+  } else {
+    return format(date, "dd MMM yy - h:mm a");
+  }
+}
 
 export function getInitials(name: string): string {
   const words = name.split(" ");
