@@ -100,6 +100,7 @@ const NewProject = ({ mode, projectDataProp }: Props) => {
       setDue(new Date().toISOString().slice(0, 10));
 
       closeModal();
+      router.replace("/home");
     } catch (error) {
       console.error("Error deleting project:", error);
       setIsDeleting(false);
