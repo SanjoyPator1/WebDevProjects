@@ -1,6 +1,10 @@
 # Project Management System with Next.js
 
 Welcome to the project management system built with Next.js! This repository contains the source code for a project management application. Below, you will find information on how to set up and run the project, the folder structure, and the technologies used.
+The main goal of this project was to learn Next.js 13 and all its new features.
+I have also used postgreSQL with PG so that I can write raw queries instead of using some ORM.
+There may be few bugs so please let me know if you found one.
+Also I haven't spent much time on writing TypeScript as my main goal was to learn Next.js 13. Maybe later I will write the types for this project.
 
 ## Getting Started
 
