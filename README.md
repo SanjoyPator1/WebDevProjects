@@ -1,50 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Project Management System with Next.js
+
+Welcome to the project management system built with Next.js! This repository contains the source code for a project management application. Below, you will find information on how to set up and run the project, the folder structure, and the technologies used.
 
 ## Getting Started
 
-First, run the development server:
+To get started with this project, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+1. Clone the repository to your local machine:
+   ```bash
+   git clone https://github.com/your-username/nextjs-project-management.git
+2.  Navigate to the project directory:
+    ```bash
+    cd nextjs-project-management` 
+    
+3.  Install the project dependencies:
+    ```bash
+    npm install` 
+    
+4.  Create a `.env` file in the root directory of the project with the following environmental variables:
+    `JWT_SECRET=your-secret-key,
+    COOKIE_NAME=your-cookie-name,
+    DATABASE_URL=your-database-url` 
+    
+    -   `JWT_SECRET`: This is the secret key used to create and verify JWT tokens for authentication.
+    -   `COOKIE_NAME`: The name used to store the JWT token as a cookie for authentication.
+    -   `DATABASE_URL`: Provide the URL for your PostgreSQL database. You can use a local database or a cloud-based solution like Supabase or ElephantDB.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Folder Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The project's folder structure is organized as follows:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+-   `app/`: This directory contains the Next.js pages for the application. Each folder with `.ts` or `.tsx` file in this directory represents a route in the application.
+    
+-   `components/`: This directory contains reusable React components used throughout the project.
+    
+-   `lib/`: The `lib` directory contains utility functions, configurations, and the database migration script.
+    
+-   `public/`: This directory is where you can place static assets like images, fonts, and CSS files.
+    
+-   `global.css`: You'll find global CSS stylesheets and utility classes in this directory.
+    
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Database Migration
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Since this project uses PostgreSQL for database operations without the help of any ORM, you need to manually perform database migration steps.
 
-## Learn More
+To perform the migration, follow these steps:
 
-To learn more about Next.js, take a look at the following resources:
+1.  Navigate to the `lib/` directory:
+    
+    ```bash
+    cd lib` 
+    
+2.  In the `migration.js` file, update the `constring` variable with your database URL.
+    
+3.  In the project's root directory, you will find a migration command in the `package.json` file:
+    
+    ```json
+    "scripts": {
+      "migrate": "node ./lib/migration.js"
+    }` 
+    
+4.  To create the necessary tables, run the migration command in your terminal:
+    ```bash
+    npm run migrate` 
+    
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Running the Project
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+After completing the database migration, you can start the project by running the following command:
+`npm run dev` 
 
-## Deploy on Vercel
+The project will start locally, and you can access it in your web browser at `http://localhost:3000`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-z - index : 
-sidebar-layout-container  : 10
-logo-container : 7
-emptyContainer : 6
-new-project-overlay: 5
-navbar : 4
-new-project-container : 3
-
-
-
-
+That's it! You now have the project management system up and running on your local machine. Feel free to explore the codebase, make changes, and customize it to suit your needs. Good luck with your project!
