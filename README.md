@@ -8,14 +8,14 @@ To get started with this project, follow these steps:
 
 1. Clone the repository to your local machine:
    ```bash
-   git clone https://github.com/your-username/nextjs-project-management.git
-2.  Navigate to the project directory:
+   git clone https://github.com/SanjoyPator1/WebDevProjects.git
+2.  Navigate to the project-management branch:
     ```bash
-    cd nextjs-project-management` 
+    git switch project-management
     
 3.  Install the project dependencies:
     ```bash
-    npm install` 
+    npm install
     
 4.  Create a `.env` file in the root directory of the project with the following environmental variables:
     `JWT_SECRET=your-secret-key,
@@ -59,7 +59,7 @@ To perform the migration, follow these steps:
     ```json
     "scripts": {
       "migrate": "node ./lib/migration.js"
-    }` 
+    }
     
 4.  To create the necessary tables, run the migration command in your terminal:
     ```bash
