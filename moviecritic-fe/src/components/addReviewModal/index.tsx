@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import axiosInstance from "../../services/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Movie, NewReview, Review } from "../../models/interfaces";
-import { queryClient } from "../../App";
+import { FC, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { queryClient } from "../../App";
 import { MOVIES_KEY, MOVIE_KEY, REVIEWS_KEY } from "../../libs/constant";
+import { Movie, NewReview, Review } from "../../models/interfaces";
+import axiosInstance from "../../services/axios";
 
 interface AddReviewModalProps {
   onClose: () => void;
@@ -12,7 +13,7 @@ interface AddReviewModalProps {
   review?: Review;
 }
 
-const AddReviewModal: React.FC<AddReviewModalProps> = ({
+const AddReviewModal: FC<AddReviewModalProps> = ({
   onClose,
   mode,
   review,
@@ -27,6 +28,8 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
   const [ratingError, setRatingError] = useState<string | null>(null);
   const [commentError, setCommentError] = useState<string | null>(null); // New state for comment error
 
+  const { id } = useParams();
+
   useEffect(() => {
     if (mode === "update" && review) {
       setReviewerName(review.reviewer_name);
@@ -34,6 +37,11 @@ const AddReviewModal: React.FC<AddReviewModalProps> = ({
       setReviewComments(review.review_comments);
       setSelectedMovie(review.movieId);
     }
+
+    if(id){
+      setSelectedMovie(Number(id)); 
+    }
+
   }, [mode, review]);
 
   const { isLoading, data: movies } = useQuery<Movie[], Error>({

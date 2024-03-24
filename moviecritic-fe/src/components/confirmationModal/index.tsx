@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 
 interface ConfirmationModalProps {
   primaryText?: string;
@@ -8,7 +8,7 @@ interface ConfirmationModalProps {
   onConfirm: () => void;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+const ConfirmationModal:FC<ConfirmationModalProps> = ({
   primaryText = "Confirmation",
   secondaryText = "Are you sure?",
   isOpen,

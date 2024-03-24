@@ -1,10 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import React, { useState, useEffect } from "react";
-import axiosInstance from "../../services/axios";
-import { queryClient } from "../../App";
+import { FC, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Movie } from "../../models/interfaces";
+import { queryClient } from "../../App";
 import { MOVIES_KEY, MOVIE_KEY } from "../../libs/constant";
+import { Movie } from "../../models/interfaces";
+import axiosInstance from "../../services/axios";
 
 interface AddMovieModalProps {
   onClose: () => void;
@@ -12,7 +12,7 @@ interface AddMovieModalProps {
   movie?: Movie;
 }
 
-const AddMovieModal: React.FC<AddMovieModalProps> = ({
+const AddMovieModal: FC<AddMovieModalProps> = ({
   onClose,
   mode,
   movie,

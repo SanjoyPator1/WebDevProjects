@@ -5,6 +5,7 @@ import { useGetAllReviews } from "../../services/api/reviewApi";
 
 const Movie = () => {
   const { id } = useParams();
+
   const {
     isLoading: isLoadingMovieDetail,
     error: errorMovieDetail,

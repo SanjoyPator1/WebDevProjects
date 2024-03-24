@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import { IconEdit, IconTrash } from '@tabler/icons-react';
+import { useMutation } from "@tanstack/react-query";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Movie } from "../../models/interfaces";
-import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../../services/axios";
 import { queryClient } from "../../App";
-import ConfirmationModal from "../confirmationModal";
-import { IconTrash, IconEdit } from '@tabler/icons-react';
+import { Movie } from "../../models/interfaces";
+import axiosInstance from "../../services/axios";
 import AddMovieModal from "../addMovieModal";
+import ConfirmationModal from "../confirmationModal";
 
 interface MovieCardProps {
   movie: Movie;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
+const MovieCard: FC<MovieCardProps> = ({ movie }) => {
   const { id, name, release_date, average_rating } = movie;
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showAddEditModal, setShowAddEditModal] = useState(false); // State for showing the Add/Edit modal

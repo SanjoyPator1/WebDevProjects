@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import { toast } from "sonner";
-import { Review } from "../../models/interfaces";
-import ConfirmationModal from "../confirmationModal";
-import AddReviewModal from "../addReviewModal";
-import { IconTrash, IconEdit } from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../../services/axios";
+import { FC, useState } from "react";
+import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { queryClient } from "../../App";
 import { MOVIES_KEY, MOVIE_KEY, REVIEWS_KEY } from "../../libs/constant";
-import { useParams } from "react-router-dom";
+import { Review } from "../../models/interfaces";
+import axiosInstance from "../../services/axios";
+import AddReviewModal from "../addReviewModal";
+import ConfirmationModal from "../confirmationModal";
 
 interface ReviewCardProps {
   review: Review;
 }
 
-const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
+const ReviewCard: FC<ReviewCardProps> = ({ review }) => {
   const { id: movieId } = useParams();
   const { id, rating, review_comments, reviewer_name } = review;
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
