@@ -1,3 +1,12 @@
+import { ContactData } from "@/types/contacts.types";
+import { CreditNoteData, CreditNoteRefundData } from "@/types/creditNote.types";
+import {
+  CustomerPaymentData,
+  CustomerRefundData,
+  InvoiceData,
+  PaymentData,
+} from "@/types/payment.types";
+import { CustomerRefund, RefundListParams } from "@/types/refund.types";
 import {
   ApiResponse,
   ContactSearchParams,
@@ -212,7 +221,7 @@ class ZohoAPI {
     }
   }
 
-  // ----- Contacts section -------
+  // ----- READ Contacts section -------
 
   public async getContacts(
     page: number = 1,
@@ -288,7 +297,7 @@ class ZohoAPI {
 
   public async getContactRefunds(
     contactId: string,
-    params: PaginationParams = {}
+    params: RefundListParams = {}
   ): Promise<ApiResponse<any>> {
     await this.ensureOrganizationId();
     await this.updateAuthHeader();
@@ -300,6 +309,8 @@ class ZohoAPI {
           organization_id: this.organizationId,
           page: params.page || 1,
           per_page: params.per_page || 200,
+          sort_column: params.sort_column,
+          sort_order: params.sort_order,
         },
       });
 
@@ -334,62 +345,122 @@ class ZohoAPI {
     return response.data;
   }
 
-  // -----  section -------
-
-  public async getInvoices(
-    page: number = 1,
-    perPage: number = 200
+  // ----- CREATE Contacts section -------
+  public async createContact(
+    contactData: ContactData
   ): Promise<ApiResponse<any>> {
     await this.ensureOrganizationId();
     await this.updateAuthHeader();
 
-    const response = await this.authManager
-      .getAxiosInstance()
-      .get("/invoices", {
-        params: {
-          organization_id: this.organizationId,
-          page,
-          per_page: perPage,
-        },
-      });
-
-    return response.data;
-  }
-
-  public async getInvoice(invoiceId: string): Promise<ApiResponse<any>> {
-    await this.ensureOrganizationId();
-    await this.updateAuthHeader();
+    console.log(
+      "createContact lib entered with data contactData ",
+      contactData
+    );
 
     const response = await this.authManager
       .getAxiosInstance()
-      .get(`/invoices/${invoiceId}`, {
-        params: {
-          organization_id: this.organizationId,
-        },
-      });
-
-    return response.data;
-  }
-
-  public async getItems(
-    page: number = 1,
-    perPage: number = 200
-  ): Promise<ApiResponse<any>> {
-    await this.ensureOrganizationId();
-    await this.updateAuthHeader();
-
-    const response = await this.authManager.getAxiosInstance().get("/items", {
-      params: {
+      .post("/contacts", {
+        ...contactData,
         organization_id: this.organizationId,
-        page,
-        per_page: perPage,
-      },
-    });
+      });
+
+    console.log("create contact lib response : ", response.data);
 
     return response.data;
   }
 
-  public async createInvoice(invoiceData: any): Promise<ApiResponse<any>> {
+  public async createContactPerson(
+    contactId: string,
+    contactPersonData: any
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/contact_persons`, {
+        ...contactPersonData,
+        organization_id: this.organizationId,
+      });
+
+    return response.data;
+  }
+
+  public async addContactAddress(
+    contactId: string,
+    addressData: any
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/address`, {
+        ...addressData,
+        organization_id: this.organizationId,
+      });
+
+    return response.data;
+  }
+
+  // ----- currencies section -------
+  public async getCurrencies(): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get("/settings/currencies", {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  // ----- CREATE REFUNDS  section -------
+  public async createRefund(
+    refundData: CustomerRefund
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/customerpayments/${refundData.payment_id}/refunds`, {
+        ...refundData,
+        organization_id: this.organizationId,
+      });
+
+    return response.data;
+  }
+
+  public async getCustomerPayments(
+    customerId: string,
+    params: RefundListParams = {}
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get("/customerpayments", {
+        params: {
+          organization_id: this.organizationId,
+          customer_id: customerId,
+          page: params.page || 1,
+          per_page: params.per_page || 200,
+        },
+      });
+
+    return response.data;
+  }
+
+  // ------ invoice section -----------
+  public async createInvoice(
+    invoiceData: InvoiceData
+  ): Promise<ApiResponse<any>> {
     await this.ensureOrganizationId();
     await this.updateAuthHeader();
 
@@ -403,32 +474,82 @@ class ZohoAPI {
     return response.data;
   }
 
-  public async updateInvoice(
-    invoiceId: string,
-    invoiceData: any
+  public async createPayment(
+    paymentData: PaymentData
   ): Promise<ApiResponse<any>> {
     await this.ensureOrganizationId();
     await this.updateAuthHeader();
 
     const response = await this.authManager
       .getAxiosInstance()
-      .put(`/invoices/${invoiceId}`, {
-        ...invoiceData,
+      .post("/customerpayments", {
+        ...paymentData,
         organization_id: this.organizationId,
       });
 
     return response.data;
   }
 
-  public async deleteInvoice(invoiceId: string): Promise<ApiResponse<any>> {
+  public async getInvoices(customerId: string): Promise<ApiResponse<any>> {
     await this.ensureOrganizationId();
     await this.updateAuthHeader();
 
     const response = await this.authManager
       .getAxiosInstance()
-      .delete(`/invoices/${invoiceId}`, {
+      .get("/invoices", {
         params: {
           organization_id: this.organizationId,
+          customer_id: customerId,
+        },
+      });
+
+    return response.data;
+  }
+
+  // ----- credit Note section -------
+  public async createCreditNote(
+    creditNoteData: CreditNoteData
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post("/creditnotes", {
+        ...creditNoteData,
+        organization_id: this.organizationId,
+      });
+
+    return response.data;
+  }
+
+  public async createCreditNoteRefund(
+    creditNoteId: string,
+    refundData: CreditNoteRefundData
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/creditnotes/${creditNoteId}/refunds`, {
+        ...refundData,
+        organization_id: this.organizationId,
+      });
+
+    return response.data;
+  }
+
+  public async getCreditNotes(customerId: string): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get("/creditnotes", {
+        params: {
+          organization_id: this.organizationId,
+          customer_id: customerId,
         },
       });
 

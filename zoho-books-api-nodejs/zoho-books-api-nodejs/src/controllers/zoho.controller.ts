@@ -1,17 +1,26 @@
-// Add custom type for our handlers
 export type AsyncRequestHandler = (
   req: Request,
   res: Response
 ) => Promise<Response | void> | void;
 
-// src/controllers/zoho.controller.ts
-import { Request, Response } from "express";
-import { createZohoClient, getAuthUrl } from "../lib/zoho-client";
-import config from "../config";
-import { getStoredRefreshToken } from "./token.controller";
+import { ContactData } from "@/types/contacts.types";
+import { CustomerRefund, RefundListParams } from "@/types/refund.types";
 import { ContactSearchParams } from "@/types/zoho.types";
+import { refundSchema } from "../validations/refund.schema";
+import axios from "axios";
+import { Request, Response } from "express";
+import config from "../config";
+import { createZohoClient, getAuthUrl } from "../lib/zoho-client";
+import { contactSchema } from "../validations/contact.schema";
+import { getStoredRefreshToken } from "./token.controller";
+import { InvoiceData, PaymentData } from "@/types/payment.types";
+import { invoiceSchema, paymentSchema } from "../validations/payment.schema";
+import { CreditNoteData, CreditNoteRefundData } from "@/types/creditNote.types";
+import {
+  creditNoteRefundSchema,
+  creditNoteSchema,
+} from "../validations/creditNote.schema";
 
-// Custom error class for better error handling
 class ZohoError extends Error {
   constructor(message: string) {
     super(message);
@@ -30,10 +39,31 @@ const getZohoClient = async () => {
 
 // Helper function to handle errors
 const handleError = (error: unknown, res: Response): void => {
-  if (error instanceof ZohoError || error instanceof Error) {
-    res.status(500).json({ error: error.message });
+  if (axios.isAxiosError(error)) {
+    // Handle Zoho API specific errors
+    const zohoError = error.response?.data;
+    if (zohoError && zohoError.code && zohoError.message) {
+      res.status(error.response?.status || 500).json({
+        code: zohoError.code,
+        message: zohoError.message,
+      });
+      return;
+    }
+    // Handle other Axios errors
+    res.status(error.response?.status || 500).json({
+      code: error.response?.status || 500,
+      message: error.message,
+    });
+  } else if (error instanceof ZohoError || error instanceof Error) {
+    res.status(500).json({
+      code: 500,
+      message: error.message,
+    });
   } else {
-    res.status(500).json({ error: "An unknown error occurred" });
+    res.status(500).json({
+      code: 500,
+      message: "An unknown error occurred",
+    });
   }
 };
 
@@ -88,6 +118,7 @@ export const handleGrantToken = async (
     handleError(error, res);
   }
 };
+
 export const getOrganizations = async (
   req: Request,
   res: Response
@@ -101,7 +132,7 @@ export const getOrganizations = async (
   }
 };
 
-// ----- Contacts zohobooks section -------
+// ----- GET Contacts zohobooks section -------
 
 export const getContacts = async (
   req: Request,
@@ -193,14 +224,19 @@ export const getContactRefunds = async (
       return;
     }
 
-    const page = parseInt(req.query.page as string) || 1;
-    const perPage = parseInt(req.query.per_page as string) || 200;
+    const params: RefundListParams = {
+      page: parseInt(req.query.page as string) || 1,
+      per_page: parseInt(req.query.per_page as string) || 200,
+      sort_column: req.query.sort_column as
+        | "date"
+        | "refund_mode"
+        | "reference_number"
+        | "amount",
+      sort_order: req.query.sort_order as "asc" | "desc",
+    };
 
     const zoho = await getZohoClient();
-    const refunds = await zoho.getContactRefunds(contactId, {
-      page,
-      per_page: perPage,
-    });
+    const refunds = await zoho.getContactRefunds(contactId, params);
     res.json(refunds);
   } catch (error) {
     handleError(error, res);
@@ -234,51 +270,304 @@ export const searchContacts = async (
   }
 };
 
-// -----------   ----------------
-
-export const getInvoices = async (
+// ----- CREATE Contacts zohobooks section -------
+export const createContact = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const perPage = parseInt(req.query.per_page as string) || 200;
+    const contactData = req.body;
+
+    // Validate the request body against the schema
+    try {
+      await contactSchema.validate(contactData, { abortEarly: false });
+    } catch (validationError: any) {
+      res.status(400).json({
+        error: "Validation failed",
+        details: validationError.errors,
+      });
+      return;
+    }
+
+    console.log("create contact controller contactData : ", contactData);
 
     const zoho = await getZohoClient();
-    const invoices = await zoho.getInvoices(page, perPage);
-    res.json(invoices);
+
+    console.log("create contact controller zoho client got");
+
+    const contact = await zoho.createContact(contactData as ContactData);
+    console.log("contact received in createContact controller ", contact);
+    res.json(contact);
   } catch (error) {
+    console.log("controller catch error ", error);
     handleError(error, res);
   }
 };
 
-export const getInvoice = async (
+export const createContactPerson = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { invoiceId } = req.params;
-    if (!invoiceId) {
-      res.status(400).json({ error: "Invoice ID is required" });
+    const { contactId } = req.params;
+    const contactPersonData = req.body;
+
+    if (!contactId) {
+      res.status(400).json({ error: "Contact ID is required" });
+      return;
+    }
+
+    if (!contactPersonData) {
+      res.status(400).json({ error: "Contact person data is required" });
       return;
     }
 
     const zoho = await getZohoClient();
-    const invoice = await zoho.getInvoice(invoiceId);
-    res.json(invoice);
+    const contactPerson = await zoho.createContactPerson(
+      contactId,
+      contactPersonData
+    );
+    res.json(contactPerson);
   } catch (error) {
     handleError(error, res);
   }
 };
 
-export const getItems = async (req: Request, res: Response): Promise<void> => {
+export const addContactAddress = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const perPage = parseInt(req.query.per_page as string) || 200;
+    const { contactId } = req.params;
+    const addressData = req.body;
+
+    if (!contactId) {
+      res.status(400).json({ error: "Contact ID is required" });
+      return;
+    }
+
+    if (!addressData) {
+      res.status(400).json({ error: "Address data is required" });
+      return;
+    }
 
     const zoho = await getZohoClient();
-    const items = await zoho.getItems(page, perPage);
-    res.json(items);
+    const address = await zoho.addContactAddress(contactId, addressData);
+    res.json(address);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+// ----------- READ currencies section   ----------------
+export const getCurrencies = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const zoho = await getZohoClient();
+    const currencies = await zoho.getCurrencies();
+    res.json(currencies);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+// ----------- Refunds section   ----------------
+export const createRefund = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const refundData: CustomerRefund = req.body;
+
+    // Validate request data
+    try {
+      await refundSchema.validate(refundData, { abortEarly: false });
+    } catch (validationError: any) {
+      res.status(400).json({
+        error: "Validation failed",
+        details: validationError.errors,
+      });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.createRefund(refundData);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const getCustomerPayments = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { customerId } = req.params;
+    if (!customerId) {
+      res.status(400).json({ error: "Customer ID is required" });
+      return;
+    }
+
+    const params: RefundListParams = {
+      page: parseInt(req.query.page as string) || 1,
+      per_page: parseInt(req.query.per_page as string) || 200,
+    };
+
+    const zoho = await getZohoClient();
+    const payments = await zoho.getCustomerPayments(customerId, params);
+    res.json(payments);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+// ----------- Invoice section ----------------
+export const createInvoice = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const invoiceData: InvoiceData = req.body;
+
+    try {
+      await invoiceSchema.validate(invoiceData, { abortEarly: false });
+    } catch (validationError: any) {
+      res.status(400).json({
+        error: "Validation failed",
+        details: validationError.errors,
+      });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.createInvoice(invoiceData);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const getCustomerInvoices = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { customerId } = req.params;
+
+    if (!customerId) {
+      res.status(400).json({ error: "Customer ID is required" });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.getInvoices(customerId);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+// ----------- Payment section ----------------
+export const createPayment = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const paymentData: PaymentData = req.body;
+
+    try {
+      await paymentSchema.validate(paymentData, { abortEarly: false });
+    } catch (validationError: any) {
+      res.status(400).json({
+        error: "Validation failed",
+        details: validationError.errors,
+      });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.createPayment(paymentData);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+// ----------- credit note section ----------------
+export const createCreditNote = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const creditNoteData: CreditNoteData = req.body;
+
+    try {
+      await creditNoteSchema.validate(creditNoteData, { abortEarly: false });
+    } catch (validationError: any) {
+      res.status(400).json({
+        error: "Validation failed",
+        details: validationError.errors,
+      });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.createCreditNote(creditNoteData);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const createCreditNoteRefund = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { creditNoteId } = req.params;
+    const refundData: CreditNoteRefundData = req.body;
+
+    if (!creditNoteId) {
+      res.status(400).json({ error: "Credit note ID is required" });
+      return;
+    }
+
+    try {
+      await creditNoteRefundSchema.validate(refundData, { abortEarly: false });
+    } catch (validationError: any) {
+      res.status(400).json({
+        error: "Validation failed",
+        details: validationError.errors,
+      });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.createCreditNoteRefund(creditNoteId, refundData);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const getCustomerCreditNotes = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { customerId } = req.params;
+
+    if (!customerId) {
+      res.status(400).json({ error: "Customer ID is required" });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.getCreditNotes(customerId);
+    res.json(result);
   } catch (error) {
     handleError(error, res);
   }
