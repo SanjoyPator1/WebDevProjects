@@ -9,6 +9,7 @@ import { Request, Response } from "express";
 import { createZohoClient, getAuthUrl } from "../lib/zoho-client";
 import config from "../config";
 import { getStoredRefreshToken } from "./token.controller";
+import { ContactSearchParams } from "@/types/zoho.types";
 
 // Custom error class for better error handling
 class ZohoError extends Error {
@@ -100,6 +101,8 @@ export const getOrganizations = async (
   }
 };
 
+// ----- Contacts zohobooks section -------
+
 export const getContacts = async (
   req: Request,
   res: Response
@@ -115,6 +118,123 @@ export const getContacts = async (
     handleError(error, res);
   }
 };
+
+export const getContact = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    if (!contactId) {
+      res.status(400).json({ error: "Contact ID is required" });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const contact = await zoho.getContact(contactId);
+    res.json(contact);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const getContactAddresses = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    if (!contactId) {
+      res.status(400).json({ error: "Contact ID is required" });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const addresses = await zoho.getContactAddresses(contactId);
+    res.json(addresses);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const getContactComments = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    if (!contactId) {
+      res.status(400).json({ error: "Contact ID is required" });
+      return;
+    }
+
+    const page = parseInt(req.query.page as string) || 1;
+    const perPage = parseInt(req.query.per_page as string) || 200;
+
+    const zoho = await getZohoClient();
+    const comments = await zoho.getContactComments(contactId, {
+      page,
+      per_page: perPage,
+    });
+    res.json(comments);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const getContactRefunds = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    if (!contactId) {
+      res.status(400).json({ error: "Contact ID is required" });
+      return;
+    }
+
+    const page = parseInt(req.query.page as string) || 1;
+    const perPage = parseInt(req.query.per_page as string) || 200;
+
+    const zoho = await getZohoClient();
+    const refunds = await zoho.getContactRefunds(contactId, {
+      page,
+      per_page: perPage,
+    });
+    res.json(refunds);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const searchContacts = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const params: ContactSearchParams = {
+      contact_name: req.query.contact_name as string,
+      company_name: req.query.company_name as string,
+      first_name: req.query.first_name as string,
+      last_name: req.query.last_name as string,
+      email: req.query.email as string,
+      phone: req.query.phone as string,
+      filter_by: req.query.filter_by as string,
+      search_text: req.query.search_text as string,
+      sort_column: req.query.sort_column as string,
+      page: parseInt(req.query.page as string) || 1,
+      per_page: parseInt(req.query.per_page as string) || 200,
+    };
+
+    const zoho = await getZohoClient();
+    const contacts = await zoho.searchContacts(params);
+    res.json(contacts);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+// -----------   ----------------
 
 export const getInvoices = async (
   req: Request,

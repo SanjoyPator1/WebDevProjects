@@ -1,55 +1,13 @@
+import {
+  ApiResponse,
+  ContactSearchParams,
+  OrganizationsResponse,
+  PaginationParams,
+  TokenInfo,
+  TokenResponse,
+  ZohoConfig,
+} from "@/types/zoho.types";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
-
-interface ZohoConfig {
-  clientId: string;
-  clientSecret: string;
-  region: string;
-  redirectUri: string;
-}
-
-interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-  api_domain: string;
-  token_type: string;
-}
-
-interface TokenInfo {
-  accessToken: string;
-  refreshToken: string;
-  expiresAt: Date;
-}
-
-interface ApiResponse<T> {
-  code: number;
-  message: string;
-  data?: T;
-}
-
-interface Organization {
-  organization_id: string;
-  name: string;
-  contact_name: string;
-  email: string;
-  is_default_org: boolean;
-  language_code: string;
-  fiscal_year_start_month: number;
-  account_created_date: string;
-  time_zone: string;
-  is_org_active: boolean;
-  currency_id: string;
-  currency_code: string;
-  currency_symbol: string;
-  currency_format: string;
-  price_precision: number;
-}
-
-interface OrganizationsResponse {
-  code: number;
-  message: string;
-  organizations: Organization[];
-}
 
 class ZohoAuthManager {
   private config: ZohoConfig;
@@ -254,6 +212,8 @@ class ZohoAPI {
     }
   }
 
+  // ----- Contacts section -------
+
   public async getContacts(
     page: number = 1,
     perPage: number = 200
@@ -273,6 +233,108 @@ class ZohoAPI {
 
     return response.data;
   }
+
+  public async getContact(contactId: string): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get(`/contacts/${contactId}`, {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async getContactAddresses(
+    contactId: string
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get(`/contacts/${contactId}/address`, {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async getContactComments(
+    contactId: string,
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get(`/contacts/${contactId}/comments`, {
+        params: {
+          organization_id: this.organizationId,
+          page: params.page || 1,
+          per_page: params.per_page || 200,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async getContactRefunds(
+    contactId: string,
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get(`/contacts/${contactId}/refunds`, {
+        params: {
+          organization_id: this.organizationId,
+          page: params.page || 1,
+          per_page: params.per_page || 200,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async searchContacts(
+    params: ContactSearchParams = {}
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get("/contacts", {
+        params: {
+          organization_id: this.organizationId,
+          page: params.page || 1,
+          per_page: params.per_page || 200,
+          contact_name: params.contact_name,
+          company_name: params.company_name,
+          first_name: params.first_name,
+          last_name: params.last_name,
+          email: params.email,
+          phone: params.phone,
+          filter_by: params.filter_by,
+          search_text: params.search_text,
+          sort_column: params.sort_column,
+        },
+      });
+
+    return response.data;
+  }
+
+  // -----  section -------
 
   public async getInvoices(
     page: number = 1,
