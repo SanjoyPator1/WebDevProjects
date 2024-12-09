@@ -3,7 +3,11 @@ export type AsyncRequestHandler = (
   res: Response
 ) => Promise<Response | void> | void;
 
-import { ContactData } from "@/types/contacts.types";
+import {
+  ContactData,
+  ContactEmailData,
+  StatementEmailData,
+} from "@/types/contacts.types";
 import { CustomerRefund, RefundListParams } from "@/types/refund.types";
 import { ContactSearchParams } from "@/types/zoho.types";
 import { refundSchema } from "../validations/refund.schema";
@@ -11,7 +15,12 @@ import axios from "axios";
 import { Request, Response } from "express";
 import config from "../config";
 import { createZohoClient, getAuthUrl } from "../lib/zoho-client";
-import { contactSchema } from "../validations/contact.schema";
+import {
+  contactEmailSchema,
+  contactSchema,
+  portalAccessSchema,
+  statementEmailSchema,
+} from "../validations/contact.schema";
 import { getStoredRefreshToken } from "./token.controller";
 import { InvoiceData, PaymentData } from "@/types/payment.types";
 import { invoiceSchema, paymentSchema } from "../validations/payment.schema";
@@ -270,6 +279,31 @@ export const searchContacts = async (
   }
 };
 
+export const getStatementEmailContent = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const { start_date, end_date } = req.query;
+
+    if (!contactId) {
+      res.status(400).json({ error: "Contact ID is required" });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.getStatementEmailContent(
+      contactId,
+      start_date as string,
+      end_date as string
+    );
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
 // ----- CREATE Contacts zohobooks section -------
 export const createContact = async (
   req: Request,
@@ -354,6 +388,182 @@ export const addContactAddress = async (
     const zoho = await getZohoClient();
     const address = await zoho.addContactAddress(contactId, addressData);
     res.json(address);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const sendStatementEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const { start_date, end_date } = req.query;
+    const emailData: StatementEmailData = req.body;
+
+    if (!contactId) {
+      res.status(400).json({ error: "Contact ID is required" });
+      return;
+    }
+
+    try {
+      await statementEmailSchema.validate(emailData, { abortEarly: false });
+    } catch (validationError: any) {
+      res.status(400).json({
+        error: "Validation failed",
+        details: validationError.errors,
+      });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.sendStatementEmail(
+      contactId,
+      emailData,
+      start_date as string,
+      end_date as string
+    );
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const sendContactEmail = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const { send_customer_statement } = req.query;
+    const files = req.files;
+
+    // Get the email data either from body (JSON) or fields (multipart)
+    const emailData: ContactEmailData = {
+      to_mail_ids: req.body.to_mail_ids || JSON.parse(req.body.to_mail_ids),
+      subject: req.body.subject,
+      body: req.body.body,
+      attachments: files as File[], // If files were uploaded
+    };
+
+    try {
+      await contactEmailSchema.validate(emailData, { abortEarly: false });
+    } catch (validationError: any) {
+      res.status(400).json({
+        error: "Validation failed",
+        details: validationError.errors,
+      });
+      return;
+    }
+
+    const zoho = await getZohoClient();
+    const result = await zoho.sendContactEmail(
+      contactId,
+      emailData,
+      send_customer_statement === "true"
+    );
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const markContactActive = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const zoho = await getZohoClient();
+    const result = await zoho.markContactActive(contactId);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const markContactInactive = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const zoho = await getZohoClient();
+    const result = await zoho.markContactInactive(contactId);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const enablePortalAccess = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const data = req.body;
+
+    // Validate input data
+    await portalAccessSchema.validate(data);
+
+    const zoho = await getZohoClient();
+    const result = await zoho.enablePortalAccess(contactId, data);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const enablePaymentReminders = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const zoho = await getZohoClient();
+    const result = await zoho.enablePaymentReminders(contactId);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const disablePaymentReminders = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const zoho = await getZohoClient();
+    const result = await zoho.disablePaymentReminders(contactId);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const track1099 = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const zoho = await getZohoClient();
+    const result = await zoho.track1099(contactId);
+    res.json(result);
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const untrack1099 = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { contactId } = req.params;
+    const zoho = await getZohoClient();
+    const result = await zoho.untrack1099(contactId);
+    res.json(result);
   } catch (error) {
     handleError(error, res);
   }

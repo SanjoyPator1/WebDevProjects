@@ -1,4 +1,11 @@
-import { ContactData } from "@/types/contacts.types";
+import {
+  ContactData,
+  ContactEmailData,
+  ContactStatusResponse,
+  PortalAccessData,
+  StatementEmailData,
+  Track1099Response,
+} from "@/types/contacts.types";
 import { CreditNoteData, CreditNoteRefundData } from "@/types/creditNote.types";
 import {
   CustomerPaymentData,
@@ -345,6 +352,28 @@ class ZohoAPI {
     return response.data;
   }
 
+  public async getStatementEmailContent(
+    contactId: string,
+    startDate?: string,
+    endDate?: string
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const params: any = {
+      organization_id: this.organizationId,
+    };
+
+    if (startDate) params.start_date = startDate;
+    if (endDate) params.end_date = endDate;
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .get(`/contacts/${contactId}/statements/email`, { params });
+
+    return response.data;
+  }
+
   // ----- CREATE Contacts section -------
   public async createContact(
     contactData: ContactData
@@ -398,6 +427,195 @@ class ZohoAPI {
       .post(`/contacts/${contactId}/address`, {
         ...addressData,
         organization_id: this.organizationId,
+      });
+
+    return response.data;
+  }
+
+  public async sendStatementEmail(
+    contactId: string,
+    emailData: StatementEmailData,
+    startDate?: string,
+    endDate?: string
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const params: any = {
+      organization_id: this.organizationId,
+    };
+
+    if (startDate) params.start_date = startDate;
+    if (endDate) params.end_date = endDate;
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/statements/email`, emailData, { params });
+
+    return response.data;
+  }
+
+  public async sendContactEmail(
+    contactId: string,
+    emailData: ContactEmailData,
+    sendCustomerStatement: boolean = false
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    // If there are attachments, use multipart/form-data
+    if (emailData.attachments) {
+      const formData = new FormData();
+      formData.append("to_mail_ids", JSON.stringify(emailData.to_mail_ids));
+      formData.append("subject", emailData.subject);
+      formData.append("body", emailData.body);
+      formData.append("attachments", emailData.attachments);
+
+      return this.authManager
+        .getAxiosInstance()
+        .post(`/contacts/${contactId}/email`, formData, {
+          params: {
+            organization_id: this.organizationId,
+            send_customer_statement: sendCustomerStatement,
+          },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+    }
+
+    // If no attachments, use JSON
+    return this.authManager.getAxiosInstance().post(
+      `/contacts/${contactId}/email`,
+      {
+        to_mail_ids: emailData.to_mail_ids,
+        subject: emailData.subject,
+        body: emailData.body,
+      },
+      {
+        params: {
+          organization_id: this.organizationId,
+          send_customer_statement: sendCustomerStatement,
+        },
+      }
+    );
+  }
+
+  public async markContactActive(
+    contactId: string
+  ): Promise<ApiResponse<ContactStatusResponse>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/active`, null, {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async markContactInactive(
+    contactId: string
+  ): Promise<ApiResponse<ContactStatusResponse>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/inactive`, null, {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async enablePortalAccess(
+    contactId: string,
+    data: PortalAccessData
+  ): Promise<ApiResponse<any>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/portal/enable`, data, {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async enablePaymentReminders(
+    contactId: string
+  ): Promise<ApiResponse<ContactStatusResponse>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/paymentreminder/enable`, null, {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async disablePaymentReminders(
+    contactId: string
+  ): Promise<ApiResponse<ContactStatusResponse>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/paymentreminder/disable`, null, {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async track1099(
+    contactId: string
+  ): Promise<ApiResponse<Track1099Response>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/track1099`, null, {
+        params: {
+          organization_id: this.organizationId,
+        },
+      });
+
+    return response.data;
+  }
+
+  public async untrack1099(
+    contactId: string
+  ): Promise<ApiResponse<Track1099Response>> {
+    await this.ensureOrganizationId();
+    await this.updateAuthHeader();
+
+    const response = await this.authManager
+      .getAxiosInstance()
+      .post(`/contacts/${contactId}/untrack1099`, null, {
+        params: {
+          organization_id: this.organizationId,
+        },
       });
 
     return response.data;

@@ -109,3 +109,51 @@ export const contactSchema = yup.object().shape({
   tax_regime: yup.string(),
   owner_id: yup.string(),
 });
+
+// Email validation schema
+export const contactEmailSchema = yup.object().shape({
+  to_mail_ids: yup
+    .array()
+    .of(yup.string().email("Invalid email address"))
+    .min(1, "At least one recipient email is required"),
+  subject: yup
+    .string()
+    .required("Subject is required")
+    .max(1000, "Subject must not exceed 1000 characters"),
+  body: yup
+    .string()
+    .required("Email body is required")
+    .max(5000, "Email body must not exceed 5000 characters"),
+});
+
+// Statement email validation schema
+export const statementEmailSchema = yup.object().shape({
+  send_from_org_email_id: yup.boolean(),
+  to_mail_ids: yup
+    .array()
+    .of(yup.string().email("Invalid email address"))
+    .min(1, "At least one recipient email is required"),
+  cc_mail_ids: yup.array().of(yup.string().email("Invalid email address")),
+  subject: yup
+    .string()
+    .required("Subject is required")
+    .max(1000, "Subject must not exceed 1000 characters"),
+  body: yup
+    .string()
+    .required("Email body is required")
+    .max(5000, "Email body must not exceed 5000 characters"),
+});
+
+export const portalAccessSchema = yup.object({
+  contact_persons: yup
+    .array()
+    .of(
+      yup.object({
+        contact_person_id: yup
+          .string()
+          .required("Contact person ID is required"),
+      })
+    )
+    .required("At least one contact person is required")
+    .min(1),
+});

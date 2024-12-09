@@ -120,3 +120,53 @@ export interface RefundData {
   exchange_rate?: number;
   bank_charges?: number;
 }
+
+export interface StatementEmailData {
+  send_from_org_email_id?: boolean;
+  to_mail_ids: string[];
+  cc_mail_ids?: string[];
+  subject: string;
+  body: string;
+}
+
+export interface ContactEmailData {
+  to_mail_ids: string[];
+  subject: string;
+  body: string;
+  attachments?: File[]; // For handling file uploads
+}
+
+export interface StatementEmailContent {
+  body: string;
+  subject: string;
+  to_contacts: Array<{
+    first_name: string;
+    selected: boolean;
+    phone: string;
+    email: string;
+    contact_person_id: string;
+    last_name: string;
+    salutation: string;
+    mobile: string;
+  }>;
+  file_name: string;
+  from_emails: Array<{
+    user_name: string;
+    selected: boolean;
+    email: string;
+  }>;
+  contact_id: string;
+}
+
+export interface PortalAccessData {
+  contact_persons: Array<{
+    contact_person_id: string;
+  }>;
+}
+
+export interface ContactStatusResponse {
+  code: number;
+  message: string;
+}
+
+export interface Track1099Response extends ContactStatusResponse {}
