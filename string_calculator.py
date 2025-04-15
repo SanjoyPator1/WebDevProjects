@@ -25,6 +25,7 @@ class StringCalculator:
 
         negative_nums = [int(num) for num in nums if int(num) < 0]
         if negative_nums:
-            raise ValueError(f"negative numbers not allowed {negative_nums[0]}")
+            negative_str = ",".join(str(num) for num in negative_nums)
+            raise ValueError(f"negative numbers not allowed {negative_str}")
 
         return sum(int(num) for num in nums)
