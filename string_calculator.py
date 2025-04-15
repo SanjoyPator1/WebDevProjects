@@ -22,4 +22,9 @@ class StringCalculator:
         
         numbers = numbers.replace("\n", delimiter)
         nums = numbers.split(delimiter)
+
+        negative_nums = [int(num) for num in nums if int(num) < 0]
+        if negative_nums:
+            raise ValueError(f"negative numbers not allowed {negative_nums[0]}")
+
         return sum(int(num) for num in nums)
