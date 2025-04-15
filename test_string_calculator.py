@@ -28,5 +28,10 @@ class TestStringCalculator(unittest.TestCase):
             self.calculator.add("1,-2")
         self.assertEqual("negative numbers not allowed -2", str(context.exception))
 
+    def test_multiple_negative_numbers_throws_exception(self):
+        with self.assertRaises(ValueError) as context:
+            self.calculator.add("1,-2,-3,4,-5")
+        self.assertEqual("negative numbers not allowed -2,-3,-5", str(context.exception))
+
 if __name__ == "__main__":
     unittest.main()
