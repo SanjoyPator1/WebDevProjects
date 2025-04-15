@@ -1,3 +1,5 @@
 class StringCalculator:
     def add(self, numbers):
-        return 0
+        if not numbers:
+            return 0
+        return int(numbers)
