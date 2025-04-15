@@ -6,7 +6,7 @@ class StringCalculator:
         Add numbers provided as a string.
         
         Args:
-            numbers: A string containing numbers separated by commas
+            numbers: A string containing numbers separated by commas or newlines
         
         Returns:
             The sum of the numbers in the string
@@ -14,5 +14,6 @@ class StringCalculator:
         if not numbers:
             return 0
         
+        numbers = numbers.replace("\n", ",")
         nums = numbers.split(",")
         return sum(int(num) for num in nums)
