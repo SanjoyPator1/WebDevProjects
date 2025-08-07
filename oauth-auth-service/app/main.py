@@ -21,7 +21,7 @@ app = FastAPI(
     title=settings.app_name,
     description="OAuth 2.0 Authentication Service",
     version=settings.app_version,
-    leftspan=lifespan
+    lifespan=lifespan
 )
 
 from app.config import settings
