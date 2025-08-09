@@ -114,6 +114,128 @@ Users ←→ Organizations (Many-to-Many via user_organizations)
 
 For detailed schema information, see [`docs/database/schema.md`](docs/database/schema.md).
 
+## 🏗️ System Architecture
+
+### OAuth 2.0 Authorization Flow
+
+```mermaid
+sequenceDiagram
+    participant User as User/Browser
+    participant Client as Client App
+    participant AuthServer as OAuth Auth Server
+    participant ResourceServer as Chat API
+    participant DB as Database
+
+    Note over User, DB: OAuth 2.0 Authorization Code Flow with PKCE
+
+    %% 1. Authorization Request
+    User->>Client: 1. Login to App
+    Client->>Client: 2. Generate PKCE code_verifier & code_challenge
+    Client->>User: 3. Redirect to authorization endpoint
+    User->>AuthServer: 4. GET /oauth/authorize?client_id=...&code_challenge=...
+
+    %% 2. User Authentication & Consent
+    AuthServer->>DB: 5. Validate client_id & redirect_uri
+    AuthServer->>User: 6. Show login form (if not authenticated)
+    User->>AuthServer: 7. POST credentials
+    AuthServer->>DB: 8. Authenticate user
+    AuthServer->>User: 9. Show consent screen with scopes
+    User->>AuthServer: 10. Approve permissions
+
+    %% 3. Authorization Code Issuance
+    AuthServer->>DB: 11. Store authorization_code with PKCE challenge
+    AuthServer->>User: 12. Redirect to callback with authorization code
+    User->>Client: 13. Authorization code received
+
+    %% 4. Token Exchange
+    Client->>AuthServer: 14. POST /oauth/token with code & code_verifier
+    AuthServer->>DB: 15. Verify authorization code & PKCE
+    AuthServer->>AuthServer: 16. Generate JWT access token
+    AuthServer->>DB: 17. Store refresh token (hashed)
+    AuthServer->>Client: 18. Return access_token & refresh_token
+
+    %% 5. API Access
+    Client->>ResourceServer: 19. API request with Bearer token
+    ResourceServer->>ResourceServer: 20. Validate JWT signature & claims
+    ResourceServer->>Client: 21. Return protected resource
+
+    %% 6. Token Refresh (when access token expires)
+    Client->>AuthServer: 22. POST /oauth/token with refresh_token
+    AuthServer->>DB: 23. Verify refresh token
+    AuthServer->>AuthServer: 24. Generate new JWT access token
+    AuthServer->>DB: 25. Update refresh token usage
+    AuthServer->>Client: 26. Return new access_token
+
+```
+
+### Multi-Tenant Organization Flow
+
+```mermaid
+flowchart TD
+    A[User Signs Up] --> B{Email Domain Check}
+    B -->|Domain matches org| C[Auto-join Organization]
+    B -->|No domain match| D[Create Personal Account]
+    B -->|Invite Link| E[Join Specific Organization]
+
+    C --> F[Assign MEMBER role]
+    D --> G[Create new Organization]
+    E --> H[Pending invitation status]
+
+    F --> I[Access Org Resources]
+    G --> J[Assign ADMIN role]
+    H --> K{Admin Approval?}
+
+    K -->|Approved| L[Activate Membership]
+    K -->|Denied| M[Remove Invitation]
+
+    L --> I
+    J --> I
+
+    I --> N[User can access:]
+    N --> O[Org-specific OAuth clients]
+    N --> P[Org-scoped permissions]
+    N --> Q[Chat channels & messages]
+
+    style C fill:#0084bc
+    style E fill:#844f00
+    style G fill:#b500d1
+    style I fill:#009e00
+
+```
+
+### Token Security Model
+
+```mermaid
+flowchart LR
+    subgraph "Access Tokens (JWT)"
+        A1[Self-contained] --> A2[Stateless validation]
+        A2 --> A3[15-60 min lifetime]
+        A3 --> A4[Cannot be revoked*]
+    end
+
+    subgraph "Refresh Tokens (Database)"
+        B1[Database stored] --> B2[Hashed values]
+        B2 --> B3[30+ day lifetime]
+        B3 --> B4[Instant revocation]
+        B4 --> B5[Token rotation]
+    end
+
+    subgraph "Security Features"
+        C1[PKCE for public clients] --> C2[UUID-based IDs]
+        C2 --> C3[Comprehensive audit logs]
+        C3 --> C4[Organization isolation]
+    end
+
+    A4 -.->|Optional blacklist| C5[Revoked JWT Table]
+    B5 --> C6[Track usage patterns]
+    C4 --> C7[Multi-tenant security]
+
+    style A1 fill:#0084bc
+    style B1 fill:#b500d1
+    style C1 fill:#009e00
+
+```
+
 ## 🔐 OAuth Scopes
 
 The system includes 11 predefined scopes organized by category:
