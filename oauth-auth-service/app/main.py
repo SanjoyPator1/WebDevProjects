@@ -24,9 +24,6 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-from app.config import settings
-print("Database URL:", settings.database_url)
-
 app.include_router(health_router,prefix="/api")
 app.include_router(user_router, prefix="/api")
 

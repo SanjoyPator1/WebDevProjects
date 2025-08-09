@@ -1,6 +1,17 @@
 # OAuth Auth Service
 
-A FastAPI-based OAuth 2.0 authentication service with PostgreSQL database, SQLAlchemy ORM, and Alembic migrations.
+A comprehensive FastAPI-based OAuth 2.0 + OpenID Connect authentication service with PostgreSQL database, multi-tenant organization support, and complete scope management.
+
+## Features
+
+- **OAuth 2.0 + OpenID Connect** compliant authorization server
+- **Multi-tenant organization** support with role-based access control
+- **JWT access tokens** with database-stored refresh tokens (hybrid approach)
+- **Comprehensive scope system** with 11 predefined scopes
+- **Audit logging** for security monitoring and compliance
+- **PKCE support** for public clients (mobile/SPA security)
+- **Docker-based development** environment
+- **Alembic migrations** for database schema management
 
 ## Quick Start
 
@@ -48,10 +59,87 @@ A FastAPI-based OAuth 2.0 authentication service with PostgreSQL database, SQLAl
    ```
 
 5. **Start with Docker:**
+
    ```sh
    # Build and start all services
    docker-compose up --build
    ```
+
+6. **Run database migrations:**
+
+   ```sh
+   # Apply all migrations
+   docker-compose run --rm migrate
+   ```
+
+7. **Populate default OAuth scopes:**
+   ```sh
+   # Create the default OAuth 2.0 and chat application scopes
+   docker-compose run --rm app uv run python scripts/populate_default_scopes.py
+   ```
+
+## 📊 Database Schema
+
+### OAuth 2.0 Database Architecture
+
+The service uses a hybrid token approach:
+
+- **Access Tokens**: JWT format (stateless, no database storage)
+- **Refresh Tokens**: Database storage (for revocation capability)
+- **UUIDs**: For business entities (security)
+- **Auto-increment IDs**: For high-volume audit logs (performance)
+
+### Core Tables
+
+| Table                 | Purpose                 | Key Features                                   |
+| --------------------- | ----------------------- | ---------------------------------------------- |
+| `users`               | User authentication     | UUID primary keys, OpenID Connect claims       |
+| `organizations`       | Multi-tenant support    | Organization isolation, domain-based auto-join |
+| `user_organizations`  | User membership         | Role-based access (ADMIN/MEMBER/GUEST)         |
+| `oauth_clients`       | Registered applications | CONFIDENTIAL/PUBLIC client types               |
+| `authorization_codes` | Temporary auth codes    | PKCE support, 5-10 minute expiration           |
+| `refresh_tokens`      | Long-lived tokens       | Token rotation, revocation support             |
+| `scopes`              | Permission definitions  | 11 predefined scopes, categorized              |
+| `audit_logs`          | Security monitoring     | Comprehensive event tracking                   |
+
+### Entity Relationships
+
+```
+Users ←→ Organizations (Many-to-Many via user_organizations)
+├── Organizations → OAuth Clients (One-to-Many)
+├── Users → Refresh Tokens (One-to-Many)
+├── OAuth Clients → Authorization Codes (One-to-Many)
+└── Authorization Codes → Refresh Tokens (One-to-One exchange)
+```
+
+For detailed schema information, see [`docs/database/schema.md`](docs/database/schema.md).
+
+## 🔐 OAuth Scopes
+
+The system includes 11 predefined scopes organized by category:
+
+### OpenID Connect (Auto-granted)
+
+- `openid` - Basic authentication
+- `profile` - User profile information
+
+### Profile Information
+
+- `email` - Email address access (requires consent)
+
+### Chat Application
+
+- `read:messages` - Read chat messages
+- `write:messages` - Send messages
+- `read:channels` - View channel information
+- `write:channels` - Manage channels
+
+### Administrative (Sensitive)
+
+- `admin:organization` - Full organization admin
+- `admin:users` - User management
+- `admin:clients` - OAuth client management
+- `read:analytics` - Usage analytics
 
 ## Docker Commands
 
@@ -94,6 +182,9 @@ docker-compose up -d db
 # Run migrations
 docker-compose run --rm migrate
 
+# Populate OAuth scopes
+docker-compose run --rm app uv run python scripts/populate_default_scopes.py
+
 # Start application
 docker-compose up -d app
 
@@ -124,6 +215,18 @@ docker-compose run --rm app uv run alembic current
 docker-compose run --rm app uv run alembic history
 ```
 
+### Scope Management
+
+```sh
+# Populate default scopes (run once after migrations)
+docker-compose run --rm app uv run python scripts/populate_default_scopes.py
+
+# List existing scopes
+docker-compose run --rm app uv run python scripts/populate_default_scopes.py --list
+
+# Re-running the populate script will skip if scopes already exist
+```
+
 ### Database Access
 
 ```sh
@@ -135,6 +238,9 @@ docker-compose exec db psql -U postgres -d oauth_db -c "\dt"
 
 # View table structure
 docker-compose exec db psql -U postgres -d oauth_db -c "\d users"
+
+# Check OAuth scopes
+docker-compose exec db psql -U postgres -d oauth_db -c "SELECT id, display_name, category FROM scopes ORDER BY category;"
 
 # Check database version
 docker-compose exec db psql -U postgres -d oauth_db -c "SELECT version();"
@@ -154,23 +260,42 @@ docker-compose exec db psql -U postgres -d oauth_db -c "SELECT version();"
 
 1. **Edit your models** in `app/models/`
 
-2. **Generate a new migration:**
+2. **Import new models** in `app/models/__init__.py` (required for Alembic detection)
+
+3. **Generate a new migration:**
 
    ```sh
    docker-compose run --rm app uv run alembic revision --autogenerate -m "Add new field to users table"
    ```
 
-3. **Review the generated migration** in `alembic/versions/`
+4. **Review the generated migration** in `alembic/versions/`
 
-4. **Apply the migration:**
+5. **Apply the migration:**
 
    ```sh
    docker-compose run --rm migrate
    ```
 
-5. **Restart the application:**
+6. **Restart the application:**
    ```sh
    docker-compose restart app
+   ```
+
+### Adding New OAuth Scopes
+
+1. **Edit the scope data** in `scripts/populate_default_scopes.py`
+
+2. **Add your custom scopes** to the `default_scopes_data` list
+
+3. **Clear existing scopes** (if needed):
+
+   ```sh
+   docker-compose exec db psql -U postgres -d oauth_db -c "TRUNCATE scopes;"
+   ```
+
+4. **Re-populate scopes:**
+   ```sh
+   docker-compose run --rm app uv run python scripts/populate_default_scopes.py
    ```
 
 ### Local Development (Without Docker)
@@ -188,9 +313,74 @@ uv sync
 # Run migrations
 uv run alembic upgrade head
 
+# Populate scopes
+uv run python scripts/populate_default_scopes.py
+
 # Start the application
 uv run uvicorn app.main:app --reload
 ```
+
+## 📁 Project Structure
+
+```
+oauth-auth-service/
+├── alembic/                 # Database migrations
+│   ├── versions/           # Migration files
+│   └── env.py             # Alembic configuration
+├── app/                    # Application code
+│   ├── models/            # SQLAlchemy models
+│   │   ├── user.py        # User authentication model
+│   │   ├── organization.py # Multi-tenant organizations
+│   │   ├── oauth_client.py # OAuth 2.0 clients
+│   │   ├── refresh_token.py # Token storage
+│   │   ├── scope.py       # Permission definitions
+│   │   └── audit_log.py   # Security audit trail
+│   ├── routers/           # FastAPI routes (TODO)
+│   ├── schemas/           # Pydantic schemas (TODO)
+│   ├── services/          # Business logic
+│   └── main.py           # FastAPI application
+├── scripts/               # Utility scripts
+│   └── populate_default_scopes.py # OAuth scope setup
+├── docs/                  # Documentation
+│   └── database/         # Database schema docs
+├── docker-compose.yml     # Docker services
+├── Dockerfile            # Application container
+├── alembic.ini          # Alembic configuration
+└── pyproject.toml       # Python dependencies
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+# Database URLs (for local development)
+DATABASE_URL=postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/oauth_db
+DATABASE_SYNC_URL=postgresql://postgres:postgres@127.0.0.1:5433/oauth_db
+
+# App settings
+APP_NAME=OAuth Auth Service
+APP_VERSION=0.1.0
+DEBUG=True
+
+# Security (update these for production!)
+SECRET_KEY=your-very-secret-key-here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# OAuth Configuration
+REFRESH_TOKEN_EXPIRE_DAYS=30
+AUTHORIZATION_CODE_EXPIRE_MINUTES=10
+```
+
+### OAuth Client Types
+
+The system supports two OAuth 2.0 client types:
+
+- **CONFIDENTIAL**: Server-side applications that can securely store client secrets
+- **PUBLIC**: Mobile apps and SPAs that cannot securely store secrets (must use PKCE)
 
 ## Troubleshooting
 
@@ -234,6 +424,17 @@ docker-compose run --rm migrate
 ls alembic/versions/
 ```
 
+#### Scope Population Issues
+
+```sh
+# Check if scopes were created
+docker-compose run --rm app uv run python scripts/populate_default_scopes.py --list
+
+# Clear and re-populate scopes
+docker-compose exec db psql -U postgres -d oauth_db -c "TRUNCATE scopes;"
+docker-compose run --rm app uv run python scripts/populate_default_scopes.py
+```
+
 #### Build Issues
 
 ```sh
@@ -252,48 +453,13 @@ docker-compose down -v
 docker system prune -af
 docker-compose build --no-cache
 docker-compose up -d
+
+# Re-run setup
+docker-compose run --rm migrate
+docker-compose run --rm app uv run python scripts/populate_default_scopes.py
 ```
 
-## Project Structure
-
-```
-oauth-auth-service/
-├── alembic/                 # Database migrations
-│   ├── versions/           # Migration files
-│   └── env.py             # Alembic configuration
-├── app/                    # Application code
-│   ├── models/            # SQLAlchemy models
-│   ├── routers/           # FastAPI routes
-│   ├── schemas/           # Pydantic schemas
-│   ├── services/          # Business logic
-│   └── main.py           # FastAPI application
-├── docker-compose.yml     # Docker services
-├── Dockerfile            # Application container
-├── alembic.ini          # Alembic configuration
-└── pyproject.toml       # Python dependencies
-```
-
-## Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-# Database URLs (for local development)
-DATABASE_URL=postgresql+asyncpg://postgres:postgres@127.0.0.1:5433/oauth_db
-DATABASE_SYNC_URL=postgresql://postgres:postgres@127.0.0.1:5433/oauth_db
-
-# App settings
-APP_NAME=OAuth Auth Service
-APP_VERSION=0.1.0
-DEBUG=True
-
-# Security
-SECRET_KEY=your-very-secret-key-here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-```
-
-## Testing
+## 🧪 Testing
 
 ```sh
 # Run tests (if available)
@@ -301,9 +467,15 @@ uv run pytest
 
 # Run tests with coverage
 uv run pytest --cov=app
+
+# Test database connection
+docker-compose run --rm app uv run python -c "from app.database import SessionLocal; print('✅ Database connection works')"
+
+# Test model imports
+docker-compose run --rm app uv run python -c "from app.models import *; print('✅ All models imported successfully')"
 ```
 
-## API Documentation
+## 📖 API Documentation
 
 Once the application is running, visit:
 
@@ -311,16 +483,27 @@ Once the application is running, visit:
 - **ReDoc**: http://localhost:8000/redoc
 - **Health Check**: http://localhost:8000/api/health
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
 4. Add tests if applicable
-5. Submit a pull request
+5. Update documentation
+6. Submit a pull request
 
-## License
+## 📄 License
 
-will write later :)
+Will write later :)
 
-For more detailed information, check the individual configuration files and the FastAPI documentation.
+## 📚 Additional Resources
+
+- [OAuth 2.0 RFC 6749](https://tools.ietf.org/html/rfc6749)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+- [PKCE RFC 7636](https://tools.ietf.org/html/rfc7636)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [SQLAlchemy 2.0 Documentation](https://docs.sqlalchemy.org/en/20/)
+
+---
+
+For more detailed information about the database schema, see the [Database Documentation](docs/database/schema.md).
